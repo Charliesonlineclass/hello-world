@@ -1,0 +1,80 @@
+version: '3.8'
+
+services:
+  wordpress:
+    image: wordpress:6.4-php8.2-apache
+    container_name: j3_wordpress
+    restart: unless-stopped
+    ports:
+      - "8080:80"
+    environment:
+      WORDPRESS_DB_HOST: mysql:3306
+      WORDPRESS_DB_NAME: j3_wordpress
+      WORDPRESS_DB_USER: j3_user
+      WORDPRESS_DB_PASSWORD: ${WORDPRESS_DB_PASSWORD:-j3_secure_password}
+    volumes:
+      - wordpress_data:/var/www/html
+      - ../wordpress/wp-content/themes/j3-interior-pro:/var/www/html/wp-content/themes/j3-interior-pro:ro
+    depends_on:
+      - mysql
+    networks:
+      - j3_network
+
+  mysql:
+    image: mysql:8.0
+    container_name: j3_mysql
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:-j3_root_password}
+      MYSQL_DATABASE: j3_wordpress
+      MYSQL_USER: j3_user
+      MYSQL_PASSWORD: ${WORDPRESS_DB_PASSWORD:-j3_secure_password}
+    volumes:
+      - mysql_data:/var/lib/mysql
+    networks:
+      - j3_network
+
+  backend:
+    build:
+      context: ../backend
+      dockerfile: ../docker/Dockerfile.backend
+    container_name: j3_backend
+    restart: unless-stopped
+    ports:
+      - "5000:5000"
+    environment:
+      FLASK_ENV: production
+      J3_API_KEY: ${J3_API_KEY:-j3-dev-key}
+    volumes:
+      - ../backend:/app:ro
+    networks:
+      - j3_network
+
+  redis:
+    image: redis:7-alpine
+    container_name: j3_redis
+    restart: unless-stopped
+    volumes:
+      - redis_data:/data
+    networks:
+      - j3_network
+
+  dashboard:
+    image: nginx:alpine
+    container_name: j3_dashboard
+    restart: unless-stopped
+    ports:
+      - "3000:80"
+    volumes:
+      - ../dashboard:/usr/share/nginx/html:ro
+    networks:
+      - j3_network
+
+networks:
+  j3_network:
+    driver: bridge
+
+volumes:
+  wordpress_data:
+  mysql_data:
+  redis_data:

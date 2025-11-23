@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="J3 Interior Design - Professional interior design and remodeling services in Houston. Kitchen, bathroom, flooring, and storm damage restoration.">
+    <title>J3 Interior Design | Transform Your Houston Home</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700&family=Open+Sans:wght@400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header class="site-header">
+        <div class="container header-inner">
+            <a href="/" class="logo">J3<span> Interior Design</span></a>
+            <nav>
+                <ul class="nav-menu">
+                    <li><a href="#services">Services</a></li>
+                    <li><a href="#about">About</a></li>
+                    <li><a href="#gallery">Gallery</a></li>
+                    <li><a href="#contact">Contact</a></li>
+                </ul>
+            </nav>
+            <a href="#contact" class="btn btn-primary">Free Consultation</a>
+        </div>
+    </header>
+
+    <section class="hero">
+        <div class="hero-content">
+            <span class="hero-badge">Serving Houston & Surrounding Areas</span>
+            <h1>Transform Your <span>Houston Home</span></h1>
+            <p>Professional interior design and remodeling services. Premium quality, transparent pricing, and consultations that respect your time.</p>
+            <a href="#contact" class="btn btn-primary">Schedule Free Consultation</a>
+        </div>
+    </section>
+
+    <section class="services" id="services">
+        <div class="container">
+            <div class="section-header">
+                <span class="section-tag">Our Services</span>
+                <h2 class="section-title">Premium Home Transformation</h2>
+            </div>
+            <div class="services-grid">
+                <div class="service-card">
+                    <h3>Kitchen Remodeling</h3>
+                    <p>Full renovations, cabinet refacing, countertops, and modern upgrades.</p>
+                    <span class="service-price">Starting at $15,000</span>
+                </div>
+                <div class="service-card">
+                    <h3>Bathroom Design</h3>
+                    <p>Complete makeovers, accessibility upgrades, and spa-inspired designs.</p>
+                    <span class="service-price">Starting at $8,000</span>
+                </div>
+                <div class="service-card">
+                    <h3>Flooring Installation</h3>
+                    <p>Hardwood, tile, luxury vinyl plank, refinishing, and more.</p>
+                    <span class="service-price">Starting at $5,000</span>
+                </div>
+                <div class="service-card">
+                    <h3>Wall & Paint Services</h3>
+                    <p>Drywall repair, custom paint, accent walls, and texture work.</p>
+                    <span class="service-price">Starting at $3,000</span>
+                </div>
+                <div class="service-card">
+                    <h3>Window & Door Replacement</h3>
+                    <p>Energy-efficient windows, security doors, and storm-resistant options.</p>
+                    <span class="service-price">Starting at $6,000</span>
+                </div>
+                <div class="service-card">
+                    <h3>Storm Damage Restoration</h3>
+                    <p>Insurance claims assistance, water damage repair, and reconstruction.</p>
+                    <span class="service-price">Insurance Billing Available</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="cta" id="contact" style="background: linear-gradient(135deg, #d4af37 0%, #c4a030 100%); padding: 80px 0; text-align: center;">
+        <div class="container">
+            <h2 style="color: #1a3a5c; font-size: 2.5rem; margin-bottom: 15px;">Ready to Transform Your Home?</h2>
+            <p style="color: #1a3a5c; font-size: 1.1rem; margin-bottom: 30px;">Schedule your free consultation today.</p>
+            <a href="tel:+17135550123" class="btn btn-secondary">Call (713) 555-0123</a>
+        </div>
+    </section>
+
+    <footer class="site-footer">
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-column">
+                    <h4>J3 Interior Design</h4>
+                    <p style="color: rgba(255,255,255,0.7);">Transforming Houston homes since 2013. Premium quality, transparent pricing.</p>
+                </div>
+                <div class="footer-column">
+                    <h4>Services</h4>
+                    <ul>
+                        <li><a href="#">Kitchen Remodeling</a></li>
+                        <li><a href="#">Bathroom Design</a></li>
+                        <li><a href="#">Flooring</a></li>
+                        <li><a href="#">Storm Restoration</a></li>
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <h4>Contact</h4>
+                    <ul>
+                        <li><a href="tel:+17135550123">(713) 555-0123</a></li>
+                        <li><a href="mailto:info@j3interiordesign.com">info@j3interiordesign.com</a></li>
+                        <li>Houston, TX</li>
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <h4>Hours</h4>
+                    <ul>
+                        <li>Mon-Sat: 9am - 6pm</li>
+                        <li>Sunday: Closed</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2024 J3 Interior Design. Licensed & Insured. TX Contractor #12345678</p>
+            </div>
+        </div>
+    </footer>
+
+    <div class="chat-widget" id="chat">
+        <div class="chat-window">
+            <div class="chat-header"><strong>J3 Design Assistant</strong></div>
+            <div class="chat-messages" id="messages">
+                <p style="background:#f0f0f0; padding:10px; border-radius:8px; margin:5px 0;">Hi! I'm here to help with your project. What are you considering?</p>
+            </div>
+            <div class="chat-input-area">
+                <input type="text" id="chat-input" placeholder="Type your message...">
+                <button onclick="sendMessage()">Send</button>
+            </div>
+        </div>
+        <button class="chat-toggle" onclick="document.getElementById('chat').classList.toggle('open')">Chat</button>
+    </div>
+
+    <script>
+        async function sendMessage() {
+            const input = document.getElementById('chat-input');
+            const messages = document.getElementById('messages');
+            const msg = input.value.trim();
+            if (!msg) return;
+            messages.innerHTML += `<p style="background:#17a2b8; color:white; padding:10px; border-radius:8px; margin:5px 0; text-align:right;">${msg}</p>`;
+            input.value = '';
+            try {
+                const res = await fetch('/api/chat', {
+                    method: 'POST', headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({message: msg})
+                });
+                const data = await res.json();
+                messages.innerHTML += `<p style="background:#f0f0f0; padding:10px; border-radius:8px; margin:5px 0;">${data.response}</p>`;
+            } catch(e) {
+                messages.innerHTML += `<p style="background:#f0f0f0; padding:10px; border-radius:8px; margin:5px 0;">Thanks! Call us at (713) 555-0123 for immediate help.</p>`;
+            }
+            messages.scrollTop = messages.scrollHeight;
+        }
+        document.getElementById('chat-input').addEventListener('keypress', e => { if (e.key === 'Enter') sendMessage(); });
+    </script>
+</body>
+</html>
