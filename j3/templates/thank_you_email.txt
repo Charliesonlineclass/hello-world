@@ -1,0 +1,39 @@
+Subject: Thank You from J3 Construction!
+
+Dear {name},
+
+Thank you for choosing J3 Construction for your {job_type} project!
+
+We truly appreciate your trust in our team. Your satisfaction is our top priority, and we're committed to delivering excellent results.
+
+PROJECT DETAILS:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+Quote Number: {quote_number}
+Project Type: {job_type}
+Estimated Start: {start_date}
+Estimated Duration: {duration}
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+WHAT TO EXPECT NEXT:
+1. We'll confirm the start date 48 hours in advance
+2. Our crew will arrive between 7:30-8:00 AM
+3. A project lead will be on-site daily
+4. We'll keep you updated on progress
+
+CONTACT DURING PROJECT:
+• Project Lead: {project_lead_name}
+• Phone: {project_lead_phone}
+• Email: {company_email}
+
+If you have any questions before we begin, don't hesitate to reach out.
+
+We're excited to get started!
+
+Best regards,
+{sender_name}
+J3 Construction
+
+---
+{company_name}
+{company_address}
+{company_phone}

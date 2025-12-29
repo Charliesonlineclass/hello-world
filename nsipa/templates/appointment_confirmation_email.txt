@@ -1,0 +1,33 @@
+Subject: Appointment Confirmation - {date}
+
+Dear {patient_name},
+
+Your appointment has been confirmed!
+
+APPOINTMENT DETAILS:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+📅 Date: {date}
+⏰ Time: {time}
+👨‍⚕️ Provider: {provider}
+📍 Location: {location}
+📋 Type: {appointment_type}
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+PLEASE REMEMBER TO:
+• Arrive 15 minutes early
+• Bring your insurance card
+• Bring a valid photo ID
+• Bring a list of current medications
+{additional_instructions}
+
+NEED TO RESCHEDULE?
+Please call us at {office_phone} at least 24 hours in advance.
+
+DIRECTIONS:
+{directions}
+
+We look forward to seeing you!
+
+Best regards,
+{practice_name}
+{office_phone}

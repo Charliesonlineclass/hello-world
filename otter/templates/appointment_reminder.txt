@@ -1,0 +1,17 @@
+Hi {patient_name}!
+
+This is a friendly reminder of your upcoming appointment:
+
+📅 Date: {appointment_date}
+⏰ Time: {appointment_time}
+👨‍⚕️ Provider: {provider_name}
+📍 Location: {location}
+
+Please arrive 15 minutes early to complete any necessary paperwork.
+
+If you need to reschedule, please call us at {office_phone} as soon as possible.
+
+Reply CONFIRM to confirm your appointment.
+
+Thank you!
+{practice_name}

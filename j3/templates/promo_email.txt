@@ -1,0 +1,38 @@
+Subject: Special Offer from J3 Construction!
+
+Hi {name},
+
+Hope this message finds you well!
+
+We wanted to reach out with an exclusive offer for our valued customers:
+
+════════════════════════════════════════
+🏠  SPECIAL PROMOTION  🏠
+════════════════════════════════════════
+
+{promo_details}
+
+This offer is available for a limited time only!
+
+Why Choose J3 Construction?
+✓ Quality craftsmanship
+✓ Competitive pricing
+✓ Reliable, on-time service
+✓ 1-year warranty on all work
+✓ Licensed and insured
+
+Ready to get started? Here's how:
+1. Reply to this email
+2. Call us at {company_phone}
+3. Visit our website
+
+We look forward to helping with your next project!
+
+Best regards,
+The J3 Construction Team
+
+---
+{company_name}
+{company_phone} | {company_email}
+
+To unsubscribe, reply with "UNSUBSCRIBE" in the subject line.

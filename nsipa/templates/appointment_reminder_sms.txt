@@ -1,0 +1,1 @@
+Reminder: {patient_name}, you have an appointment with {provider} on {date} at {time}. Reply CONFIRM to confirm or call {office_phone} to reschedule.

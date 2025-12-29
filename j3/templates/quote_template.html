@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quote - {{quote_number}}</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            color: #333;
+        }
+        .header {
+            background-color: #2c3e50;
+            color: white;
+            padding: 30px;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .header h1 {
+            margin: 0;
+            font-size: 28px;
+        }
+        .header p {
+            margin: 5px 0 0;
+            opacity: 0.9;
+        }
+        .quote-info {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 30px;
+        }
+        .quote-info div {
+            flex: 1;
+        }
+        .quote-info h3 {
+            color: #2c3e50;
+            margin-bottom: 10px;
+            border-bottom: 2px solid #3498db;
+            padding-bottom: 5px;
+        }
+        .quote-number {
+            font-size: 18px;
+            font-weight: bold;
+            color: #3498db;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+        th {
+            background-color: #2c3e50;
+            color: white;
+            padding: 12px;
+            text-align: left;
+        }
+        td {
+            padding: 10px;
+            border-bottom: 1px solid #ddd;
+        }
+        tr:nth-child(even) {
+            background-color: #f8f9fa;
+        }
+        .totals {
+            text-align: right;
+            margin-top: 20px;
+        }
+        .totals table {
+            width: auto;
+            margin-left: auto;
+        }
+        .totals td {
+            padding: 8px 15px;
+        }
+        .total-row {
+            font-size: 18px;
+            font-weight: bold;
+            background-color: #2c3e50 !important;
+            color: white;
+        }
+        .terms {
+            background-color: #f8f9fa;
+            padding: 20px;
+            margin-top: 30px;
+            border-left: 4px solid #2c3e50;
+        }
+        .terms h3 {
+            margin-top: 0;
+            color: #2c3e50;
+        }
+        .signature {
+            margin-top: 50px;
+            display: flex;
+            justify-content: space-between;
+        }
+        .signature-line {
+            width: 45%;
+        }
+        .signature-line hr {
+            margin-bottom: 5px;
+        }
+        .footer {
+            text-align: center;
+            margin-top: 50px;
+            padding-top: 20px;
+            border-top: 1px solid #ddd;
+            color: #666;
+            font-size: 12px;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>{{company_name}}</h1>
+        <p>{{company_address}}</p>
+        <p>{{company_phone}} | {{company_email}}</p>
+    </div>
+
+    <div class="quote-info">
+        <div>
+            <h3>Quote For</h3>
+            <p><strong>{{client_name}}</strong></p>
+            <p>{{client_address}}</p>
+            <p>{{client_city}}, {{client_state}} {{client_zip}}</p>
+            <p>{{client_phone}}</p>
+            <p>{{client_email}}</p>
+        </div>
+        <div style="text-align: right;">
+            <p class="quote-number">Quote #{{quote_number}}</p>
+            <p><strong>Date:</strong> {{date}}</p>
+            <p><strong>Valid Until:</strong> {{valid_until}}</p>
+            <p><strong>Duration:</strong> {{estimated_duration}}</p>
+        </div>
+    </div>
+
+    <h3>Project: {{job_name}}</h3>
+    <p>{{job_description}}</p>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Description</th>
+                <th>Qty</th>
+                <th>Unit</th>
+                <th>Unit Price</th>
+                <th>Total</th>
+            </tr>
+        </thead>
+        <tbody>
+            {{#each line_items}}
+            <tr>
+                <td>{{this.description}}</td>
+                <td>{{this.quantity}}</td>
+                <td>{{this.unit}}</td>
+                <td>${{this.unit_price}}</td>
+                <td>${{this.total}}</td>
+            </tr>
+            {{/each}}
+        </tbody>
+    </table>
+
+    <div class="totals">
+        <table>
+            <tr>
+                <td>Subtotal:</td>
+                <td>${{subtotal}}</td>
+            </tr>
+            <tr>
+                <td>Tax ({{tax_rate}}%):</td>
+                <td>${{tax_amount}}</td>
+            </tr>
+            <tr class="total-row">
+                <td>TOTAL:</td>
+                <td>${{total}}</td>
+            </tr>
+        </table>
+    </div>
+
+    {{#if notes}}
+    <div style="margin-top: 30px;">
+        <h3>Notes</h3>
+        <p>{{notes}}</p>
+    </div>
+    {{/if}}
+
+    <div class="terms">
+        <h3>Terms and Conditions</h3>
+        <ol>
+            <li>Quote valid for 30 days from issue date</li>
+            <li>50% deposit required to begin work</li>
+            <li>Balance due upon completion</li>
+            <li>All work guaranteed for 1 year</li>
+            <li>Permits and inspections included where required</li>
+            <li>Customer responsible for clearing work area</li>
+            <li>Changes to scope may affect pricing and timeline</li>
+        </ol>
+    </div>
+
+    <div class="signature">
+        <div class="signature-line">
+            <hr>
+            <p>Customer Signature</p>
+        </div>
+        <div class="signature-line">
+            <hr>
+            <p>Date</p>
+        </div>
+    </div>
+
+    <div class="footer">
+        <p>Thank you for your business!</p>
+        <p>{{company_name}} | {{company_phone}} | {{company_email}}</p>
+    </div>
+</body>
+</html>

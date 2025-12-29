@@ -1,0 +1,29 @@
+Subject: Follow-up: {meeting_name} - {date}
+
+Dear {recipient_name},
+
+Thank you for attending {meeting_name} on {date}. Here's a summary of our discussion:
+
+SUMMARY
+-------
+{summary}
+
+KEY DECISIONS
+-------------
+{decisions}
+
+ACTION ITEMS
+------------
+{action_items}
+
+NEXT STEPS
+----------
+{next_steps}
+
+Please let me know if you have any questions or if I missed anything important.
+
+Best regards,
+{sender_name}
+
+---
+This summary was generated with SCORPION-OTTER.

@@ -1,0 +1,1 @@
+Hi {name}! This is {sender_name} from J3 Construction. Just following up on your {job_type} quote. Any questions? Ready to get started? Call or text back anytime!
