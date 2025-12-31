@@ -1,0 +1,322 @@
+{
+  "version": "1.0.0",
+  "description": "SCORPION JARVIS Automation Agenda",
+  "timezone": "America/New_York",
+  "tasks": [
+    {
+      "id": "health_check_hourly",
+      "name": "Hourly Health Check",
+      "description": "Check all SCORPION services and report status",
+      "schedule": {
+        "type": "interval",
+        "hours": 1
+      },
+      "action": {
+        "type": "health_check",
+        "params": {
+          "notify_on_failure": true,
+          "save_report": true
+        }
+      },
+      "enabled": true,
+      "priority": "high"
+    },
+    {
+      "id": "backup_daily",
+      "name": "Daily Backup",
+      "description": "Full backup of database and ChromaDB",
+      "schedule": {
+        "type": "cron",
+        "hour": 2,
+        "minute": 0
+      },
+      "action": {
+        "type": "backup",
+        "params": {
+          "include_database": true,
+          "include_chromadb": true,
+          "include_config": true,
+          "retention_days": 30
+        }
+      },
+      "enabled": true,
+      "priority": "high"
+    },
+    {
+      "id": "stats_report_daily",
+      "name": "Daily Stats Report",
+      "description": "Generate and send daily activity statistics",
+      "schedule": {
+        "type": "cron",
+        "hour": 8,
+        "minute": 0
+      },
+      "action": {
+        "type": "generate_report",
+        "params": {
+          "report_type": "daily_stats",
+          "send_email": true,
+          "save_to_file": true
+        }
+      },
+      "enabled": true,
+      "priority": "medium"
+    },
+    {
+      "id": "cleanup_weekly",
+      "name": "Weekly Cleanup",
+      "description": "Clean up old logs, temp files, and expired data",
+      "schedule": {
+        "type": "cron",
+        "day_of_week": 0,
+        "hour": 3,
+        "minute": 0
+      },
+      "action": {
+        "type": "cleanup",
+        "params": {
+          "clean_logs": true,
+          "log_retention_days": 30,
+          "clean_temp": true,
+          "clean_exports": true,
+          "export_retention_days": 7
+        }
+      },
+      "enabled": true,
+      "priority": "low"
+    },
+    {
+      "id": "optimization_weekly",
+      "name": "Weekly Optimization",
+      "description": "Optimize database and ChromaDB indexes",
+      "schedule": {
+        "type": "cron",
+        "day_of_week": 0,
+        "hour": 4,
+        "minute": 0
+      },
+      "action": {
+        "type": "optimize",
+        "params": {
+          "vacuum_database": true,
+          "reindex_chromadb": true,
+          "clear_redis_expired": true
+        }
+      },
+      "enabled": true,
+      "priority": "low"
+    },
+    {
+      "id": "lead_followup_check",
+      "name": "Lead Follow-up Check",
+      "description": "Check for leads needing follow-up",
+      "schedule": {
+        "type": "cron",
+        "hour": 9,
+        "minute": 0
+      },
+      "action": {
+        "type": "send_reminder",
+        "params": {
+          "reminder_type": "lead_followup",
+          "days_threshold": 3,
+          "notify_channel": "email"
+        }
+      },
+      "enabled": true,
+      "priority": "medium"
+    },
+    {
+      "id": "appointment_reminder",
+      "name": "Appointment Reminders",
+      "description": "Send appointment reminders for next day",
+      "schedule": {
+        "type": "cron",
+        "hour": 17,
+        "minute": 0
+      },
+      "action": {
+        "type": "send_reminder",
+        "params": {
+          "reminder_type": "appointment",
+          "advance_hours": 24,
+          "notify_channel": "sms"
+        }
+      },
+      "enabled": true,
+      "priority": "high"
+    },
+    {
+      "id": "quote_expiry_check",
+      "name": "Quote Expiry Check",
+      "description": "Check for quotes expiring soon",
+      "schedule": {
+        "type": "cron",
+        "hour": 10,
+        "minute": 0
+      },
+      "action": {
+        "type": "send_reminder",
+        "params": {
+          "reminder_type": "quote_expiry",
+          "days_threshold": 7,
+          "notify_channel": "email"
+        }
+      },
+      "enabled": true,
+      "priority": "medium"
+    },
+    {
+      "id": "ollama_model_check",
+      "name": "Ollama Model Health",
+      "description": "Verify all AI babies are responding",
+      "schedule": {
+        "type": "interval",
+        "hours": 6
+      },
+      "action": {
+        "type": "ask",
+        "params": {
+          "baby": "MARCUS",
+          "prompt": "Respond with OK if you are functioning properly.",
+          "timeout": 30
+        }
+      },
+      "enabled": true,
+      "priority": "medium"
+    },
+    {
+      "id": "chromadb_stats",
+      "name": "ChromaDB Statistics",
+      "description": "Log ChromaDB collection statistics",
+      "schedule": {
+        "type": "cron",
+        "hour": 6,
+        "minute": 0
+      },
+      "action": {
+        "type": "generate_report",
+        "params": {
+          "report_type": "chromadb_stats",
+          "save_to_file": true
+        }
+      },
+      "enabled": true,
+      "priority": "low"
+    },
+    {
+      "id": "weekly_summary",
+      "name": "Weekly Summary Report",
+      "description": "Generate comprehensive weekly business summary",
+      "schedule": {
+        "type": "cron",
+        "day_of_week": 1,
+        "hour": 8,
+        "minute": 0
+      },
+      "action": {
+        "type": "generate_report",
+        "params": {
+          "report_type": "weekly_summary",
+          "include_leads": true,
+          "include_quotes": true,
+          "include_appointments": true,
+          "include_calls": true,
+          "send_email": true
+        }
+      },
+      "enabled": true,
+      "priority": "medium"
+    },
+    {
+      "id": "stale_pipeline_check",
+      "name": "Stale Pipeline Check",
+      "description": "Identify deals stuck in pipeline",
+      "schedule": {
+        "type": "cron",
+        "hour": 11,
+        "minute": 0
+      },
+      "action": {
+        "type": "send_reminder",
+        "params": {
+          "reminder_type": "stale_pipeline",
+          "days_threshold": 14,
+          "notify_channel": "email"
+        }
+      },
+      "enabled": true,
+      "priority": "medium"
+    },
+    {
+      "id": "disk_space_check",
+      "name": "Disk Space Monitor",
+      "description": "Check disk space and alert if low",
+      "schedule": {
+        "type": "interval",
+        "hours": 4
+      },
+      "action": {
+        "type": "health_check",
+        "params": {
+          "check_type": "disk_space",
+          "warning_threshold": 80,
+          "critical_threshold": 90,
+          "notify_on_warning": true
+        }
+      },
+      "enabled": true,
+      "priority": "high"
+    },
+    {
+      "id": "sync_phone_bridge",
+      "name": "Phone Bridge Sync",
+      "description": "Sync pending data from phone bridge",
+      "schedule": {
+        "type": "interval",
+        "minutes": 30
+      },
+      "action": {
+        "type": "sync",
+        "params": {
+          "source": "phone_bridge",
+          "sync_calls": true,
+          "sync_contacts": true,
+          "sync_messages": true
+        }
+      },
+      "enabled": true,
+      "priority": "medium"
+    },
+    {
+      "id": "monthly_archive",
+      "name": "Monthly Data Archive",
+      "description": "Archive old data to cold storage",
+      "schedule": {
+        "type": "cron",
+        "day": 1,
+        "hour": 1,
+        "minute": 0
+      },
+      "action": {
+        "type": "archive",
+        "params": {
+          "archive_logs": true,
+          "archive_calls": true,
+          "archive_threshold_days": 90,
+          "compress": true
+        }
+      },
+      "enabled": true,
+      "priority": "low"
+    }
+  ],
+  "global_settings": {
+    "max_concurrent_tasks": 3,
+    "retry_on_failure": true,
+    "max_retries": 3,
+    "retry_delay_seconds": 60,
+    "log_all_executions": true,
+    "notification_on_failure": true
+  }
+}
