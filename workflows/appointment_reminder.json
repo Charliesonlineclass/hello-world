@@ -1,0 +1,271 @@
+{
+  "name": "SCORPION Appointment Reminder",
+  "description": "Send SMS reminders for appointments in the next 24 hours",
+  "version": "1.0.0",
+  "active": true,
+  "settings": {
+    "errorWorkflow": "error_handler",
+    "timezone": "America/New_York",
+    "saveExecutionProgress": true
+  },
+  "nodes": [
+    {
+      "id": "cron_trigger",
+      "name": "Hourly Trigger",
+      "type": "n8n-nodes-base.cron",
+      "position": [100, 300],
+      "parameters": {
+        "triggerTimes": {
+          "item": [
+            {
+              "mode": "everyHour"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "query_appointments",
+      "name": "Query Appointments (24h)",
+      "type": "n8n-nodes-base.httpRequest",
+      "position": [300, 300],
+      "parameters": {
+        "url": "http://localhost:8000/api/appointments/upcoming",
+        "method": "GET",
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "hours",
+              "value": "24"
+            }
+          ]
+        },
+        "options": {
+          "timeout": 10000
+        }
+      }
+    },
+    {
+      "id": "filter_unconfirmed",
+      "name": "Filter Unconfirmed",
+      "type": "n8n-nodes-base.filter",
+      "position": [500, 300],
+      "parameters": {
+        "conditions": {
+          "boolean": [
+            {
+              "value1": "={{ $json.confirmed }}",
+              "value2": false
+            },
+            {
+              "value1": "={{ $json.reminder_sent }}",
+              "value2": false
+            }
+          ]
+        },
+        "combineConditions": "and"
+      }
+    },
+    {
+      "id": "split_items",
+      "name": "Split Into Items",
+      "type": "n8n-nodes-base.splitInBatches",
+      "position": [700, 300],
+      "parameters": {
+        "batchSize": 1
+      }
+    },
+    {
+      "id": "format_message",
+      "name": "Format SMS Message",
+      "type": "n8n-nodes-base.function",
+      "position": [900, 300],
+      "parameters": {
+        "functionCode": "const appt = items[0].json;\n\nconst appointmentDate = new Date(appt.scheduled_time);\nconst formattedDate = appointmentDate.toLocaleDateString('en-US', {\n  weekday: 'long',\n  month: 'long',\n  day: 'numeric'\n});\nconst formattedTime = appointmentDate.toLocaleTimeString('en-US', {\n  hour: 'numeric',\n  minute: '2-digit'\n});\n\nconst clientName = appt.client_name || 'Valued Customer';\nconst businessName = appt.business_name || 'our office';\nconst address = appt.address || '';\n\nlet message = `Hi ${clientName}! Reminder: Your appointment with ${businessName} is scheduled for ${formattedDate} at ${formattedTime}.`;\n\nif (address) {\n  message += ` Location: ${address}.`;\n}\n\nmessage += ' Reply CONFIRM to confirm or call us to reschedule.';\n\nreturn [{\n  json: {\n    ...appt,\n    sms_message: message,\n    to_phone: appt.client_phone,\n    formatted_time: `${formattedDate} at ${formattedTime}`\n  }\n}];"
+      }
+    },
+    {
+      "id": "send_sms",
+      "name": "Send SMS Reminder",
+      "type": "n8n-nodes-base.httpRequest",
+      "position": [1100, 300],
+      "parameters": {
+        "url": "http://localhost:8000/api/sms/send",
+        "method": "POST",
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "to",
+              "value": "={{ $json.to_phone }}"
+            },
+            {
+              "name": "message",
+              "value": "={{ $json.sms_message }}"
+            },
+            {
+              "name": "appointment_id",
+              "value": "={{ $json.id }}"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "mark_reminder_sent",
+      "name": "Mark Reminder Sent",
+      "type": "n8n-nodes-base.httpRequest",
+      "position": [1300, 300],
+      "parameters": {
+        "url": "http://localhost:8000/api/appointments/{{ $json.id }}/reminder_sent",
+        "method": "POST",
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "sent_at",
+              "value": "={{ new Date().toISOString() }}"
+            },
+            {
+              "name": "channel",
+              "value": "sms"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "log_reminder",
+      "name": "Log Sent Reminder",
+      "type": "n8n-nodes-base.httpRequest",
+      "position": [1500, 300],
+      "parameters": {
+        "url": "http://localhost:8000/api/memory/store",
+        "method": "POST",
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "collection",
+              "value": "reminders"
+            },
+            {
+              "name": "document",
+              "value": "={{ JSON.stringify({ appointment_id: $json.id, client: $json.client_name, time: $json.formatted_time, sent_at: new Date().toISOString() }) }}"
+            },
+            {
+              "name": "metadata",
+              "value": "={{ JSON.stringify({ workflow: 'appointment_reminder', type: 'sms' }) }}"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "count_sent",
+      "name": "Count Reminders Sent",
+      "type": "n8n-nodes-base.function",
+      "position": [1700, 300],
+      "parameters": {
+        "functionCode": "const count = items.length;\n\nconsole.log(`Sent ${count} appointment reminders`);\n\nreturn [{\n  json: {\n    reminders_sent: count,\n    timestamp: new Date().toISOString()\n  }\n}];"
+      }
+    }
+  ],
+  "connections": {
+    "cron_trigger": {
+      "main": [
+        [
+          {
+            "node": "query_appointments",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "query_appointments": {
+      "main": [
+        [
+          {
+            "node": "filter_unconfirmed",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "filter_unconfirmed": {
+      "main": [
+        [
+          {
+            "node": "split_items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "split_items": {
+      "main": [
+        [
+          {
+            "node": "format_message",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "count_sent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "format_message": {
+      "main": [
+        [
+          {
+            "node": "send_sms",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "send_sms": {
+      "main": [
+        [
+          {
+            "node": "mark_reminder_sent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "mark_reminder_sent": {
+      "main": [
+        [
+          {
+            "node": "log_reminder",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "log_reminder": {
+      "main": [
+        [
+          {
+            "node": "split_items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  }
+}

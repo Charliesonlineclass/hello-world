@@ -1,0 +1,371 @@
+{
+  "name": "SCORPION Lead Intake",
+  "description": "Process incoming leads through validation, scoring, routing, and logging",
+  "version": "1.0.0",
+  "active": true,
+  "settings": {
+    "errorWorkflow": "error_handler",
+    "timezone": "America/New_York",
+    "saveExecutionProgress": true
+  },
+  "nodes": [
+    {
+      "id": "webhook_trigger",
+      "name": "Webhook Trigger",
+      "type": "n8n-nodes-base.webhook",
+      "position": [100, 300],
+      "parameters": {
+        "path": "lead-intake",
+        "httpMethod": "POST",
+        "responseMode": "onReceived",
+        "responseData": "allEntries",
+        "options": {
+          "rawBody": false
+        }
+      },
+      "webhookId": "scorpion-lead-intake"
+    },
+    {
+      "id": "validate_lead",
+      "name": "Validate Lead Data",
+      "type": "n8n-nodes-base.function",
+      "position": [300, 300],
+      "parameters": {
+        "functionCode": "const lead = items[0].json;\n\n// Required fields validation\nconst required = ['name', 'email', 'source'];\nconst missing = required.filter(f => !lead[f]);\n\nif (missing.length > 0) {\n  throw new Error(`Missing required fields: ${missing.join(', ')}`);\n}\n\n// Email validation\nconst emailRegex = /^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$/;\nif (!emailRegex.test(lead.email)) {\n  throw new Error('Invalid email format');\n}\n\n// Phone normalization\nif (lead.phone) {\n  lead.phone = lead.phone.replace(/\\D/g, '');\n  if (lead.phone.length === 10) {\n    lead.phone = '1' + lead.phone;\n  }\n}\n\n// Add metadata\nlead.validated_at = new Date().toISOString();\nlead.validation_status = 'passed';\n\nreturn [{ json: lead }];"
+      }
+    },
+    {
+      "id": "score_lead_marcus",
+      "name": "Score Lead (MARCUS)",
+      "type": "n8n-nodes-base.httpRequest",
+      "position": [500, 300],
+      "parameters": {
+        "url": "http://localhost:8000/api/babies/marcus/query",
+        "method": "POST",
+        "authentication": "none",
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "query",
+              "value": "Score this lead for sales potential: {{ $json.name }}, source: {{ $json.source }}, industry: {{ $json.industry || 'unknown' }}"
+            },
+            {
+              "name": "context",
+              "value": "{{ JSON.stringify($json) }}"
+            }
+          ]
+        },
+        "options": {
+          "timeout": 30000
+        }
+      }
+    },
+    {
+      "id": "determine_routing",
+      "name": "Determine Routing",
+      "type": "n8n-nodes-base.switch",
+      "position": [700, 300],
+      "parameters": {
+        "dataType": "string",
+        "value1": "={{ $json.industry }}",
+        "rules": {
+          "rules": [
+            {
+              "value2": "call_center",
+              "output": 0
+            },
+            {
+              "value2": "construction",
+              "output": 1
+            },
+            {
+              "value2": "banking",
+              "output": 2
+            },
+            {
+              "value2": "real_estate",
+              "output": 3
+            }
+          ]
+        },
+        "fallbackOutput": 4
+      }
+    },
+    {
+      "id": "route_joe",
+      "name": "Route to Joe (IPC)",
+      "type": "n8n-nodes-base.httpRequest",
+      "position": [900, 100],
+      "parameters": {
+        "url": "http://localhost:8000/api/legs/joe/process",
+        "method": "POST",
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "lead",
+              "value": "={{ JSON.stringify($json) }}"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "route_jonathan",
+      "name": "Route to Jonathan (J3)",
+      "type": "n8n-nodes-base.httpRequest",
+      "position": [900, 250],
+      "parameters": {
+        "url": "http://localhost:8000/api/legs/jonathan/process",
+        "method": "POST",
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "lead",
+              "value": "={{ JSON.stringify($json) }}"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "route_antonio",
+      "name": "Route to Antonio (Banking)",
+      "type": "n8n-nodes-base.httpRequest",
+      "position": [900, 400],
+      "parameters": {
+        "url": "http://localhost:8000/api/legs/antonio/process",
+        "method": "POST",
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "lead",
+              "value": "={{ JSON.stringify($json) }}"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "route_will",
+      "name": "Route to Will (Real Estate)",
+      "type": "n8n-nodes-base.httpRequest",
+      "position": [900, 550],
+      "parameters": {
+        "url": "http://localhost:8000/api/legs/will/process",
+        "method": "POST",
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "lead",
+              "value": "={{ JSON.stringify($json) }}"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "route_general",
+      "name": "Route to General Queue",
+      "type": "n8n-nodes-base.httpRequest",
+      "position": [900, 700],
+      "parameters": {
+        "url": "http://localhost:8000/api/leads/general",
+        "method": "POST",
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "lead",
+              "value": "={{ JSON.stringify($json) }}"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "send_notification",
+      "name": "Send Notification",
+      "type": "n8n-nodes-base.emailSend",
+      "position": [1100, 300],
+      "parameters": {
+        "fromEmail": "scorpion@system.local",
+        "toEmail": "commander@scorpion.local",
+        "subject": "New Lead Processed: {{ $json.name }}",
+        "text": "A new lead has been processed and routed.\n\nName: {{ $json.name }}\nEmail: {{ $json.email }}\nSource: {{ $json.source }}\nIndustry: {{ $json.industry }}\nScore: {{ $json.lead_score }}\n\nRouted to: {{ $json.routed_to }}",
+        "options": {}
+      }
+    },
+    {
+      "id": "log_to_chromadb",
+      "name": "Log to ChromaDB",
+      "type": "n8n-nodes-base.httpRequest",
+      "position": [1300, 300],
+      "parameters": {
+        "url": "http://localhost:8000/api/memory/store",
+        "method": "POST",
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "collection",
+              "value": "leads"
+            },
+            {
+              "name": "document",
+              "value": "={{ JSON.stringify($json) }}"
+            },
+            {
+              "name": "metadata",
+              "value": "={{ JSON.stringify({ processed_at: new Date().toISOString(), workflow: 'lead_intake' }) }}"
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "connections": {
+    "webhook_trigger": {
+      "main": [
+        [
+          {
+            "node": "validate_lead",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "validate_lead": {
+      "main": [
+        [
+          {
+            "node": "score_lead_marcus",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "score_lead_marcus": {
+      "main": [
+        [
+          {
+            "node": "determine_routing",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "determine_routing": {
+      "main": [
+        [
+          {
+            "node": "route_joe",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "route_jonathan",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "route_antonio",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "route_will",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "route_general",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "route_joe": {
+      "main": [
+        [
+          {
+            "node": "send_notification",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "route_jonathan": {
+      "main": [
+        [
+          {
+            "node": "send_notification",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "route_antonio": {
+      "main": [
+        [
+          {
+            "node": "send_notification",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "route_will": {
+      "main": [
+        [
+          {
+            "node": "send_notification",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "route_general": {
+      "main": [
+        [
+          {
+            "node": "send_notification",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "send_notification": {
+      "main": [
+        [
+          {
+            "node": "log_to_chromadb",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  }
+}

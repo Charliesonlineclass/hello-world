@@ -1,0 +1,281 @@
+{
+  "name": "SCORPION Daily Digest",
+  "description": "Generate and send daily performance digest at 6pm",
+  "version": "1.0.0",
+  "active": true,
+  "settings": {
+    "errorWorkflow": "error_handler",
+    "timezone": "America/New_York",
+    "saveExecutionProgress": true
+  },
+  "nodes": [
+    {
+      "id": "cron_trigger",
+      "name": "Daily 6PM Trigger",
+      "type": "n8n-nodes-base.cron",
+      "position": [100, 300],
+      "parameters": {
+        "triggerTimes": {
+          "item": [
+            {
+              "hour": 18,
+              "minute": 0
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "gather_joe_stats",
+      "name": "Gather Joe Stats",
+      "type": "n8n-nodes-base.httpRequest",
+      "position": [300, 150],
+      "parameters": {
+        "url": "http://localhost:8000/api/legs/joe/daily_report",
+        "method": "GET",
+        "options": {
+          "timeout": 10000
+        }
+      }
+    },
+    {
+      "id": "gather_jonathan_stats",
+      "name": "Gather Jonathan Stats",
+      "type": "n8n-nodes-base.httpRequest",
+      "position": [300, 300],
+      "parameters": {
+        "url": "http://localhost:8000/api/legs/jonathan/daily_report",
+        "method": "GET",
+        "options": {
+          "timeout": 10000
+        }
+      }
+    },
+    {
+      "id": "gather_antonio_stats",
+      "name": "Gather Antonio Stats",
+      "type": "n8n-nodes-base.httpRequest",
+      "position": [300, 450],
+      "parameters": {
+        "url": "http://localhost:8000/api/legs/antonio/daily_report",
+        "method": "GET",
+        "options": {
+          "timeout": 10000
+        }
+      }
+    },
+    {
+      "id": "gather_will_stats",
+      "name": "Gather Will Stats",
+      "type": "n8n-nodes-base.httpRequest",
+      "position": [300, 600],
+      "parameters": {
+        "url": "http://localhost:8000/api/legs/will/daily_report",
+        "method": "GET",
+        "options": {
+          "timeout": 10000
+        }
+      }
+    },
+    {
+      "id": "merge_stats",
+      "name": "Merge All Stats",
+      "type": "n8n-nodes-base.merge",
+      "position": [500, 300],
+      "parameters": {
+        "mode": "multiplex"
+      }
+    },
+    {
+      "id": "generate_summary",
+      "name": "Generate Summary (MARCUS)",
+      "type": "n8n-nodes-base.httpRequest",
+      "position": [700, 300],
+      "parameters": {
+        "url": "http://localhost:8000/api/babies/marcus/query",
+        "method": "POST",
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "query",
+              "value": "Generate a concise daily performance summary for the Commander. Highlight wins, concerns, and recommendations."
+            },
+            {
+              "name": "context",
+              "value": "={{ JSON.stringify($json) }}"
+            }
+          ]
+        },
+        "options": {
+          "timeout": 60000
+        }
+      }
+    },
+    {
+      "id": "format_digest",
+      "name": "Format Digest Email",
+      "type": "n8n-nodes-base.function",
+      "position": [900, 300],
+      "parameters": {
+        "functionCode": "const stats = items[0].json;\nconst summary = stats.summary || 'Daily summary not available.';\n\nconst today = new Date().toLocaleDateString('en-US', {\n  weekday: 'long',\n  year: 'numeric',\n  month: 'long',\n  day: 'numeric'\n});\n\nconst digest = {\n  subject: `SCORPION Daily Digest - ${today}`,\n  html: `\n    <html>\n    <head>\n      <style>\n        body { font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; }\n        .header { background: #1a1a2e; color: white; padding: 20px; text-align: center; }\n        .section { padding: 15px; border-bottom: 1px solid #eee; }\n        .metric { display: inline-block; width: 45%; margin: 5px; padding: 10px; background: #f5f5f5; border-radius: 5px; }\n        .metric-value { font-size: 24px; font-weight: bold; color: #1a1a2e; }\n        .metric-label { font-size: 12px; color: #666; }\n        .summary { background: #f0f8ff; padding: 15px; border-left: 4px solid #1a1a2e; margin: 15px 0; }\n      </style>\n    </head>\n    <body>\n      <div class=\"header\">\n        <h1>SCORPION Daily Digest</h1>\n        <p>${today}</p>\n      </div>\n      \n      <div class=\"section\">\n        <h2>AI Summary</h2>\n        <div class=\"summary\">${summary}</div>\n      </div>\n      \n      <div class=\"section\">\n        <h2>Client Performance</h2>\n        <div class=\"metric\">\n          <div class=\"metric-value\">${stats.total_leads || 0}</div>\n          <div class=\"metric-label\">Total Leads</div>\n        </div>\n        <div class=\"metric\">\n          <div class=\"metric-value\">${stats.conversions || 0}</div>\n          <div class=\"metric-label\">Conversions</div>\n        </div>\n        <div class=\"metric\">\n          <div class=\"metric-value\">${stats.calls_made || 0}</div>\n          <div class=\"metric-label\">Calls Made</div>\n        </div>\n        <div class=\"metric\">\n          <div class=\"metric-value\">$${(stats.revenue || 0).toLocaleString()}</div>\n          <div class=\"metric-label\">Revenue</div>\n        </div>\n      </div>\n      \n      <div class=\"section\">\n        <h2>System Health</h2>\n        <p>All systems operational</p>\n      </div>\n      \n      <div style=\"text-align: center; padding: 20px; color: #666;\">\n        <p>Generated by SCORPION v1.0.0</p>\n      </div>\n    </body>\n    </html>\n  `\n};\n\nreturn [{ json: digest }];"
+      }
+    },
+    {
+      "id": "send_digest_email",
+      "name": "Send Digest to Commander",
+      "type": "n8n-nodes-base.emailSend",
+      "position": [1100, 300],
+      "parameters": {
+        "fromEmail": "scorpion@system.local",
+        "toEmail": "commander@scorpion.local",
+        "subject": "={{ $json.subject }}",
+        "html": "={{ $json.html }}",
+        "options": {}
+      }
+    },
+    {
+      "id": "store_in_chromadb",
+      "name": "Store Report in ChromaDB",
+      "type": "n8n-nodes-base.httpRequest",
+      "position": [1300, 300],
+      "parameters": {
+        "url": "http://localhost:8000/api/memory/store",
+        "method": "POST",
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "collection",
+              "value": "daily_reports"
+            },
+            {
+              "name": "document",
+              "value": "={{ JSON.stringify($json) }}"
+            },
+            {
+              "name": "metadata",
+              "value": "={{ JSON.stringify({ date: new Date().toISOString().split('T')[0], workflow: 'daily_digest' }) }}"
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "connections": {
+    "cron_trigger": {
+      "main": [
+        [
+          {
+            "node": "gather_joe_stats",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "gather_jonathan_stats",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "gather_antonio_stats",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "gather_will_stats",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "gather_joe_stats": {
+      "main": [
+        [
+          {
+            "node": "merge_stats",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "gather_jonathan_stats": {
+      "main": [
+        [
+          {
+            "node": "merge_stats",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "gather_antonio_stats": {
+      "main": [
+        [
+          {
+            "node": "merge_stats",
+            "type": "main",
+            "index": 2
+          }
+        ]
+      ]
+    },
+    "gather_will_stats": {
+      "main": [
+        [
+          {
+            "node": "merge_stats",
+            "type": "main",
+            "index": 3
+          }
+        ]
+      ]
+    },
+    "merge_stats": {
+      "main": [
+        [
+          {
+            "node": "generate_summary",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "generate_summary": {
+      "main": [
+        [
+          {
+            "node": "format_digest",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "format_digest": {
+      "main": [
+        [
+          {
+            "node": "send_digest_email",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "send_digest_email": {
+      "main": [
+        [
+          {
+            "node": "store_in_chromadb",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  }
+}
