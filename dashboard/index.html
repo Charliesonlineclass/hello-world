@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SCORPION KING - Command Center</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Roboto:wght@300;400;500&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="logo">
+            <span class="logo-icon">🦂</span>
+            <h1>SCORPION KING</h1>
+            <span class="version">v1.0.0</span>
+        </div>
+        <div class="header-status">
+            <div class="status-indicator" id="system-status">
+                <span class="status-dot"></span>
+                <span class="status-text">Connecting...</span>
+            </div>
+            <div class="current-time" id="current-time"></div>
+        </div>
+    </header>
+
+    <div class="container">
+        <!-- Sidebar Navigation -->
+        <nav class="sidebar">
+            <ul class="nav-menu">
+                <li class="nav-item active" data-section="dashboard">
+                    <span class="nav-icon">📊</span>
+                    <span class="nav-text">Dashboard</span>
+                </li>
+                <li class="nav-item" data-section="babies">
+                    <span class="nav-icon">🤖</span>
+                    <span class="nav-text">AI Babies</span>
+                </li>
+                <li class="nav-item" data-section="leads">
+                    <span class="nav-icon">👥</span>
+                    <span class="nav-text">Leads</span>
+                </li>
+                <li class="nav-item" data-section="calls">
+                    <span class="nav-icon">📞</span>
+                    <span class="nav-text">Calls</span>
+                </li>
+                <li class="nav-item" data-section="quotes">
+                    <span class="nav-icon">📝</span>
+                    <span class="nav-text">Quotes</span>
+                </li>
+                <li class="nav-item" data-section="settings">
+                    <span class="nav-icon">⚙️</span>
+                    <span class="nav-text">Settings</span>
+                </li>
+            </ul>
+            <div class="sidebar-footer">
+                <button class="btn btn-danger" id="shutdown-btn">
+                    <span>🔴</span> Shutdown
+                </button>
+            </div>
+        </nav>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Stats Cards -->
+            <section class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-icon">👥</div>
+                    <div class="stat-info">
+                        <span class="stat-value" id="leads-today">0</span>
+                        <span class="stat-label">Leads Today</span>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">📞</div>
+                    <div class="stat-info">
+                        <span class="stat-value" id="calls-today">0</span>
+                        <span class="stat-label">Calls Today</span>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">📝</div>
+                    <div class="stat-info">
+                        <span class="stat-value" id="quotes-today">0</span>
+                        <span class="stat-label">Quotes Today</span>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">📈</div>
+                    <div class="stat-info">
+                        <span class="stat-value" id="conversion-rate">0%</span>
+                        <span class="stat-label">Conversion Rate</span>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Baby Status Grid -->
+            <section class="panel babies-panel">
+                <div class="panel-header">
+                    <h2>🤖 AI Babies Status</h2>
+                    <button class="btn btn-small" id="refresh-babies">Refresh</button>
+                </div>
+                <div class="babies-grid" id="babies-grid">
+                    <div class="baby-card" data-baby="MARCUS">
+                        <div class="baby-status offline"></div>
+                        <div class="baby-name">MARCUS</div>
+                        <div class="baby-model">mistral</div>
+                        <div class="baby-role">Strategy & Analysis</div>
+                    </div>
+                    <div class="baby-card" data-baby="VULCAN">
+                        <div class="baby-status offline"></div>
+                        <div class="baby-name">VULCAN</div>
+                        <div class="baby-model">codellama</div>
+                        <div class="baby-role">Code & Technical</div>
+                    </div>
+                    <div class="baby-card" data-baby="HERMES">
+                        <div class="baby-status offline"></div>
+                        <div class="baby-name">HERMES</div>
+                        <div class="baby-model">phi</div>
+                        <div class="baby-role">Quick Responses</div>
+                    </div>
+                    <div class="baby-card" data-baby="APOLLO">
+                        <div class="baby-status offline"></div>
+                        <div class="baby-name">APOLLO</div>
+                        <div class="baby-model">llama2</div>
+                        <div class="baby-role">Creative Writing</div>
+                    </div>
+                    <div class="baby-card" data-baby="ATHENA">
+                        <div class="baby-status offline"></div>
+                        <div class="baby-name">ATHENA</div>
+                        <div class="baby-model">mistral</div>
+                        <div class="baby-role">Research & Knowledge</div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Quick Actions & Activity Feed -->
+            <div class="two-column">
+                <!-- Quick Actions -->
+                <section class="panel quick-actions-panel">
+                    <div class="panel-header">
+                        <h2>⚡ Quick Actions</h2>
+                    </div>
+                    <div class="quick-actions">
+                        <button class="action-btn" id="action-ask">
+                            <span class="action-icon">💬</span>
+                            <span class="action-text">Ask Baby</span>
+                        </button>
+                        <button class="action-btn" id="action-lead">
+                            <span class="action-icon">👤</span>
+                            <span class="action-text">New Lead</span>
+                        </button>
+                        <button class="action-btn" id="action-call">
+                            <span class="action-icon">📞</span>
+                            <span class="action-text">Log Call</span>
+                        </button>
+                        <button class="action-btn" id="action-quote">
+                            <span class="action-icon">📝</span>
+                            <span class="action-text">Generate Quote</span>
+                        </button>
+                    </div>
+                </section>
+
+                <!-- Recent Activity -->
+                <section class="panel activity-panel">
+                    <div class="panel-header">
+                        <h2>📜 Recent Activity</h2>
+                    </div>
+                    <div class="activity-feed" id="activity-feed">
+                        <div class="activity-item">
+                            <span class="activity-time">--:--</span>
+                            <span class="activity-text">Waiting for activity...</span>
+                        </div>
+                    </div>
+                </section>
+            </div>
+
+            <!-- Services Status -->
+            <section class="panel services-panel">
+                <div class="panel-header">
+                    <h2>🔧 Services</h2>
+                </div>
+                <div class="services-grid" id="services-grid">
+                    <div class="service-item" data-service="chromadb">
+                        <span class="service-status offline"></span>
+                        <span class="service-name">ChromaDB</span>
+                        <span class="service-port">:8000</span>
+                    </div>
+                    <div class="service-item" data-service="ollama">
+                        <span class="service-status offline"></span>
+                        <span class="service-name">Ollama</span>
+                        <span class="service-port">:11434</span>
+                    </div>
+                    <div class="service-item" data-service="api">
+                        <span class="service-status offline"></span>
+                        <span class="service-name">SCORPION API</span>
+                        <span class="service-port">:8080</span>
+                    </div>
+                    <div class="service-item" data-service="postgres">
+                        <span class="service-status offline"></span>
+                        <span class="service-name">PostgreSQL</span>
+                        <span class="service-port">:5432</span>
+                    </div>
+                    <div class="service-item" data-service="redis">
+                        <span class="service-status offline"></span>
+                        <span class="service-name">Redis</span>
+                        <span class="service-port">:6379</span>
+                    </div>
+                    <div class="service-item" data-service="n8n">
+                        <span class="service-status offline"></span>
+                        <span class="service-name">n8n</span>
+                        <span class="service-port">:5678</span>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- Modal: Ask Baby -->
+    <div class="modal" id="modal-ask">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>💬 Ask an AI Baby</h3>
+                <button class="modal-close">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label>Select Baby:</label>
+                    <select id="ask-baby-select">
+                        <option value="MARCUS">MARCUS - Strategy</option>
+                        <option value="VULCAN">VULCAN - Technical</option>
+                        <option value="HERMES">HERMES - Quick</option>
+                        <option value="APOLLO">APOLLO - Creative</option>
+                        <option value="ATHENA">ATHENA - Research</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Your Question:</label>
+                    <textarea id="ask-prompt" rows="4" placeholder="What would you like to ask?"></textarea>
+                </div>
+                <div class="response-area" id="ask-response">
+                    <div class="response-placeholder">Response will appear here...</div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary modal-cancel">Cancel</button>
+                <button class="btn btn-primary" id="ask-submit">Ask Baby</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal: New Lead -->
+    <div class="modal" id="modal-lead">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>👤 Add New Lead</h3>
+                <button class="modal-close">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label>Name:</label>
+                    <input type="text" id="lead-name" placeholder="Full name">
+                </div>
+                <div class="form-group">
+                    <label>Email:</label>
+                    <input type="email" id="lead-email" placeholder="email@example.com">
+                </div>
+                <div class="form-group">
+                    <label>Phone:</label>
+                    <input type="tel" id="lead-phone" placeholder="555-0100">
+                </div>
+                <div class="form-group">
+                    <label>Source:</label>
+                    <select id="lead-source">
+                        <option value="website">Website</option>
+                        <option value="referral">Referral</option>
+                        <option value="cold_call">Cold Call</option>
+                        <option value="social">Social Media</option>
+                        <option value="other">Other</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Notes:</label>
+                    <textarea id="lead-notes" rows="3" placeholder="Additional notes..."></textarea>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary modal-cancel">Cancel</button>
+                <button class="btn btn-primary" id="lead-submit">Add Lead</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal: Log Call -->
+    <div class="modal" id="modal-call">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>📞 Log Call</h3>
+                <button class="modal-close">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label>Caller Name:</label>
+                    <input type="text" id="call-name" placeholder="Caller name">
+                </div>
+                <div class="form-group">
+                    <label>Phone:</label>
+                    <input type="tel" id="call-phone" placeholder="555-0100">
+                </div>
+                <div class="form-group">
+                    <label>Duration (minutes):</label>
+                    <input type="number" id="call-duration" value="5" min="1">
+                </div>
+                <div class="form-group">
+                    <label>Summary:</label>
+                    <textarea id="call-summary" rows="4" placeholder="What was discussed?"></textarea>
+                </div>
+                <div class="form-group">
+                    <label>Outcome:</label>
+                    <select id="call-outcome">
+                        <option value="follow_up">Follow Up Required</option>
+                        <option value="scheduled">Appointment Scheduled</option>
+                        <option value="quote_requested">Quote Requested</option>
+                        <option value="not_interested">Not Interested</option>
+                        <option value="completed">Completed</option>
+                    </select>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary modal-cancel">Cancel</button>
+                <button class="btn btn-primary" id="call-submit">Log Call</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal: Generate Quote -->
+    <div class="modal" id="modal-quote">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>📝 Generate Quote</h3>
+                <button class="modal-close">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label>Client Name:</label>
+                    <input type="text" id="quote-client" placeholder="Client name">
+                </div>
+                <div class="form-group">
+                    <label>Project Type:</label>
+                    <select id="quote-type">
+                        <option value="kitchen">Kitchen Remodel</option>
+                        <option value="bathroom">Bathroom Renovation</option>
+                        <option value="addition">Home Addition</option>
+                        <option value="deck">Deck/Patio</option>
+                        <option value="roofing">Roofing</option>
+                        <option value="custom">Custom Project</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Project Details:</label>
+                    <textarea id="quote-details" rows="4" placeholder="Describe the project..."></textarea>
+                </div>
+                <div class="form-group">
+                    <label>Urgency:</label>
+                    <select id="quote-urgency">
+                        <option value="normal">Normal</option>
+                        <option value="rush">Rush (+20%)</option>
+                        <option value="emergency">Emergency (+50%)</option>
+                    </select>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary modal-cancel">Cancel</button>
+                <button class="btn btn-primary" id="quote-submit">Generate Quote</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Notifications -->
+    <div class="toast-container" id="toast-container"></div>
+
+    <script src="app.js"></script>
+</body>
+</html>
