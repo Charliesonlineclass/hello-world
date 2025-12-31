@@ -1,0 +1,173 @@
+# =============================================================================
+# SCORPION BRAIN - Docker Image
+# =============================================================================
+# Main container for the SCORPION ecosystem Python application.
+#
+# BUILD:
+#   docker build -t scorpion-brain -f Dockerfile.brain .
+#
+# RUN:
+#   docker run -p 8080:8080 -p 9876:9876 scorpion-brain
+#
+# =============================================================================
+
+FROM python:3.11-slim-bookworm
+
+# Labels
+LABEL maintainer="SCORPION Commander"
+LABEL version="1.0.0"
+LABEL description="SCORPION Brain - AI Automation Platform"
+LABEL com.scorpion.component="BODY"
+
+# Environment variables
+ENV PYTHONUNBUFFERED=1 \
+    PYTHONDONTWRITEBYTECODE=1 \
+    PYTHONPATH=/app \
+    PIP_NO_CACHE_DIR=1 \
+    PIP_DISABLE_PIP_VERSION_CHECK=1 \
+    DEBIAN_FRONTEND=noninteractive
+
+# System dependencies
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    # Build essentials
+    build-essential \
+    gcc \
+    g++ \
+    # System utilities
+    curl \
+    wget \
+    git \
+    # Audio processing (for Whisper)
+    ffmpeg \
+    libsndfile1 \
+    # PDF generation
+    libpango-1.0-0 \
+    libpangocairo-1.0-0 \
+    # Health checks
+    netcat-openbsd \
+    # Cleanup
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
+
+# Create app user for security
+RUN groupadd -r scorpion && useradd -r -g scorpion scorpion
+
+# Create application directories
+RUN mkdir -p /app /app/logs /app/data /app/transcripts /app/quotes \
+    && chown -R scorpion:scorpion /app
+
+# Set working directory
+WORKDIR /app
+
+# Copy requirements first for layer caching
+COPY requirements.txt /app/requirements.txt
+
+# Install Python dependencies
+RUN pip install --upgrade pip setuptools wheel && \
+    pip install \
+    # Core
+    requests \
+    python-dotenv \
+    pyyaml \
+    # API
+    fastapi \
+    uvicorn[standard] \
+    pydantic \
+    # Database
+    chromadb \
+    sqlalchemy \
+    # AI/ML
+    openai-whisper \
+    sentence-transformers \
+    # PDF generation
+    reportlab \
+    jinja2 \
+    # SMS/Email
+    twilio \
+    # CLI
+    rich \
+    click \
+    colorama \
+    # Scheduling
+    schedule \
+    apscheduler \
+    # Utilities
+    python-multipart \
+    aiofiles \
+    httpx \
+    # Monitoring
+    psutil \
+    # File watching
+    watchdog
+
+# Copy SCORPION modules
+# Core brain components
+COPY otter/ /app/otter/
+COPY bridge/ /app/bridge/
+COPY j3/ /app/j3/
+COPY nsipa/ /app/nsipa/
+
+# Business components
+COPY claw1/ /app/claw1/
+COPY claw2/ /app/claw2/
+
+# Security
+COPY tail/ /app/tail/
+
+# API
+COPY mouth/ /app/mouth/
+
+# Integration
+COPY integration/ /app/integration/
+
+# Monitoring
+COPY monitoring/ /app/monitoring/
+
+# LEG templates
+COPY legs/ /app/legs/
+
+# Scripts
+COPY scripts/ /app/scripts/
+
+# Documentation
+COPY docs/ /app/docs/
+
+# Create __init__.py files for packages
+RUN touch /app/__init__.py
+
+# Set ownership
+RUN chown -R scorpion:scorpion /app
+
+# Switch to non-root user
+USER scorpion
+
+# Expose ports
+# 8080 - MOUTH API (Dashboard)
+# 9876 - BRIDGE API (Phone access)
+# 9999 - Internal metrics
+EXPOSE 8080 9876 9999
+
+# Health check
+HEALTHCHECK --interval=30s --timeout=10s --start-period=30s --retries=3 \
+    CMD curl -f http://localhost:8080/health || exit 1
+
+# Default environment
+ENV MOUTH_PORT=8080 \
+    BRIDGE_PORT=9876 \
+    LOG_LEVEL=INFO \
+    OLLAMA_HOST=http://localhost:11434 \
+    CHROMA_HOST=localhost \
+    CHROMA_PORT=8000
+
+# Entry point script
+COPY --chown=scorpion:scorpion body/docker/entrypoint.sh /app/entrypoint.sh
+RUN chmod +x /app/entrypoint.sh
+
+# Default command - start MOUTH API
+CMD ["/app/entrypoint.sh"]
+
+# Alternative commands:
+# Start only MOUTH:     docker run scorpion-brain python -m mouth.api
+# Start only BRIDGE:    docker run scorpion-brain python -m bridge.phone_server
+# Run CLI:              docker run scorpion-brain python -m integration.cli --help
+# Health check:         docker run scorpion-brain python -m monitoring.health_check

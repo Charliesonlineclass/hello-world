@@ -1,0 +1,330 @@
+# =============================================================================
+# SCORPION KING - Docker Compose Stack
+# =============================================================================
+# Complete production infrastructure for the SCORPION ecosystem.
+#
+# ARCHITECTURE:
+#   HEAD (Brain)     - ChromaDB + Ollama models
+#   MOUTH (API)      - FastAPI dashboard + n8n workflows
+#   BODY (Core)      - scorpion-brain container
+#   SUPPORT          - PostgreSQL, Redis, Nginx
+#
+# QUICK START:
+#   docker-compose up -d
+#   docker-compose logs -f
+#
+# PORTS:
+#   8000  - ChromaDB API
+#   8080  - SCORPION Dashboard API
+#   5678  - n8n Workflow Automation
+#   11434 - Ollama API (proxied)
+#   80    - Nginx (production entry point)
+#
+# =============================================================================
+
+version: '3.8'
+
+# =============================================================================
+# NETWORKS
+# =============================================================================
+networks:
+  scorpion-net:
+    driver: bridge
+    name: scorpion-net
+    ipam:
+      config:
+        - subnet: 172.28.0.0/16
+
+# =============================================================================
+# VOLUMES
+# =============================================================================
+volumes:
+  chromadb_data:
+    driver: local
+  ollama_data:
+    driver: local
+  n8n_data:
+    driver: local
+  postgres_data:
+    driver: local
+  redis_data:
+    driver: local
+  nginx_logs:
+    driver: local
+  scorpion_logs:
+    driver: local
+
+# =============================================================================
+# SERVICES
+# =============================================================================
+services:
+
+  # ---------------------------------------------------------------------------
+  # HEAD - ChromaDB Vector Database
+  # ---------------------------------------------------------------------------
+  # The memory center of SCORPION - stores all embeddings and knowledge
+  chromadb:
+    image: chromadb/chroma:latest
+    container_name: scorpion-chromadb
+    restart: unless-stopped
+    ports:
+      - "8000:8000"
+    volumes:
+      - chromadb_data:/chroma/chroma
+      - ./chromadb_config:/chroma/config:ro
+    environment:
+      - IS_PERSISTENT=TRUE
+      - PERSIST_DIRECTORY=/chroma/chroma
+      - ANONYMIZED_TELEMETRY=FALSE
+      - CHROMA_SERVER_AUTH_CREDENTIALS_PROVIDER=chromadb.auth.token.TokenConfigServerAuthCredentialsProvider
+      - CHROMA_SERVER_AUTH_CREDENTIALS=${CHROMA_AUTH_TOKEN:-scorpion-chroma-key}
+      - CHROMA_SERVER_AUTH_PROVIDER=chromadb.auth.token.TokenAuthServerProvider
+    networks:
+      scorpion-net:
+        ipv4_address: 172.28.0.10
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/api/v1/heartbeat"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+    labels:
+      - "com.scorpion.component=HEAD"
+      - "com.scorpion.service=chromadb"
+
+  # ---------------------------------------------------------------------------
+  # HEAD - Ollama Proxy (connects to host Ollama)
+  # ---------------------------------------------------------------------------
+  # Routes AI requests to the Ollama server on the host machine
+  ollama-proxy:
+    image: nginx:alpine
+    container_name: scorpion-ollama-proxy
+    restart: unless-stopped
+    ports:
+      - "11435:11434"
+    volumes:
+      - ./nginx/ollama-proxy.conf:/etc/nginx/nginx.conf:ro
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    networks:
+      scorpion-net:
+        ipv4_address: 172.28.0.11
+    depends_on:
+      - chromadb
+    healthcheck:
+      test: ["CMD", "wget", "-q", "--spider", "http://host.docker.internal:11434/api/tags"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    labels:
+      - "com.scorpion.component=HEAD"
+      - "com.scorpion.service=ollama-proxy"
+
+  # ---------------------------------------------------------------------------
+  # BODY - SCORPION Brain Container
+  # ---------------------------------------------------------------------------
+  # Main application container with all Python modules
+  scorpion-brain:
+    build:
+      context: .
+      dockerfile: Dockerfile.brain
+    container_name: scorpion-brain
+    restart: unless-stopped
+    ports:
+      - "8080:8080"
+      - "9876:9876"
+    volumes:
+      - ../../:/app:ro
+      - scorpion_logs:/app/logs
+      - ./data:/app/data
+    environment:
+      - PYTHONUNBUFFERED=1
+      - PYTHONPATH=/app
+      - CHROMA_HOST=chromadb
+      - CHROMA_PORT=8000
+      - OLLAMA_HOST=http://ollama-proxy:11434
+      - MOUTH_PORT=8080
+      - BRIDGE_PORT=9876
+      - LOG_LEVEL=${LOG_LEVEL:-INFO}
+      - SCORPION_API_KEY=${SCORPION_API_KEY:-scorpion-key}
+    networks:
+      scorpion-net:
+        ipv4_address: 172.28.0.20
+    depends_on:
+      chromadb:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
+    labels:
+      - "com.scorpion.component=BODY"
+      - "com.scorpion.service=brain"
+
+  # ---------------------------------------------------------------------------
+  # MOUTH - n8n Workflow Automation
+  # ---------------------------------------------------------------------------
+  # Visual workflow automation for SCORPION tasks
+  n8n:
+    image: n8nio/n8n:latest
+    container_name: scorpion-n8n
+    restart: unless-stopped
+    ports:
+      - "5678:5678"
+    volumes:
+      - n8n_data:/home/node/.n8n
+      - ./n8n/workflows:/home/node/workflows:ro
+    environment:
+      - N8N_BASIC_AUTH_ACTIVE=true
+      - N8N_BASIC_AUTH_USER=${N8N_USER:-commander}
+      - N8N_BASIC_AUTH_PASSWORD=${N8N_PASSWORD:-scorpion}
+      - N8N_HOST=0.0.0.0
+      - N8N_PORT=5678
+      - N8N_PROTOCOL=http
+      - WEBHOOK_URL=http://localhost:5678/
+      - GENERIC_TIMEZONE=America/Chicago
+      - DB_TYPE=postgresdb
+      - DB_POSTGRESDB_HOST=postgres
+      - DB_POSTGRESDB_PORT=5432
+      - DB_POSTGRESDB_DATABASE=n8n
+      - DB_POSTGRESDB_USER=${POSTGRES_USER:-scorpion}
+      - DB_POSTGRESDB_PASSWORD=${POSTGRES_PASSWORD:-scorpion_db_pass}
+    networks:
+      scorpion-net:
+        ipv4_address: 172.28.0.30
+    depends_on:
+      postgres:
+        condition: service_healthy
+    labels:
+      - "com.scorpion.component=MOUTH"
+      - "com.scorpion.service=n8n"
+
+  # ---------------------------------------------------------------------------
+  # SUPPORT - PostgreSQL Database
+  # ---------------------------------------------------------------------------
+  # Backend database for n8n and other stateful services
+  postgres:
+    image: postgres:15-alpine
+    container_name: scorpion-postgres
+    restart: unless-stopped
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./postgres/init.sql:/docker-entrypoint-initdb.d/init.sql:ro
+    environment:
+      - POSTGRES_USER=${POSTGRES_USER:-scorpion}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-scorpion_db_pass}
+      - POSTGRES_DB=scorpion
+    networks:
+      scorpion-net:
+        ipv4_address: 172.28.0.40
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-scorpion}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    labels:
+      - "com.scorpion.component=SUPPORT"
+      - "com.scorpion.service=postgres"
+
+  # ---------------------------------------------------------------------------
+  # SUPPORT - Redis Cache
+  # ---------------------------------------------------------------------------
+  # Caching layer for fast data access and session management
+  redis:
+    image: redis:7-alpine
+    container_name: scorpion-redis
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+      - ./redis/redis.conf:/usr/local/etc/redis/redis.conf:ro
+    command: redis-server /usr/local/etc/redis/redis.conf
+    networks:
+      scorpion-net:
+        ipv4_address: 172.28.0.41
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    labels:
+      - "com.scorpion.component=SUPPORT"
+      - "com.scorpion.service=redis"
+
+  # ---------------------------------------------------------------------------
+  # SUPPORT - Nginx Reverse Proxy
+  # ---------------------------------------------------------------------------
+  # Production entry point with SSL termination and routing
+  nginx:
+    image: nginx:alpine
+    container_name: scorpion-nginx
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./nginx/conf.d:/etc/nginx/conf.d:ro
+      - ./nginx/ssl:/etc/nginx/ssl:ro
+      - nginx_logs:/var/log/nginx
+    networks:
+      scorpion-net:
+        ipv4_address: 172.28.0.2
+    depends_on:
+      - scorpion-brain
+      - n8n
+      - chromadb
+    healthcheck:
+      test: ["CMD", "wget", "-q", "--spider", "http://localhost/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    labels:
+      - "com.scorpion.component=SUPPORT"
+      - "com.scorpion.service=nginx"
+
+  # ---------------------------------------------------------------------------
+  # MONITORING - Health Check Service
+  # ---------------------------------------------------------------------------
+  # Monitors all SCORPION components and reports status
+  health-monitor:
+    build:
+      context: .
+      dockerfile: Dockerfile.brain
+    container_name: scorpion-health-monitor
+    restart: unless-stopped
+    command: python -m monitoring.health_check --daemon
+    volumes:
+      - ../../:/app:ro
+      - scorpion_logs:/app/logs
+    environment:
+      - PYTHONPATH=/app
+      - CHROMA_HOST=chromadb
+      - OLLAMA_HOST=http://ollama-proxy:11434
+      - BRAIN_HOST=scorpion-brain
+      - CHECK_INTERVAL=60
+    networks:
+      scorpion-net:
+        ipv4_address: 172.28.0.50
+    depends_on:
+      - scorpion-brain
+      - chromadb
+    labels:
+      - "com.scorpion.component=MONITORING"
+      - "com.scorpion.service=health-monitor"
+
+# =============================================================================
+# PROFILES FOR DIFFERENT DEPLOYMENT SCENARIOS
+# =============================================================================
+# Usage:
+#   docker-compose --profile dev up -d      # Development
+#   docker-compose --profile prod up -d     # Production
+#   docker-compose --profile full up -d     # All services
+# =============================================================================
