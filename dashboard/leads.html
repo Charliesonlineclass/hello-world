@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Leads - Pandora's Castle</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>.font-inter { font-family: 'Inter', sans-serif; }</style>
+</head>
+<body class="bg-slate-900 text-gray-100 font-inter">
+    <!-- Sidebar -->
+    <aside class="fixed left-0 top-0 h-full w-64 bg-slate-800 border-r border-slate-700 z-40">
+        <div class="p-6 border-b border-slate-700">
+            <div class="flex items-center space-x-2">
+                <span class="text-2xl">🦂</span>
+                <span class="text-xl font-bold bg-gradient-to-r from-yellow-400 to-cyan-400 bg-clip-text text-transparent">CASTLE</span>
+            </div>
+        </div>
+        <nav class="p-4 space-y-2">
+            <a href="index.html" class="flex items-center px-4 py-3 hover:bg-slate-700 rounded-xl text-gray-400 hover:text-white transition">
+                <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>
+                Dashboard
+            </a>
+            <a href="leads.html" class="flex items-center px-4 py-3 bg-slate-700 rounded-xl text-white">
+                <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+                Leads
+            </a>
+            <a href="clients.html" class="flex items-center px-4 py-3 hover:bg-slate-700 rounded-xl text-gray-400 hover:text-white transition">
+                <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5"/></svg>
+                Clients
+            </a>
+        </nav>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="ml-64 p-8">
+        <div class="flex justify-between items-center mb-8">
+            <div>
+                <h1 class="text-2xl font-bold">Leads</h1>
+                <p class="text-gray-400">Manage your lead pipeline</p>
+            </div>
+            <button onclick="showAddLeadModal()" class="px-4 py-2 bg-gradient-to-r from-yellow-500 to-yellow-600 rounded-lg font-medium hover:from-yellow-400 hover:to-yellow-500 transition">
+                + Add Lead
+            </button>
+        </div>
+
+        <!-- Filters -->
+        <div class="bg-slate-800 rounded-2xl p-6 border border-slate-700 mb-6">
+            <div class="flex flex-wrap gap-4">
+                <div class="flex-1 min-w-64">
+                    <input type="text" id="search" placeholder="Search leads..."
+                        class="w-full bg-slate-900 border border-slate-600 rounded-xl px-4 py-2 focus:outline-none focus:border-cyan-500"
+                        onkeyup="filterLeads()">
+                </div>
+                <select id="status-filter" class="bg-slate-900 border border-slate-600 rounded-xl px-4 py-2 focus:outline-none focus:border-cyan-500" onchange="filterLeads()">
+                    <option value="">All Statuses</option>
+                    <option value="new">New</option>
+                    <option value="contacted">Contacted</option>
+                    <option value="qualified">Qualified</option>
+                    <option value="proposal">Proposal</option>
+                    <option value="negotiation">Negotiation</option>
+                    <option value="won">Won</option>
+                    <option value="lost">Lost</option>
+                </select>
+                <select id="source-filter" class="bg-slate-900 border border-slate-600 rounded-xl px-4 py-2 focus:outline-none focus:border-cyan-500" onchange="filterLeads()">
+                    <option value="">All Sources</option>
+                    <option value="website">Website</option>
+                    <option value="chat">Chat</option>
+                    <option value="referral">Referral</option>
+                </select>
+            </div>
+        </div>
+
+        <!-- Leads Table -->
+        <div class="bg-slate-800 rounded-2xl border border-slate-700 overflow-hidden">
+            <table class="w-full">
+                <thead class="bg-slate-900">
+                    <tr>
+                        <th class="text-left p-4 text-gray-400 font-medium">Name</th>
+                        <th class="text-left p-4 text-gray-400 font-medium">Company</th>
+                        <th class="text-left p-4 text-gray-400 font-medium">Email</th>
+                        <th class="text-left p-4 text-gray-400 font-medium">Status</th>
+                        <th class="text-left p-4 text-gray-400 font-medium">Score</th>
+                        <th class="text-left p-4 text-gray-400 font-medium">Source</th>
+                        <th class="text-left p-4 text-gray-400 font-medium">Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="leads-table">
+                    <!-- Filled by JS -->
+                </tbody>
+            </table>
+        </div>
+    </main>
+
+    <!-- Add Lead Modal -->
+    <div id="add-lead-modal" class="fixed inset-0 bg-black/50 z-50 hidden flex items-center justify-center">
+        <div class="bg-slate-800 rounded-2xl p-8 w-full max-w-lg border border-slate-700">
+            <h2 class="text-xl font-bold mb-6">Add New Lead</h2>
+            <form id="add-lead-form" class="space-y-4">
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-sm text-gray-400 mb-1">Name *</label>
+                        <input type="text" name="name" required class="w-full bg-slate-900 border border-slate-600 rounded-xl px-4 py-2">
+                    </div>
+                    <div>
+                        <label class="block text-sm text-gray-400 mb-1">Email *</label>
+                        <input type="email" name="email" required class="w-full bg-slate-900 border border-slate-600 rounded-xl px-4 py-2">
+                    </div>
+                </div>
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-sm text-gray-400 mb-1">Phone</label>
+                        <input type="tel" name="phone" class="w-full bg-slate-900 border border-slate-600 rounded-xl px-4 py-2">
+                    </div>
+                    <div>
+                        <label class="block text-sm text-gray-400 mb-1">Company</label>
+                        <input type="text" name="company" class="w-full bg-slate-900 border border-slate-600 rounded-xl px-4 py-2">
+                    </div>
+                </div>
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-sm text-gray-400 mb-1">Service Interest</label>
+                        <select name="service_interest" class="w-full bg-slate-900 border border-slate-600 rounded-xl px-4 py-2">
+                            <option value="">Select...</option>
+                            <option value="ai-assistant">AI Virtual Assistant</option>
+                            <option value="web-dev">Website Development</option>
+                            <option value="automation">Business Automation</option>
+                            <option value="training">Training & Consulting</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-sm text-gray-400 mb-1">Tier Interest</label>
+                        <select name="tier_interest" class="w-full bg-slate-900 border border-slate-600 rounded-xl px-4 py-2">
+                            <option value="">Select...</option>
+                            <option value="starter">Starter ($100/mo)</option>
+                            <option value="pro">Pro ($200/mo)</option>
+                            <option value="empire">Empire ($500/mo)</option>
+                        </select>
+                    </div>
+                </div>
+                <div>
+                    <label class="block text-sm text-gray-400 mb-1">Notes</label>
+                    <textarea name="notes" rows="3" class="w-full bg-slate-900 border border-slate-600 rounded-xl px-4 py-2"></textarea>
+                </div>
+                <div class="flex gap-4">
+                    <button type="button" onclick="hideAddLeadModal()" class="flex-1 py-3 border border-slate-600 rounded-xl hover:bg-slate-700 transition">Cancel</button>
+                    <button type="submit" class="flex-1 py-3 bg-gradient-to-r from-yellow-500 to-yellow-600 rounded-xl font-medium">Add Lead</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="js/admin.js"></script>
+    <script>
+        const statusColors = {
+            new: 'bg-gray-500',
+            contacted: 'bg-blue-500',
+            qualified: 'bg-yellow-500',
+            proposal: 'bg-purple-500',
+            negotiation: 'bg-orange-500',
+            won: 'bg-green-500',
+            lost: 'bg-red-500'
+        };
+
+        let allLeads = [];
+
+        async function loadLeads() {
+            try {
+                const response = await fetch('/api/leads');
+                const data = await response.json();
+                allLeads = data.leads;
+                renderLeads(allLeads);
+            } catch (e) {
+                // Demo data
+                allLeads = [
+                    {id: 1, name: 'Maria Garcia', company: 'Garcia Construction', email: 'maria@example.com', status: 'qualified', score: 75, source: 'website'},
+                    {id: 2, name: 'Roberto Mendez', company: 'Mendez Law', email: 'roberto@example.com', status: 'contacted', score: 60, source: 'referral'},
+                    {id: 3, name: 'Ana Torres', company: 'Torres Marketing', email: 'ana@example.com', status: 'new', score: 40, source: 'chat'},
+                    {id: 4, name: 'Carlos Reyes', company: 'Reyes Auto', email: 'carlos@example.com', status: 'proposal', score: 85, source: 'website'}
+                ];
+                renderLeads(allLeads);
+            }
+        }
+
+        function renderLeads(leads) {
+            const tbody = document.getElementById('leads-table');
+            tbody.innerHTML = leads.map(lead => `
+                <tr class="border-t border-slate-700 hover:bg-slate-700/50 transition">
+                    <td class="p-4 font-medium">${lead.name}</td>
+                    <td class="p-4 text-gray-400">${lead.company || '-'}</td>
+                    <td class="p-4 text-gray-400">${lead.email}</td>
+                    <td class="p-4">
+                        <span class="px-2 py-1 ${statusColors[lead.status] || 'bg-gray-500'} rounded-full text-xs capitalize">${lead.status}</span>
+                    </td>
+                    <td class="p-4">
+                        <div class="flex items-center">
+                            <div class="w-16 h-2 bg-slate-700 rounded-full overflow-hidden mr-2">
+                                <div class="h-full ${lead.score >= 70 ? 'bg-green-500' : lead.score >= 40 ? 'bg-yellow-500' : 'bg-red-500'}" style="width: ${lead.score}%"></div>
+                            </div>
+                            <span class="text-sm">${lead.score}</span>
+                        </div>
+                    </td>
+                    <td class="p-4 text-gray-400 capitalize">${lead.source || '-'}</td>
+                    <td class="p-4">
+                        <div class="flex space-x-2">
+                            <button onclick="changeStatus(${lead.id})" class="p-2 hover:bg-slate-600 rounded-lg transition" title="Change Status">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"/></svg>
+                            </button>
+                            <button onclick="convertLead(${lead.id})" class="p-2 hover:bg-slate-600 rounded-lg transition text-green-400" title="Convert to Client">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                            </button>
+                        </div>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        function filterLeads() {
+            const search = document.getElementById('search').value.toLowerCase();
+            const status = document.getElementById('status-filter').value;
+            const source = document.getElementById('source-filter').value;
+
+            let filtered = allLeads;
+            if (search) {
+                filtered = filtered.filter(l =>
+                    l.name.toLowerCase().includes(search) ||
+                    l.email.toLowerCase().includes(search) ||
+                    (l.company && l.company.toLowerCase().includes(search))
+                );
+            }
+            if (status) filtered = filtered.filter(l => l.status === status);
+            if (source) filtered = filtered.filter(l => l.source === source);
+
+            renderLeads(filtered);
+        }
+
+        function showAddLeadModal() {
+            document.getElementById('add-lead-modal').classList.remove('hidden');
+        }
+
+        function hideAddLeadModal() {
+            document.getElementById('add-lead-modal').classList.add('hidden');
+        }
+
+        function changeStatus(id) {
+            const statuses = ['new', 'contacted', 'qualified', 'proposal', 'negotiation', 'won', 'lost'];
+            const lead = allLeads.find(l => l.id === id);
+            const current = statuses.indexOf(lead.status);
+            const next = statuses[(current + 1) % statuses.length];
+            lead.status = next;
+            renderLeads(allLeads);
+        }
+
+        function convertLead(id) {
+            if (confirm('Convert this lead to a client?')) {
+                alert('Lead converted to client!');
+            }
+        }
+
+        document.getElementById('add-lead-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const formData = new FormData(e.target);
+            const data = Object.fromEntries(formData);
+
+            try {
+                await fetch('/api/leads/website', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify(data)
+                });
+            } catch (e) {}
+
+            hideAddLeadModal();
+            loadLeads();
+        });
+
+        loadLeads();
+    </script>
+</body>
+</html>

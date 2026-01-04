@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ometeolt - AI-Powered Business Automation | SCORPION Systems</title>
+    <meta name="description" content="Transform your business with AI automation. Pay to USE and OWN at the same time. Virtual assistants, web development, and business automation solutions.">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="css/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body class="bg-slate-900 text-gray-100 font-inter">
+    <!-- Navigation -->
+    <nav class="fixed w-full z-50 bg-slate-900/95 backdrop-blur-sm border-b border-slate-800">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <div class="flex items-center space-x-2">
+                    <span class="text-2xl">🦂</span>
+                    <span class="text-xl font-bold bg-gradient-to-r from-yellow-400 to-cyan-400 bg-clip-text text-transparent">OMETEOLT</span>
+                </div>
+                <div class="hidden md:flex items-center space-x-8">
+                    <a href="index.html" class="text-yellow-400 font-medium">Home</a>
+                    <a href="services.html" class="hover:text-cyan-400 transition">Services</a>
+                    <a href="pricing.html" class="hover:text-cyan-400 transition">Pricing</a>
+                    <a href="portfolio.html" class="hover:text-cyan-400 transition">Portfolio</a>
+                    <a href="contact.html" class="hover:text-cyan-400 transition">Contact</a>
+                    <a href="dashboard/index.html" class="px-4 py-2 bg-gradient-to-r from-yellow-500 to-yellow-600 rounded-lg font-medium hover:from-yellow-400 hover:to-yellow-500 transition">Admin</a>
+                </div>
+                <button id="mobile-menu-btn" class="md:hidden text-gray-300 hover:text-white">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
+                    </svg>
+                </button>
+            </div>
+        </div>
+        <!-- Mobile Menu -->
+        <div id="mobile-menu" class="hidden md:hidden bg-slate-800 border-t border-slate-700">
+            <div class="px-4 py-4 space-y-3">
+                <a href="index.html" class="block text-yellow-400 font-medium">Home</a>
+                <a href="services.html" class="block hover:text-cyan-400 transition">Services</a>
+                <a href="pricing.html" class="block hover:text-cyan-400 transition">Pricing</a>
+                <a href="portfolio.html" class="block hover:text-cyan-400 transition">Portfolio</a>
+                <a href="contact.html" class="block hover:text-cyan-400 transition">Contact</a>
+                <a href="dashboard/index.html" class="block text-yellow-400 font-medium">Admin Login</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="pt-32 pb-20 px-4 relative overflow-hidden">
+        <div class="absolute inset-0 bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900"></div>
+        <div class="absolute top-20 left-10 w-72 h-72 bg-yellow-500/10 rounded-full blur-3xl"></div>
+        <div class="absolute bottom-10 right-10 w-96 h-96 bg-cyan-500/10 rounded-full blur-3xl"></div>
+
+        <div class="max-w-7xl mx-auto relative z-10">
+            <div class="text-center max-w-4xl mx-auto">
+                <div class="inline-flex items-center px-4 py-2 bg-slate-800 rounded-full text-sm text-cyan-400 mb-6 border border-slate-700">
+                    <span class="w-2 h-2 bg-green-400 rounded-full mr-2 animate-pulse"></span>
+                    Powered by SCORPION AI Systems
+                </div>
+                <h1 class="text-4xl md:text-6xl lg:text-7xl font-bold leading-tight mb-6">
+                    <span class="bg-gradient-to-r from-yellow-400 via-yellow-300 to-cyan-400 bg-clip-text text-transparent">AI-Powered</span>
+                    <br>Business Automation
+                </h1>
+                <p class="text-xl md:text-2xl text-gray-300 mb-4 font-light">
+                    Pay to <span class="text-yellow-400 font-semibold">USE</span> and <span class="text-cyan-400 font-semibold">OWN</span> at the same time
+                </p>
+                <p class="text-gray-400 text-lg mb-10 max-w-2xl mx-auto">
+                    Your AI assistant works 24/7 while you build equity. After 12 months, you own it completely. No more subscriptions - just ownership.
+                </p>
+                <div class="flex flex-col sm:flex-row gap-4 justify-center">
+                    <a href="pricing.html" class="px-8 py-4 bg-gradient-to-r from-yellow-500 to-yellow-600 rounded-xl font-semibold text-lg hover:from-yellow-400 hover:to-yellow-500 transition transform hover:scale-105 shadow-lg shadow-yellow-500/25">
+                        Start Your Journey
+                    </a>
+                    <a href="services.html" class="px-8 py-4 bg-slate-800 border border-slate-700 rounded-xl font-semibold text-lg hover:bg-slate-700 transition">
+                        Explore Services
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Services Grid -->
+    <section class="py-20 px-4 bg-slate-800/50">
+        <div class="max-w-7xl mx-auto">
+            <div class="text-center mb-16">
+                <h2 class="text-3xl md:text-4xl font-bold mb-4">What We Build For You</h2>
+                <p class="text-gray-400 text-lg max-w-2xl mx-auto">Complete AI solutions that transform how you do business</p>
+            </div>
+
+            <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+                <!-- Service 1 -->
+                <div class="bg-slate-900 p-6 rounded-2xl border border-slate-700 hover:border-yellow-500/50 transition group">
+                    <div class="w-14 h-14 bg-gradient-to-br from-yellow-500 to-yellow-600 rounded-xl flex items-center justify-center mb-4 group-hover:scale-110 transition">
+                        <svg class="w-7 h-7 text-slate-900" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"/>
+                        </svg>
+                    </div>
+                    <h3 class="text-xl font-semibold mb-2">AI Virtual Assistants</h3>
+                    <p class="text-gray-400 text-sm">24/7 customer support, lead qualification, and appointment scheduling in English & Spanish.</p>
+                </div>
+
+                <!-- Service 2 -->
+                <div class="bg-slate-900 p-6 rounded-2xl border border-slate-700 hover:border-cyan-500/50 transition group">
+                    <div class="w-14 h-14 bg-gradient-to-br from-cyan-500 to-cyan-600 rounded-xl flex items-center justify-center mb-4 group-hover:scale-110 transition">
+                        <svg class="w-7 h-7 text-slate-900" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"/>
+                        </svg>
+                    </div>
+                    <h3 class="text-xl font-semibold mb-2">Web Development</h3>
+                    <p class="text-gray-400 text-sm">WordPress sites, custom landing pages, e-commerce integration, and SEO optimization.</p>
+                </div>
+
+                <!-- Service 3 -->
+                <div class="bg-slate-900 p-6 rounded-2xl border border-slate-700 hover:border-yellow-500/50 transition group">
+                    <div class="w-14 h-14 bg-gradient-to-br from-yellow-500 to-cyan-500 rounded-xl flex items-center justify-center mb-4 group-hover:scale-110 transition">
+                        <svg class="w-7 h-7 text-slate-900" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>
+                        </svg>
+                    </div>
+                    <h3 class="text-xl font-semibold mb-2">Business Automation</h3>
+                    <p class="text-gray-400 text-sm">CRM integration, email marketing, social media management, and workflow automation.</p>
+                </div>
+
+                <!-- Service 4 -->
+                <div class="bg-slate-900 p-6 rounded-2xl border border-slate-700 hover:border-cyan-500/50 transition group">
+                    <div class="w-14 h-14 bg-gradient-to-br from-cyan-500 to-yellow-500 rounded-xl flex items-center justify-center mb-4 group-hover:scale-110 transition">
+                        <svg class="w-7 h-7 text-slate-900" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/>
+                        </svg>
+                    </div>
+                    <h3 class="text-xl font-semibold mb-2">Training & Consulting</h3>
+                    <p class="text-gray-400 text-sm">AI implementation training, call center optimization, and performance analytics.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- How It Works -->
+    <section class="py-20 px-4">
+        <div class="max-w-7xl mx-auto">
+            <div class="text-center mb-16">
+                <h2 class="text-3xl md:text-4xl font-bold mb-4">How Rent-to-Own Works</h2>
+                <p class="text-gray-400 text-lg max-w-2xl mx-auto">Three simple steps to AI ownership</p>
+            </div>
+
+            <div class="grid md:grid-cols-3 gap-8">
+                <!-- Step 1 -->
+                <div class="text-center">
+                    <div class="w-20 h-20 bg-gradient-to-br from-yellow-500 to-yellow-600 rounded-full flex items-center justify-center mx-auto mb-6 text-3xl font-bold text-slate-900">1</div>
+                    <h3 class="text-xl font-semibold mb-3">Choose Your Plan</h3>
+                    <p class="text-gray-400">Select the tier that fits your business needs. From Starter to Empire, we have you covered.</p>
+                </div>
+
+                <!-- Step 2 -->
+                <div class="text-center">
+                    <div class="w-20 h-20 bg-gradient-to-br from-cyan-500 to-cyan-600 rounded-full flex items-center justify-center mx-auto mb-6 text-3xl font-bold text-slate-900">2</div>
+                    <h3 class="text-xl font-semibold mb-3">Use & Build Equity</h3>
+                    <p class="text-gray-400">Your AI assistant works for you 24/7 while each payment builds toward ownership.</p>
+                </div>
+
+                <!-- Step 3 -->
+                <div class="text-center">
+                    <div class="w-20 h-20 bg-gradient-to-br from-yellow-500 to-cyan-500 rounded-full flex items-center justify-center mx-auto mb-6 text-3xl font-bold text-slate-900">3</div>
+                    <h3 class="text-xl font-semibold mb-3">Own It Forever</h3>
+                    <p class="text-gray-400">After 12 months, you own your AI system completely. No more monthly payments.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Testimonials -->
+    <section class="py-20 px-4 bg-slate-800/50">
+        <div class="max-w-7xl mx-auto">
+            <div class="text-center mb-16">
+                <h2 class="text-3xl md:text-4xl font-bold mb-4">What Our Clients Say</h2>
+                <p class="text-gray-400 text-lg max-w-2xl mx-auto">Real results from real businesses</p>
+            </div>
+
+            <div class="grid md:grid-cols-3 gap-8">
+                <!-- Testimonial 1 -->
+                <div class="bg-slate-900 p-8 rounded-2xl border border-slate-700">
+                    <div class="flex items-center mb-4">
+                        <div class="w-12 h-12 bg-gradient-to-br from-yellow-500 to-yellow-600 rounded-full flex items-center justify-center text-xl font-bold text-slate-900">J</div>
+                        <div class="ml-4">
+                            <div class="font-semibold">J3 Structural Solutions</div>
+                            <div class="text-sm text-gray-400">Construction</div>
+                        </div>
+                    </div>
+                    <p class="text-gray-300">"The AI assistant handles our lead qualification 24/7. We've seen a 40% increase in qualified leads since implementation."</p>
+                    <div class="flex text-yellow-400 mt-4">★★★★★</div>
+                </div>
+
+                <!-- Testimonial 2 -->
+                <div class="bg-slate-900 p-8 rounded-2xl border border-slate-700">
+                    <div class="flex items-center mb-4">
+                        <div class="w-12 h-12 bg-gradient-to-br from-cyan-500 to-cyan-600 rounded-full flex items-center justify-center text-xl font-bold text-slate-900">I</div>
+                        <div class="ml-4">
+                            <div class="font-semibold">IPC Solutions</div>
+                            <div class="text-sm text-gray-400">Call Center</div>
+                        </div>
+                    </div>
+                    <p class="text-gray-300">"Our call center efficiency improved dramatically. The rent-to-own model meant we could invest without the upfront cost."</p>
+                    <div class="flex text-yellow-400 mt-4">★★★★★</div>
+                </div>
+
+                <!-- Testimonial 3 -->
+                <div class="bg-slate-900 p-8 rounded-2xl border border-slate-700">
+                    <div class="flex items-center mb-4">
+                        <div class="w-12 h-12 bg-gradient-to-br from-yellow-500 to-cyan-500 rounded-full flex items-center justify-center text-xl font-bold text-slate-900">A</div>
+                        <div class="ml-4">
+                            <div class="font-semibold">Antonio M.</div>
+                            <div class="text-sm text-gray-400">Banking Sector</div>
+                        </div>
+                    </div>
+                    <p class="text-gray-300">"The automation solutions saved us countless hours. Now we're 3 months away from full ownership of our AI system."</p>
+                    <div class="flex text-yellow-400 mt-4">★★★★★</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Pricing Preview -->
+    <section class="py-20 px-4">
+        <div class="max-w-7xl mx-auto">
+            <div class="text-center mb-16">
+                <h2 class="text-3xl md:text-4xl font-bold mb-4">Simple, Transparent Pricing</h2>
+                <p class="text-gray-400 text-lg max-w-2xl mx-auto">Choose the plan that fits your business</p>
+            </div>
+
+            <div class="grid md:grid-cols-3 gap-8 max-w-5xl mx-auto">
+                <!-- Starter -->
+                <div class="bg-slate-900 p-8 rounded-2xl border border-slate-700 hover:border-yellow-500/50 transition">
+                    <h3 class="text-xl font-semibold mb-2">Starter</h3>
+                    <div class="text-4xl font-bold text-yellow-400 mb-4">$100<span class="text-lg text-gray-400 font-normal">/mo</span></div>
+                    <p class="text-gray-400 text-sm mb-6">Perfect for small businesses getting started with AI</p>
+                    <ul class="space-y-3 mb-8">
+                        <li class="flex items-center text-sm"><span class="text-green-400 mr-2">✓</span> Basic AI Assistant</li>
+                        <li class="flex items-center text-sm"><span class="text-green-400 mr-2">✓</span> 500 conversations/mo</li>
+                        <li class="flex items-center text-sm"><span class="text-green-400 mr-2">✓</span> Email support</li>
+                        <li class="flex items-center text-sm"><span class="text-green-400 mr-2">✓</span> Own in 12 months</li>
+                    </ul>
+                    <a href="contact.html" class="block text-center py-3 border border-yellow-500 rounded-xl text-yellow-400 hover:bg-yellow-500 hover:text-slate-900 transition font-medium">Get Started</a>
+                </div>
+
+                <!-- Pro -->
+                <div class="bg-slate-900 p-8 rounded-2xl border-2 border-cyan-500 relative transform scale-105">
+                    <div class="absolute -top-4 left-1/2 -translate-x-1/2 px-4 py-1 bg-cyan-500 rounded-full text-sm font-semibold text-slate-900">Most Popular</div>
+                    <h3 class="text-xl font-semibold mb-2">Pro</h3>
+                    <div class="text-4xl font-bold text-cyan-400 mb-4">$200<span class="text-lg text-gray-400 font-normal">/mo</span></div>
+                    <p class="text-gray-400 text-sm mb-6">For growing businesses ready to scale</p>
+                    <ul class="space-y-3 mb-8">
+                        <li class="flex items-center text-sm"><span class="text-green-400 mr-2">✓</span> Advanced AI (VULCAN)</li>
+                        <li class="flex items-center text-sm"><span class="text-green-400 mr-2">✓</span> Unlimited conversations</li>
+                        <li class="flex items-center text-sm"><span class="text-green-400 mr-2">✓</span> Priority support</li>
+                        <li class="flex items-center text-sm"><span class="text-green-400 mr-2">✓</span> CRM integration</li>
+                        <li class="flex items-center text-sm"><span class="text-green-400 mr-2">✓</span> Own in 12 months</li>
+                    </ul>
+                    <a href="contact.html" class="block text-center py-3 bg-cyan-500 rounded-xl text-slate-900 hover:bg-cyan-400 transition font-semibold">Get Started</a>
+                </div>
+
+                <!-- Empire -->
+                <div class="bg-slate-900 p-8 rounded-2xl border border-slate-700 hover:border-yellow-500/50 transition">
+                    <h3 class="text-xl font-semibold mb-2">Empire</h3>
+                    <div class="text-4xl font-bold bg-gradient-to-r from-yellow-400 to-cyan-400 bg-clip-text text-transparent mb-4">$500<span class="text-lg text-gray-400 font-normal">/mo</span></div>
+                    <p class="text-gray-400 text-sm mb-6">Full-scale enterprise automation</p>
+                    <ul class="space-y-3 mb-8">
+                        <li class="flex items-center text-sm"><span class="text-green-400 mr-2">✓</span> Premium AI (MARCUS)</li>
+                        <li class="flex items-center text-sm"><span class="text-green-400 mr-2">✓</span> Unlimited everything</li>
+                        <li class="flex items-center text-sm"><span class="text-green-400 mr-2">✓</span> 24/7 phone support</li>
+                        <li class="flex items-center text-sm"><span class="text-green-400 mr-2">✓</span> Full automation suite</li>
+                        <li class="flex items-center text-sm"><span class="text-green-400 mr-2">✓</span> Own in 12 months</li>
+                    </ul>
+                    <a href="contact.html" class="block text-center py-3 border border-yellow-500 rounded-xl text-yellow-400 hover:bg-yellow-500 hover:text-slate-900 transition font-medium">Contact Sales</a>
+                </div>
+            </div>
+
+            <div class="text-center mt-12">
+                <a href="pricing.html" class="text-cyan-400 hover:text-cyan-300 font-medium">View Full Pricing Details →</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="py-20 px-4 bg-gradient-to-br from-yellow-600/20 to-cyan-600/20">
+        <div class="max-w-4xl mx-auto text-center">
+            <h2 class="text-3xl md:text-4xl font-bold mb-4">Ready to Transform Your Business?</h2>
+            <p class="text-gray-300 text-lg mb-8">Join the businesses already using SCORPION AI to automate and grow. Start your rent-to-own journey today.</p>
+            <div class="flex flex-col sm:flex-row gap-4 justify-center">
+                <a href="contact.html" class="px-8 py-4 bg-gradient-to-r from-yellow-500 to-yellow-600 rounded-xl font-semibold text-lg hover:from-yellow-400 hover:to-yellow-500 transition">
+                    Schedule a Demo
+                </a>
+                <a href="https://wa.me/50312345678" target="_blank" class="px-8 py-4 bg-green-600 rounded-xl font-semibold text-lg hover:bg-green-500 transition flex items-center justify-center">
+                    <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+                    WhatsApp Us
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="py-12 px-4 bg-slate-900 border-t border-slate-800">
+        <div class="max-w-7xl mx-auto">
+            <div class="grid md:grid-cols-4 gap-8 mb-8">
+                <div>
+                    <div class="flex items-center space-x-2 mb-4">
+                        <span class="text-2xl">🦂</span>
+                        <span class="text-xl font-bold">OMETEOLT</span>
+                    </div>
+                    <p class="text-gray-400 text-sm">AI-powered business automation with a rent-to-own model. Transform your business today.</p>
+                </div>
+                <div>
+                    <h4 class="font-semibold mb-4">Services</h4>
+                    <ul class="space-y-2 text-gray-400 text-sm">
+                        <li><a href="services.html" class="hover:text-cyan-400 transition">AI Virtual Assistants</a></li>
+                        <li><a href="services.html" class="hover:text-cyan-400 transition">Web Development</a></li>
+                        <li><a href="services.html" class="hover:text-cyan-400 transition">Business Automation</a></li>
+                        <li><a href="services.html" class="hover:text-cyan-400 transition">Training & Consulting</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="font-semibold mb-4">Company</h4>
+                    <ul class="space-y-2 text-gray-400 text-sm">
+                        <li><a href="portfolio.html" class="hover:text-cyan-400 transition">Portfolio</a></li>
+                        <li><a href="pricing.html" class="hover:text-cyan-400 transition">Pricing</a></li>
+                        <li><a href="contact.html" class="hover:text-cyan-400 transition">Contact</a></li>
+                        <li><a href="portal/login.html" class="hover:text-cyan-400 transition">Client Portal</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="font-semibold mb-4">Connect</h4>
+                    <ul class="space-y-2 text-gray-400 text-sm">
+                        <li><a href="mailto:info@ometeolt.com" class="hover:text-cyan-400 transition">info@ometeolt.com</a></li>
+                        <li><a href="https://wa.me/50312345678" class="hover:text-cyan-400 transition">WhatsApp</a></li>
+                        <li>El Salvador</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="pt-8 border-t border-slate-800 flex flex-col md:flex-row justify-between items-center text-gray-400 text-sm">
+                <p>© 2024 Ometeolt. Powered by SCORPION AI Systems.</p>
+                <p class="mt-4 md:mt-0">Built with ❤️ in El Salvador</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Chat Widget Button -->
+    <div id="chat-widget" class="fixed bottom-6 right-6 z-50">
+        <button id="chat-toggle" class="w-16 h-16 bg-gradient-to-r from-yellow-500 to-cyan-500 rounded-full shadow-lg flex items-center justify-center hover:scale-110 transition group">
+            <svg id="chat-icon" class="w-8 h-8 text-slate-900" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"/>
+            </svg>
+            <svg id="close-icon" class="w-8 h-8 text-slate-900 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+            </svg>
+        </button>
+
+        <!-- Chat Window -->
+        <div id="chat-window" class="hidden absolute bottom-20 right-0 w-80 sm:w-96 bg-slate-900 rounded-2xl shadow-2xl border border-slate-700 overflow-hidden">
+            <div class="bg-gradient-to-r from-yellow-500 to-cyan-500 p-4">
+                <div class="flex items-center">
+                    <span class="text-2xl mr-2">🦂</span>
+                    <div>
+                        <div class="font-semibold text-slate-900">HERMES</div>
+                        <div class="text-xs text-slate-700">SCORPION AI Assistant</div>
+                    </div>
+                </div>
+            </div>
+            <div id="chat-messages" class="h-80 overflow-y-auto p-4 space-y-4">
+                <div class="flex">
+                    <div class="bg-slate-800 rounded-2xl rounded-bl-none px-4 py-2 max-w-[85%]">
+                        <p class="text-sm">Hello! I'm HERMES, your AI assistant. How can I help you today with AI automation solutions?</p>
+                    </div>
+                </div>
+            </div>
+            <div class="p-4 border-t border-slate-700">
+                <div class="flex gap-2">
+                    <input type="text" id="chat-input" placeholder="Type a message..." class="flex-1 bg-slate-800 border border-slate-600 rounded-xl px-4 py-2 text-sm focus:outline-none focus:border-cyan-500 transition">
+                    <button id="chat-send" class="bg-gradient-to-r from-yellow-500 to-cyan-500 p-2 rounded-xl hover:opacity-90 transition">
+                        <svg class="w-5 h-5 text-slate-900" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"/>
+                        </svg>
+                    </button>
+                </div>
+                <p class="text-xs text-gray-500 mt-2 text-center">Powered by SCORPION AI</p>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/main.js"></script>
+    <script src="js/chat-widget.js"></script>
+</body>
+</html>

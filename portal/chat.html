@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Chat - SCORPION AI Portal</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>.font-inter { font-family: 'Inter', sans-serif; }</style>
+</head>
+<body class="bg-slate-900 text-gray-100 font-inter">
+    <!-- Header -->
+    <header class="bg-slate-800 border-b border-slate-700">
+        <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
+            <div class="flex items-center space-x-2">
+                <span class="text-2xl">🦂</span>
+                <span class="text-xl font-bold bg-gradient-to-r from-yellow-400 to-cyan-400 bg-clip-text text-transparent">SCORPION</span>
+                <span class="text-gray-400 ml-2">| Client Portal</span>
+            </div>
+            <div class="flex items-center space-x-4">
+                <span id="client-name" class="text-sm text-gray-400">Welcome</span>
+                <button onclick="logout()" class="px-4 py-2 text-sm text-gray-400 hover:text-white transition">Logout</button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Navigation -->
+    <nav class="bg-slate-800/50 border-b border-slate-700">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="flex space-x-8">
+                <a href="dashboard.html" class="py-4 border-b-2 border-transparent text-gray-400 hover:text-white transition">Dashboard</a>
+                <a href="chat.html" class="py-4 border-b-2 border-cyan-500 text-cyan-400 font-medium">AI Chat</a>
+                <a href="projects.html" class="py-4 border-b-2 border-transparent text-gray-400 hover:text-white transition">Projects</a>
+                <a href="support.html" class="py-4 border-b-2 border-transparent text-gray-400 hover:text-white transition">Support</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Chat Interface -->
+    <main class="max-w-4xl mx-auto px-6 py-8">
+        <div class="bg-slate-800 rounded-2xl border border-slate-700 overflow-hidden h-[calc(100vh-220px)] flex flex-col">
+            <!-- Chat Header -->
+            <div class="bg-gradient-to-r from-yellow-500 to-cyan-500 p-4">
+                <div class="flex items-center justify-between">
+                    <div class="flex items-center">
+                        <span class="text-3xl mr-3">🤖</span>
+                        <div>
+                            <div class="font-bold text-slate-900" id="chat-baby-name">VULCAN</div>
+                            <div class="text-sm text-slate-700">Your dedicated AI assistant</div>
+                        </div>
+                    </div>
+                    <div class="flex space-x-2">
+                        <button onclick="clearChat()" class="p-2 bg-white/20 rounded-lg hover:bg-white/30 transition" title="Clear Chat">
+                            <svg class="w-5 h-5 text-slate-900" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Chat Messages -->
+            <div id="chat-messages" class="flex-1 overflow-y-auto p-6 space-y-4">
+                <div class="flex justify-start">
+                    <div class="bg-slate-700 rounded-2xl rounded-bl-none px-4 py-3 max-w-[80%]">
+                        <p>Hello! I'm your dedicated AI assistant. I'm here to help with anything related to your projects, answer questions, or assist with tasks. What can I do for you today?</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Chat Input -->
+            <div class="p-4 border-t border-slate-700">
+                <div class="flex gap-3">
+                    <input type="text" id="chat-input" placeholder="Type your message..."
+                        class="flex-1 bg-slate-900 border border-slate-600 rounded-xl px-4 py-3 focus:outline-none focus:border-cyan-500 transition"
+                        onkeypress="if(event.key==='Enter') sendMessage()">
+                    <button onclick="sendMessage()" class="px-6 py-3 bg-gradient-to-r from-yellow-500 to-cyan-500 rounded-xl font-semibold text-slate-900 hover:opacity-90 transition">
+                        Send
+                    </button>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script src="js/portal.js"></script>
+    <script>
+        // Check authentication
+        const client = JSON.parse(sessionStorage.getItem('client') || 'null');
+        if (!client) {
+            window.location.href = 'login.html';
+        } else {
+            document.getElementById('client-name').textContent = client.name;
+        }
+
+        // Baby names by client
+        const clientBabies = { 1: 'VULCAN', 2: 'MARCUS', 3: 'MARCUS' };
+        const babyName = clientBabies[client?.id] || 'VULCAN';
+        document.getElementById('chat-baby-name').textContent = babyName;
+
+        // Chat functionality
+        const messagesContainer = document.getElementById('chat-messages');
+        let messageHistory = [];
+
+        async function sendMessage() {
+            const input = document.getElementById('chat-input');
+            const message = input.value.trim();
+            if (!message) return;
+
+            // Add user message
+            addMessage(message, 'user');
+            input.value = '';
+
+            // Show typing indicator
+            const typingDiv = document.createElement('div');
+            typingDiv.id = 'typing';
+            typingDiv.className = 'flex justify-start';
+            typingDiv.innerHTML = '<div class="bg-slate-700 rounded-2xl rounded-bl-none px-4 py-3"><span class="animate-pulse">Thinking...</span></div>';
+            messagesContainer.appendChild(typingDiv);
+            messagesContainer.scrollTop = messagesContainer.scrollHeight;
+
+            // Call API or use fallback
+            try {
+                const response = await fetch('/api/chat/client', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ message, client_id: client.id })
+                });
+                const data = await response.json();
+                document.getElementById('typing')?.remove();
+                addMessage(data.response, 'bot');
+            } catch (e) {
+                document.getElementById('typing')?.remove();
+                addMessage(getSmartResponse(message), 'bot');
+            }
+        }
+
+        function addMessage(text, sender) {
+            const div = document.createElement('div');
+            div.className = `flex ${sender === 'user' ? 'justify-end' : 'justify-start'}`;
+            div.innerHTML = `
+                <div class="${sender === 'user' ? 'bg-gradient-to-r from-yellow-500 to-cyan-500 text-slate-900' : 'bg-slate-700'} rounded-2xl ${sender === 'user' ? 'rounded-br-none' : 'rounded-bl-none'} px-4 py-3 max-w-[80%]">
+                    <p>${text}</p>
+                </div>
+            `;
+            messagesContainer.appendChild(div);
+            messagesContainer.scrollTop = messagesContainer.scrollHeight;
+            messageHistory.push({ role: sender, content: text });
+        }
+
+        function getSmartResponse(message) {
+            const lower = message.toLowerCase();
+            if (lower.includes('project') || lower.includes('status')) {
+                return "Your main project 'AI Lead Qualification' is 75% complete. We're currently in the integration phase. Would you like more details?";
+            }
+            if (lower.includes('payment') || lower.includes('billing')) {
+                return "You have 6 payments recorded. You're halfway to full ownership! Your next payment is due on the 1st of next month.";
+            }
+            if (lower.includes('help') || lower.includes('support')) {
+                return "I'm here to help! You can ask me about your projects, account status, or any questions about our AI services. For technical issues, please create a support ticket.";
+            }
+            if (lower.includes('ownership')) {
+                return "Great news! You're 50% toward full ownership. After 6 more monthly payments, you'll completely own your AI system with no more fees.";
+            }
+            return "I understand you're asking about '" + message.slice(0, 30) + "'. Let me help you with that. Could you provide a bit more detail about what you need?";
+        }
+
+        function clearChat() {
+            messagesContainer.innerHTML = `
+                <div class="flex justify-start">
+                    <div class="bg-slate-700 rounded-2xl rounded-bl-none px-4 py-3 max-w-[80%]">
+                        <p>Chat cleared. How can I help you today?</p>
+                    </div>
+                </div>
+            `;
+            messageHistory = [];
+        }
+
+        function logout() {
+            sessionStorage.removeItem('client');
+            window.location.href = 'login.html';
+        }
+    </script>
+</body>
+</html>

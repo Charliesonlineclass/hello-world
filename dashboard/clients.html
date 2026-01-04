@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Clients - Pandora's Castle</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>.font-inter { font-family: 'Inter', sans-serif; }</style>
+</head>
+<body class="bg-slate-900 text-gray-100 font-inter">
+    <!-- Sidebar -->
+    <aside class="fixed left-0 top-0 h-full w-64 bg-slate-800 border-r border-slate-700 z-40">
+        <div class="p-6 border-b border-slate-700">
+            <div class="flex items-center space-x-2">
+                <span class="text-2xl">🦂</span>
+                <span class="text-xl font-bold bg-gradient-to-r from-yellow-400 to-cyan-400 bg-clip-text text-transparent">CASTLE</span>
+            </div>
+        </div>
+        <nav class="p-4 space-y-2">
+            <a href="index.html" class="flex items-center px-4 py-3 hover:bg-slate-700 rounded-xl text-gray-400 hover:text-white transition">
+                <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>
+                Dashboard
+            </a>
+            <a href="leads.html" class="flex items-center px-4 py-3 hover:bg-slate-700 rounded-xl text-gray-400 hover:text-white transition">
+                <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+                Leads
+            </a>
+            <a href="clients.html" class="flex items-center px-4 py-3 bg-slate-700 rounded-xl text-white">
+                <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5"/></svg>
+                Clients
+            </a>
+        </nav>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="ml-64 p-8">
+        <div class="flex justify-between items-center mb-8">
+            <div>
+                <h1 class="text-2xl font-bold">Clients</h1>
+                <p class="text-gray-400">Manage your client relationships</p>
+            </div>
+            <div class="flex space-x-4">
+                <select id="tier-filter" class="bg-slate-800 border border-slate-600 rounded-xl px-4 py-2" onchange="filterClients()">
+                    <option value="">All Tiers</option>
+                    <option value="starter">Starter</option>
+                    <option value="pro">Pro</option>
+                    <option value="empire">Empire</option>
+                </select>
+            </div>
+        </div>
+
+        <!-- Client Cards -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" id="clients-grid">
+            <!-- Filled by JS -->
+        </div>
+    </main>
+
+    <!-- Client Detail Modal -->
+    <div id="client-modal" class="fixed inset-0 bg-black/50 z-50 hidden flex items-center justify-center">
+        <div class="bg-slate-800 rounded-2xl p-8 w-full max-w-2xl border border-slate-700 max-h-[90vh] overflow-y-auto">
+            <div class="flex justify-between items-start mb-6">
+                <div>
+                    <h2 class="text-xl font-bold" id="modal-client-name">Client Name</h2>
+                    <p class="text-gray-400" id="modal-client-company">Company</p>
+                </div>
+                <button onclick="hideClientModal()" class="p-2 hover:bg-slate-700 rounded-lg">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+                </button>
+            </div>
+
+            <!-- Ownership Progress -->
+            <div class="bg-slate-900 rounded-xl p-6 mb-6">
+                <div class="flex justify-between items-center mb-4">
+                    <h3 class="font-semibold">Ownership Progress</h3>
+                    <span id="modal-ownership-percent" class="text-cyan-400 font-bold">0%</span>
+                </div>
+                <div class="w-full h-4 bg-slate-700 rounded-full overflow-hidden mb-2">
+                    <div id="modal-ownership-bar" class="h-full bg-gradient-to-r from-yellow-500 to-cyan-500 transition-all" style="width: 0%"></div>
+                </div>
+                <div class="flex justify-between text-sm text-gray-400">
+                    <span id="modal-months-paid">0/12 months</span>
+                    <span id="modal-remaining">$0 remaining</span>
+                </div>
+            </div>
+
+            <!-- Client Info -->
+            <div class="grid grid-cols-2 gap-4 mb-6">
+                <div class="bg-slate-900 rounded-xl p-4">
+                    <div class="text-gray-400 text-sm mb-1">Email</div>
+                    <div id="modal-email">-</div>
+                </div>
+                <div class="bg-slate-900 rounded-xl p-4">
+                    <div class="text-gray-400 text-sm mb-1">Phone</div>
+                    <div id="modal-phone">-</div>
+                </div>
+                <div class="bg-slate-900 rounded-xl p-4">
+                    <div class="text-gray-400 text-sm mb-1">Tier</div>
+                    <div id="modal-tier" class="capitalize">-</div>
+                </div>
+                <div class="bg-slate-900 rounded-xl p-4">
+                    <div class="text-gray-400 text-sm mb-1">AI Baby</div>
+                    <div id="modal-baby">-</div>
+                </div>
+            </div>
+
+            <!-- Actions -->
+            <div class="flex gap-4">
+                <button class="flex-1 py-3 bg-gradient-to-r from-yellow-500 to-yellow-600 rounded-xl font-medium">Record Payment</button>
+                <button class="flex-1 py-3 bg-cyan-500 rounded-xl font-medium">New Project</button>
+                <button class="flex-1 py-3 border border-slate-600 rounded-xl hover:bg-slate-700 transition">View Full Profile</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/admin.js"></script>
+    <script>
+        const tierColors = {
+            starter: 'from-gray-500 to-gray-600',
+            pro: 'from-cyan-500 to-cyan-600',
+            empire: 'from-yellow-500 to-cyan-500'
+        };
+
+        const tierBadgeColors = {
+            starter: 'bg-gray-500',
+            pro: 'bg-cyan-500',
+            empire: 'bg-gradient-to-r from-yellow-500 to-cyan-500'
+        };
+
+        let allClients = [];
+
+        async function loadClients() {
+            try {
+                const response = await fetch('/api/clients');
+                const data = await response.json();
+                allClients = data.clients;
+                renderClients(allClients);
+            } catch (e) {
+                // Demo data
+                allClients = [
+                    {id: 1, name: 'J3 Structural Solutions', company: 'J3 Structural', email: 'j3@structural.com', phone: '+503 2200 1111', tier: 'pro', months_paid: 6, monthly_rate: 200, balance_paid: 1200, baby_assigned: 'VULCAN', ownership_percent: 50, remaining_balance: 1200},
+                    {id: 2, name: 'IPC Solutions', company: 'IPC Solutions', email: 'contact@ipc.com', phone: '+503 2200 2222', tier: 'empire', months_paid: 5, monthly_rate: 500, balance_paid: 2500, baby_assigned: 'MARCUS', ownership_percent: 41.7, remaining_balance: 3500},
+                    {id: 3, name: 'Antonio Martinez', company: 'Banking Corp', email: 'antonio@bank.com', phone: '+503 2200 3333', tier: 'empire', months_paid: 9, monthly_rate: 500, balance_paid: 4500, baby_assigned: 'MARCUS', ownership_percent: 75, remaining_balance: 1500}
+                ];
+                renderClients(allClients);
+            }
+        }
+
+        function renderClients(clients) {
+            const grid = document.getElementById('clients-grid');
+            grid.innerHTML = clients.map(client => `
+                <div class="bg-slate-800 rounded-2xl border border-slate-700 overflow-hidden hover:border-cyan-500/50 transition cursor-pointer" onclick="showClientModal(${client.id})">
+                    <div class="p-6">
+                        <div class="flex items-start justify-between mb-4">
+                            <div class="w-14 h-14 bg-gradient-to-br ${tierColors[client.tier] || tierColors.starter} rounded-xl flex items-center justify-center text-xl font-bold">
+                                ${client.name.charAt(0)}
+                            </div>
+                            <span class="px-3 py-1 ${tierBadgeColors[client.tier] || tierBadgeColors.starter} rounded-full text-xs uppercase font-medium">${client.tier}</span>
+                        </div>
+                        <h3 class="font-semibold text-lg mb-1">${client.name}</h3>
+                        <p class="text-gray-400 text-sm mb-4">${client.company || ''}</p>
+
+                        <!-- Ownership Progress -->
+                        <div class="mb-4">
+                            <div class="flex justify-between text-sm mb-1">
+                                <span class="text-gray-400">Ownership</span>
+                                <span class="${client.ownership_percent >= 100 ? 'text-green-400' : 'text-cyan-400'}">${Math.round(client.ownership_percent)}%</span>
+                            </div>
+                            <div class="w-full h-2 bg-slate-700 rounded-full overflow-hidden">
+                                <div class="h-full bg-gradient-to-r from-yellow-500 to-cyan-500" style="width: ${client.ownership_percent}%"></div>
+                            </div>
+                        </div>
+
+                        <div class="flex items-center justify-between text-sm">
+                            <span class="text-gray-400">${client.months_paid}/12 months</span>
+                            <span class="flex items-center text-yellow-400">
+                                <span class="mr-1">🤖</span>
+                                ${client.baby_assigned || 'None'}
+                            </span>
+                        </div>
+                    </div>
+                    <div class="bg-slate-900 p-4 border-t border-slate-700 flex justify-between text-sm">
+                        <span class="text-gray-400">Paid: $${client.balance_paid.toLocaleString()}</span>
+                        <span class="text-cyan-400">$${client.remaining_balance.toLocaleString()} left</span>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function filterClients() {
+            const tier = document.getElementById('tier-filter').value;
+            let filtered = allClients;
+            if (tier) filtered = filtered.filter(c => c.tier === tier);
+            renderClients(filtered);
+        }
+
+        function showClientModal(id) {
+            const client = allClients.find(c => c.id === id);
+            if (!client) return;
+
+            document.getElementById('modal-client-name').textContent = client.name;
+            document.getElementById('modal-client-company').textContent = client.company || '';
+            document.getElementById('modal-email').textContent = client.email;
+            document.getElementById('modal-phone').textContent = client.phone || '-';
+            document.getElementById('modal-tier').textContent = client.tier;
+            document.getElementById('modal-baby').textContent = client.baby_assigned || 'Not assigned';
+            document.getElementById('modal-ownership-percent').textContent = Math.round(client.ownership_percent) + '%';
+            document.getElementById('modal-ownership-bar').style.width = client.ownership_percent + '%';
+            document.getElementById('modal-months-paid').textContent = `${client.months_paid}/12 months`;
+            document.getElementById('modal-remaining').textContent = `$${client.remaining_balance.toLocaleString()} remaining`;
+
+            document.getElementById('client-modal').classList.remove('hidden');
+        }
+
+        function hideClientModal() {
+            document.getElementById('client-modal').classList.add('hidden');
+        }
+
+        loadClients();
+    </script>
+</body>
+</html>

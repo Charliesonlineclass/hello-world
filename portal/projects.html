@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Projects - SCORPION AI Portal</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>.font-inter { font-family: 'Inter', sans-serif; }</style>
+</head>
+<body class="bg-slate-900 text-gray-100 font-inter">
+    <!-- Header -->
+    <header class="bg-slate-800 border-b border-slate-700">
+        <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
+            <div class="flex items-center space-x-2">
+                <span class="text-2xl">🦂</span>
+                <span class="text-xl font-bold bg-gradient-to-r from-yellow-400 to-cyan-400 bg-clip-text text-transparent">SCORPION</span>
+                <span class="text-gray-400 ml-2">| Client Portal</span>
+            </div>
+            <div class="flex items-center space-x-4">
+                <span id="client-name" class="text-sm text-gray-400">Welcome</span>
+                <button onclick="logout()" class="px-4 py-2 text-sm text-gray-400 hover:text-white transition">Logout</button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Navigation -->
+    <nav class="bg-slate-800/50 border-b border-slate-700">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="flex space-x-8">
+                <a href="dashboard.html" class="py-4 border-b-2 border-transparent text-gray-400 hover:text-white transition">Dashboard</a>
+                <a href="chat.html" class="py-4 border-b-2 border-transparent text-gray-400 hover:text-white transition">AI Chat</a>
+                <a href="projects.html" class="py-4 border-b-2 border-cyan-500 text-cyan-400 font-medium">Projects</a>
+                <a href="support.html" class="py-4 border-b-2 border-transparent text-gray-400 hover:text-white transition">Support</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="max-w-7xl mx-auto px-6 py-8">
+        <div class="flex justify-between items-center mb-8">
+            <div>
+                <h1 class="text-2xl font-bold">Your Projects</h1>
+                <p class="text-gray-400">Track the progress of your AI implementations</p>
+            </div>
+        </div>
+
+        <!-- Projects Grid -->
+        <div class="grid md:grid-cols-2 gap-6" id="projects-grid">
+            <!-- Project Card 1 -->
+            <div class="bg-slate-800 rounded-2xl border border-slate-700 overflow-hidden">
+                <div class="p-6">
+                    <div class="flex justify-between items-start mb-4">
+                        <div>
+                            <h3 class="text-lg font-semibold">AI Lead Qualification System</h3>
+                            <p class="text-gray-400 text-sm">24/7 AI assistant for construction leads</p>
+                        </div>
+                        <span class="px-3 py-1 bg-green-500/20 text-green-400 rounded-full text-xs">Active</span>
+                    </div>
+
+                    <div class="mb-4">
+                        <div class="flex justify-between text-sm mb-2">
+                            <span class="text-gray-400">Progress</span>
+                            <span class="text-cyan-400">75%</span>
+                        </div>
+                        <div class="w-full h-3 bg-slate-700 rounded-full overflow-hidden">
+                            <div class="h-full bg-gradient-to-r from-yellow-500 to-cyan-500" style="width: 75%"></div>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-4 text-sm">
+                        <div>
+                            <span class="text-gray-500">Started</span>
+                            <p>Jan 20, 2024</p>
+                        </div>
+                        <div>
+                            <span class="text-gray-500">Due Date</span>
+                            <p>Mar 20, 2024</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="bg-slate-900 p-4 border-t border-slate-700">
+                    <p class="text-sm text-gray-400">Phase 2: CRM Integration in progress</p>
+                </div>
+            </div>
+
+            <!-- Project Card 2 -->
+            <div class="bg-slate-800 rounded-2xl border border-slate-700 overflow-hidden">
+                <div class="p-6">
+                    <div class="flex justify-between items-start mb-4">
+                        <div>
+                            <h3 class="text-lg font-semibold">Website Redesign</h3>
+                            <p class="text-gray-400 text-sm">Modern website with chat widget</p>
+                        </div>
+                        <span class="px-3 py-1 bg-blue-500/20 text-blue-400 rounded-full text-xs">Completed</span>
+                    </div>
+
+                    <div class="mb-4">
+                        <div class="flex justify-between text-sm mb-2">
+                            <span class="text-gray-400">Progress</span>
+                            <span class="text-green-400">100%</span>
+                        </div>
+                        <div class="w-full h-3 bg-slate-700 rounded-full overflow-hidden">
+                            <div class="h-full bg-green-500" style="width: 100%"></div>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-4 text-sm">
+                        <div>
+                            <span class="text-gray-500">Started</span>
+                            <p>Jan 25, 2024</p>
+                        </div>
+                        <div>
+                            <span class="text-gray-500">Completed</span>
+                            <p>Feb 10, 2024</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="bg-slate-900 p-4 border-t border-slate-700">
+                    <p class="text-sm text-green-400">Completed ahead of schedule!</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Timeline -->
+        <div class="mt-12">
+            <h2 class="text-xl font-semibold mb-6">Project Timeline</h2>
+            <div class="bg-slate-800 rounded-2xl p-6 border border-slate-700">
+                <div class="space-y-6">
+                    <div class="flex items-start">
+                        <div class="w-3 h-3 bg-green-500 rounded-full mt-1.5 mr-4"></div>
+                        <div>
+                            <div class="flex items-center space-x-2">
+                                <span class="font-medium">Website Launched</span>
+                                <span class="text-xs text-gray-500">Feb 10, 2024</span>
+                            </div>
+                            <p class="text-gray-400 text-sm">Your new website is live with chat widget integration</p>
+                        </div>
+                    </div>
+                    <div class="flex items-start">
+                        <div class="w-3 h-3 bg-cyan-500 rounded-full mt-1.5 mr-4"></div>
+                        <div>
+                            <div class="flex items-center space-x-2">
+                                <span class="font-medium">AI Training Complete</span>
+                                <span class="text-xs text-gray-500">Feb 5, 2024</span>
+                            </div>
+                            <p class="text-gray-400 text-sm">VULCAN trained on your business data</p>
+                        </div>
+                    </div>
+                    <div class="flex items-start">
+                        <div class="w-3 h-3 bg-yellow-500 rounded-full mt-1.5 mr-4"></div>
+                        <div>
+                            <div class="flex items-center space-x-2">
+                                <span class="font-medium">Project Kickoff</span>
+                                <span class="text-xs text-gray-500">Jan 15, 2024</span>
+                            </div>
+                            <p class="text-gray-400 text-sm">Onboarding and requirements gathering</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        const client = JSON.parse(sessionStorage.getItem('client') || 'null');
+        if (!client) {
+            window.location.href = 'login.html';
+        } else {
+            document.getElementById('client-name').textContent = client.name;
+        }
+
+        function logout() {
+            sessionStorage.removeItem('client');
+            window.location.href = 'login.html';
+        }
+    </script>
+</body>
+</html>

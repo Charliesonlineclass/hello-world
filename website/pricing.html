@@ -1,0 +1,489 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pricing - Ometeolt | Rent-to-Own AI Solutions</title>
+    <meta name="description" content="Transparent pricing for AI automation. Pay to use and own at the same time. Starter $100, Pro $200, Empire $500 per month.">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="css/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body class="bg-slate-900 text-gray-100 font-inter">
+    <!-- Navigation -->
+    <nav class="fixed w-full z-50 bg-slate-900/95 backdrop-blur-sm border-b border-slate-800">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <div class="flex items-center space-x-2">
+                    <span class="text-2xl">🦂</span>
+                    <span class="text-xl font-bold bg-gradient-to-r from-yellow-400 to-cyan-400 bg-clip-text text-transparent">OMETEOLT</span>
+                </div>
+                <div class="hidden md:flex items-center space-x-8">
+                    <a href="index.html" class="hover:text-cyan-400 transition">Home</a>
+                    <a href="services.html" class="hover:text-cyan-400 transition">Services</a>
+                    <a href="pricing.html" class="text-yellow-400 font-medium">Pricing</a>
+                    <a href="portfolio.html" class="hover:text-cyan-400 transition">Portfolio</a>
+                    <a href="contact.html" class="hover:text-cyan-400 transition">Contact</a>
+                    <a href="dashboard/index.html" class="px-4 py-2 bg-gradient-to-r from-yellow-500 to-yellow-600 rounded-lg font-medium hover:from-yellow-400 hover:to-yellow-500 transition">Admin</a>
+                </div>
+                <button id="mobile-menu-btn" class="md:hidden text-gray-300 hover:text-white">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
+                    </svg>
+                </button>
+            </div>
+        </div>
+        <div id="mobile-menu" class="hidden md:hidden bg-slate-800 border-t border-slate-700">
+            <div class="px-4 py-4 space-y-3">
+                <a href="index.html" class="block hover:text-cyan-400 transition">Home</a>
+                <a href="services.html" class="block hover:text-cyan-400 transition">Services</a>
+                <a href="pricing.html" class="block text-yellow-400 font-medium">Pricing</a>
+                <a href="portfolio.html" class="block hover:text-cyan-400 transition">Portfolio</a>
+                <a href="contact.html" class="block hover:text-cyan-400 transition">Contact</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero -->
+    <section class="pt-32 pb-16 px-4">
+        <div class="max-w-7xl mx-auto text-center">
+            <h1 class="text-4xl md:text-5xl font-bold mb-4">
+                Simple, <span class="bg-gradient-to-r from-yellow-400 to-cyan-400 bg-clip-text text-transparent">Transparent</span> Pricing
+            </h1>
+            <p class="text-gray-400 text-lg max-w-2xl mx-auto">Pay to USE and OWN at the same time. After 12 months of payments, you own your AI system completely.</p>
+        </div>
+    </section>
+
+    <!-- Pricing Cards -->
+    <section class="py-8 px-4">
+        <div class="max-w-6xl mx-auto">
+            <div class="grid md:grid-cols-3 gap-8">
+                <!-- Starter -->
+                <div class="bg-slate-800 rounded-2xl border border-slate-700 hover:border-yellow-500/50 transition overflow-hidden">
+                    <div class="p-8">
+                        <h3 class="text-2xl font-bold mb-2">Starter</h3>
+                        <p class="text-gray-400 text-sm mb-6">Perfect for small businesses getting started with AI</p>
+                        <div class="mb-6">
+                            <span class="text-5xl font-bold text-yellow-400">$100</span>
+                            <span class="text-gray-400">/month</span>
+                        </div>
+                        <div class="text-sm text-gray-400 mb-6">
+                            <span class="text-yellow-400 font-medium">$1,200 total</span> to own completely
+                        </div>
+                        <a href="contact.html?tier=starter" class="block text-center py-4 border-2 border-yellow-500 rounded-xl text-yellow-400 hover:bg-yellow-500 hover:text-slate-900 transition font-semibold">
+                            Get Started
+                        </a>
+                    </div>
+                    <div class="bg-slate-900 p-8 border-t border-slate-700">
+                        <h4 class="font-semibold mb-4">What's Included:</h4>
+                        <ul class="space-y-3">
+                            <li class="flex items-start text-sm">
+                                <span class="text-green-400 mr-3 mt-0.5">✓</span>
+                                <span>Basic AI Assistant (HERMES)</span>
+                            </li>
+                            <li class="flex items-start text-sm">
+                                <span class="text-green-400 mr-3 mt-0.5">✓</span>
+                                <span>500 conversations per month</span>
+                            </li>
+                            <li class="flex items-start text-sm">
+                                <span class="text-green-400 mr-3 mt-0.5">✓</span>
+                                <span>Email support (48h response)</span>
+                            </li>
+                            <li class="flex items-start text-sm">
+                                <span class="text-green-400 mr-3 mt-0.5">✓</span>
+                                <span>Basic analytics dashboard</span>
+                            </li>
+                            <li class="flex items-start text-sm">
+                                <span class="text-green-400 mr-3 mt-0.5">✓</span>
+                                <span>English & Spanish support</span>
+                            </li>
+                            <li class="flex items-start text-sm">
+                                <span class="text-green-400 mr-3 mt-0.5">✓</span>
+                                <span>Website chat widget</span>
+                            </li>
+                            <li class="flex items-start text-sm text-gray-500">
+                                <span class="mr-3 mt-0.5">✗</span>
+                                <span>CRM integration</span>
+                            </li>
+                            <li class="flex items-start text-sm text-gray-500">
+                                <span class="mr-3 mt-0.5">✗</span>
+                                <span>Advanced automation</span>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Pro -->
+                <div class="bg-slate-800 rounded-2xl border-2 border-cyan-500 relative overflow-hidden transform scale-105 shadow-xl shadow-cyan-500/20">
+                    <div class="absolute top-0 left-0 right-0 bg-cyan-500 py-2 text-center text-sm font-semibold text-slate-900">
+                        Most Popular
+                    </div>
+                    <div class="p-8 pt-14">
+                        <h3 class="text-2xl font-bold mb-2">Pro</h3>
+                        <p class="text-gray-400 text-sm mb-6">For growing businesses ready to scale</p>
+                        <div class="mb-6">
+                            <span class="text-5xl font-bold text-cyan-400">$200</span>
+                            <span class="text-gray-400">/month</span>
+                        </div>
+                        <div class="text-sm text-gray-400 mb-6">
+                            <span class="text-cyan-400 font-medium">$2,400 total</span> to own completely
+                        </div>
+                        <a href="contact.html?tier=pro" class="block text-center py-4 bg-cyan-500 rounded-xl text-slate-900 hover:bg-cyan-400 transition font-semibold">
+                            Get Started
+                        </a>
+                    </div>
+                    <div class="bg-slate-900 p-8 border-t border-slate-700">
+                        <h4 class="font-semibold mb-4">Everything in Starter, plus:</h4>
+                        <ul class="space-y-3">
+                            <li class="flex items-start text-sm">
+                                <span class="text-green-400 mr-3 mt-0.5">✓</span>
+                                <span><strong>Advanced AI (VULCAN)</strong></span>
+                            </li>
+                            <li class="flex items-start text-sm">
+                                <span class="text-green-400 mr-3 mt-0.5">✓</span>
+                                <span><strong>Unlimited conversations</strong></span>
+                            </li>
+                            <li class="flex items-start text-sm">
+                                <span class="text-green-400 mr-3 mt-0.5">✓</span>
+                                <span>Priority support (24h response)</span>
+                            </li>
+                            <li class="flex items-start text-sm">
+                                <span class="text-green-400 mr-3 mt-0.5">✓</span>
+                                <span>Full CRM integration</span>
+                            </li>
+                            <li class="flex items-start text-sm">
+                                <span class="text-green-400 mr-3 mt-0.5">✓</span>
+                                <span>Email automation</span>
+                            </li>
+                            <li class="flex items-start text-sm">
+                                <span class="text-green-400 mr-3 mt-0.5">✓</span>
+                                <span>Lead scoring & qualification</span>
+                            </li>
+                            <li class="flex items-start text-sm">
+                                <span class="text-green-400 mr-3 mt-0.5">✓</span>
+                                <span>Advanced analytics</span>
+                            </li>
+                            <li class="flex items-start text-sm">
+                                <span class="text-green-400 mr-3 mt-0.5">✓</span>
+                                <span>Custom training (2 hours)</span>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Empire -->
+                <div class="bg-slate-800 rounded-2xl border border-slate-700 hover:border-yellow-500/50 transition overflow-hidden">
+                    <div class="p-8">
+                        <h3 class="text-2xl font-bold mb-2">Empire</h3>
+                        <p class="text-gray-400 text-sm mb-6">Full-scale enterprise automation</p>
+                        <div class="mb-6">
+                            <span class="text-5xl font-bold bg-gradient-to-r from-yellow-400 to-cyan-400 bg-clip-text text-transparent">$500</span>
+                            <span class="text-gray-400">/month</span>
+                        </div>
+                        <div class="text-sm text-gray-400 mb-6">
+                            <span class="bg-gradient-to-r from-yellow-400 to-cyan-400 bg-clip-text text-transparent font-medium">$6,000 total</span> to own completely
+                        </div>
+                        <a href="contact.html?tier=empire" class="block text-center py-4 border-2 border-yellow-500 rounded-xl text-yellow-400 hover:bg-yellow-500 hover:text-slate-900 transition font-semibold">
+                            Contact Sales
+                        </a>
+                    </div>
+                    <div class="bg-slate-900 p-8 border-t border-slate-700">
+                        <h4 class="font-semibold mb-4">Everything in Pro, plus:</h4>
+                        <ul class="space-y-3">
+                            <li class="flex items-start text-sm">
+                                <span class="text-green-400 mr-3 mt-0.5">✓</span>
+                                <span><strong>Premium AI (MARCUS)</strong></span>
+                            </li>
+                            <li class="flex items-start text-sm">
+                                <span class="text-green-400 mr-3 mt-0.5">✓</span>
+                                <span>24/7 phone support</span>
+                            </li>
+                            <li class="flex items-start text-sm">
+                                <span class="text-green-400 mr-3 mt-0.5">✓</span>
+                                <span>Full automation suite</span>
+                            </li>
+                            <li class="flex items-start text-sm">
+                                <span class="text-green-400 mr-3 mt-0.5">✓</span>
+                                <span>Custom integrations</span>
+                            </li>
+                            <li class="flex items-start text-sm">
+                                <span class="text-green-400 mr-3 mt-0.5">✓</span>
+                                <span>White-label options</span>
+                            </li>
+                            <li class="flex items-start text-sm">
+                                <span class="text-green-400 mr-3 mt-0.5">✓</span>
+                                <span>Dedicated account manager</span>
+                            </li>
+                            <li class="flex items-start text-sm">
+                                <span class="text-green-400 mr-3 mt-0.5">✓</span>
+                                <span>Monthly strategy calls</span>
+                            </li>
+                            <li class="flex items-start text-sm">
+                                <span class="text-green-400 mr-3 mt-0.5">✓</span>
+                                <span>Unlimited training hours</span>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Rent-to-Own Explanation -->
+    <section class="py-20 px-4 bg-slate-800/50 mt-16">
+        <div class="max-w-4xl mx-auto">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl md:text-4xl font-bold mb-4">How Rent-to-Own Works</h2>
+                <p class="text-gray-400 text-lg">The smarter way to invest in AI automation</p>
+            </div>
+
+            <div class="bg-slate-900 rounded-2xl p-8 border border-slate-700 mb-8">
+                <div class="grid md:grid-cols-3 gap-8">
+                    <div class="text-center">
+                        <div class="w-16 h-16 bg-yellow-500/20 rounded-full flex items-center justify-center mx-auto mb-4">
+                            <span class="text-2xl font-bold text-yellow-400">1</span>
+                        </div>
+                        <h3 class="font-semibold mb-2">Start Using</h3>
+                        <p class="text-gray-400 text-sm">Begin with your first payment. Your AI is live immediately.</p>
+                    </div>
+                    <div class="text-center">
+                        <div class="w-16 h-16 bg-cyan-500/20 rounded-full flex items-center justify-center mx-auto mb-4">
+                            <span class="text-2xl font-bold text-cyan-400">2</span>
+                        </div>
+                        <h3 class="font-semibold mb-2">Build Equity</h3>
+                        <p class="text-gray-400 text-sm">Each payment builds ownership. Track progress in your portal.</p>
+                    </div>
+                    <div class="text-center">
+                        <div class="w-16 h-16 bg-gradient-to-br from-yellow-500/20 to-cyan-500/20 rounded-full flex items-center justify-center mx-auto mb-4">
+                            <span class="text-2xl font-bold bg-gradient-to-r from-yellow-400 to-cyan-400 bg-clip-text text-transparent">3</span>
+                        </div>
+                        <h3 class="font-semibold mb-2">Own Forever</h3>
+                        <p class="text-gray-400 text-sm">After 12 payments, it's yours. No more monthly fees.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="grid md:grid-cols-2 gap-8">
+                <div class="bg-slate-900 rounded-2xl p-6 border border-slate-700">
+                    <h3 class="font-semibold mb-4 flex items-center">
+                        <span class="text-yellow-400 mr-2">💰</span>
+                        What Happens After 12 Months?
+                    </h3>
+                    <ul class="space-y-3 text-gray-400 text-sm">
+                        <li class="flex items-start">
+                            <span class="text-green-400 mr-2">✓</span>
+                            <span>You fully own your AI system - no more payments</span>
+                        </li>
+                        <li class="flex items-start">
+                            <span class="text-green-400 mr-2">✓</span>
+                            <span>All data and models are transferred to you</span>
+                        </li>
+                        <li class="flex items-start">
+                            <span class="text-green-400 mr-2">✓</span>
+                            <span>Continue using on your own infrastructure</span>
+                        </li>
+                        <li class="flex items-start">
+                            <span class="text-green-400 mr-2">✓</span>
+                            <span>Optional: Low-cost maintenance plan available</span>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="bg-slate-900 rounded-2xl p-6 border border-slate-700">
+                    <h3 class="font-semibold mb-4 flex items-center">
+                        <span class="text-cyan-400 mr-2">🔒</span>
+                        Your Guarantee
+                    </h3>
+                    <ul class="space-y-3 text-gray-400 text-sm">
+                        <li class="flex items-start">
+                            <span class="text-green-400 mr-2">✓</span>
+                            <span>No hidden fees or surprise charges</span>
+                        </li>
+                        <li class="flex items-start">
+                            <span class="text-green-400 mr-2">✓</span>
+                            <span>30-day money-back guarantee</span>
+                        </li>
+                        <li class="flex items-start">
+                            <span class="text-green-400 mr-2">✓</span>
+                            <span>Cancel anytime (pro-rated ownership)</span>
+                        </li>
+                        <li class="flex items-start">
+                            <span class="text-green-400 mr-2">✓</span>
+                            <span>All updates included during ownership period</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Comparison -->
+    <section class="py-20 px-4">
+        <div class="max-w-5xl mx-auto">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl md:text-4xl font-bold mb-4">Why Choose Us?</h2>
+                <p class="text-gray-400 text-lg">Compare our model to traditional SaaS subscriptions</p>
+            </div>
+
+            <div class="overflow-x-auto">
+                <table class="w-full">
+                    <thead>
+                        <tr class="border-b border-slate-700">
+                            <th class="text-left py-4 px-4 font-semibold">Feature</th>
+                            <th class="text-center py-4 px-4 font-semibold text-yellow-400">SCORPION (Ours)</th>
+                            <th class="text-center py-4 px-4 font-semibold text-gray-400">Typical SaaS</th>
+                        </tr>
+                    </thead>
+                    <tbody class="text-sm">
+                        <tr class="border-b border-slate-800">
+                            <td class="py-4 px-4">Ownership</td>
+                            <td class="py-4 px-4 text-center text-green-400">Own after 12 months</td>
+                            <td class="py-4 px-4 text-center text-red-400">Never own</td>
+                        </tr>
+                        <tr class="border-b border-slate-800">
+                            <td class="py-4 px-4">Long-term Cost (3 years)</td>
+                            <td class="py-4 px-4 text-center text-green-400">$1,200-$6,000 total</td>
+                            <td class="py-4 px-4 text-center text-red-400">$3,600-$18,000+</td>
+                        </tr>
+                        <tr class="border-b border-slate-800">
+                            <td class="py-4 px-4">Data Ownership</td>
+                            <td class="py-4 px-4 text-center text-green-400">100% yours</td>
+                            <td class="py-4 px-4 text-center text-red-400">Shared/locked</td>
+                        </tr>
+                        <tr class="border-b border-slate-800">
+                            <td class="py-4 px-4">Customization</td>
+                            <td class="py-4 px-4 text-center text-green-400">Fully customizable</td>
+                            <td class="py-4 px-4 text-center text-yellow-400">Limited</td>
+                        </tr>
+                        <tr class="border-b border-slate-800">
+                            <td class="py-4 px-4">Vendor Lock-in</td>
+                            <td class="py-4 px-4 text-center text-green-400">None after ownership</td>
+                            <td class="py-4 px-4 text-center text-red-400">Permanent</td>
+                        </tr>
+                        <tr class="border-b border-slate-800">
+                            <td class="py-4 px-4">Personal Support</td>
+                            <td class="py-4 px-4 text-center text-green-400">Direct access</td>
+                            <td class="py-4 px-4 text-center text-yellow-400">Ticket system</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </section>
+
+    <!-- FAQ -->
+    <section class="py-20 px-4 bg-slate-800/50">
+        <div class="max-w-3xl mx-auto">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl md:text-4xl font-bold mb-4">Frequently Asked Questions</h2>
+            </div>
+
+            <div class="space-y-4">
+                <div class="bg-slate-900 rounded-xl border border-slate-700 overflow-hidden">
+                    <button class="faq-toggle w-full text-left p-6 flex justify-between items-center hover:bg-slate-800/50 transition">
+                        <span class="font-semibold">Can I cancel at any time?</span>
+                        <svg class="w-5 h-5 transform transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+                        </svg>
+                    </button>
+                    <div class="faq-content hidden px-6 pb-6">
+                        <p class="text-gray-400">Yes! If you cancel, you keep pro-rated ownership based on payments made. For example, if you've paid 6 months on the Pro plan, you own 50% and can purchase the remainder later or receive your trained model data.</p>
+                    </div>
+                </div>
+
+                <div class="bg-slate-900 rounded-xl border border-slate-700 overflow-hidden">
+                    <button class="faq-toggle w-full text-left p-6 flex justify-between items-center hover:bg-slate-800/50 transition">
+                        <span class="font-semibold">What happens if I need to upgrade mid-contract?</span>
+                        <svg class="w-5 h-5 transform transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+                        </svg>
+                    </button>
+                    <div class="faq-content hidden px-6 pb-6">
+                        <p class="text-gray-400">Upgrades are seamless! Your existing payments apply to your new tier. We'll calculate the difference and adjust your 12-month ownership timeline accordingly.</p>
+                    </div>
+                </div>
+
+                <div class="bg-slate-900 rounded-xl border border-slate-700 overflow-hidden">
+                    <button class="faq-toggle w-full text-left p-6 flex justify-between items-center hover:bg-slate-800/50 transition">
+                        <span class="font-semibold">Do I need technical knowledge to use the AI?</span>
+                        <svg class="w-5 h-5 transform transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+                        </svg>
+                    </button>
+                    <div class="faq-content hidden px-6 pb-6">
+                        <p class="text-gray-400">Not at all! Our AI systems are designed to be user-friendly. We provide training and ongoing support. Plus, after ownership, we can help you maintain it with an optional low-cost maintenance plan.</p>
+                    </div>
+                </div>
+
+                <div class="bg-slate-900 rounded-xl border border-slate-700 overflow-hidden">
+                    <button class="faq-toggle w-full text-left p-6 flex justify-between items-center hover:bg-slate-800/50 transition">
+                        <span class="font-semibold">What makes your AI different from ChatGPT or similar?</span>
+                        <svg class="w-5 h-5 transform transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+                        </svg>
+                    </button>
+                    <div class="faq-content hidden px-6 pb-6">
+                        <p class="text-gray-400">Our AI is customized for YOUR business. It knows your products, services, and processes. It's trained on your data and designed for your specific use cases. Plus, you eventually OWN it - no ongoing subscription to big tech companies.</p>
+                    </div>
+                </div>
+
+                <div class="bg-slate-900 rounded-xl border border-slate-700 overflow-hidden">
+                    <button class="faq-toggle w-full text-left p-6 flex justify-between items-center hover:bg-slate-800/50 transition">
+                        <span class="font-semibold">How long does setup take?</span>
+                        <svg class="w-5 h-5 transform transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+                        </svg>
+                    </button>
+                    <div class="faq-content hidden px-6 pb-6">
+                        <p class="text-gray-400">Basic setup is same-day. Full customization and training typically takes 1-2 weeks depending on complexity. Your AI is functional from day one and improves as we fine-tune it together.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA -->
+    <section class="py-20 px-4">
+        <div class="max-w-4xl mx-auto text-center">
+            <h2 class="text-3xl md:text-4xl font-bold mb-4">Ready to Own Your AI?</h2>
+            <p class="text-gray-400 text-lg mb-8">Start building equity today. Your AI works for you while you pay toward ownership.</p>
+            <div class="flex flex-col sm:flex-row gap-4 justify-center">
+                <a href="contact.html" class="px-8 py-4 bg-gradient-to-r from-yellow-500 to-yellow-600 rounded-xl font-semibold text-lg hover:from-yellow-400 hover:to-yellow-500 transition">
+                    Get Started Today
+                </a>
+                <a href="https://wa.me/50312345678" target="_blank" class="px-8 py-4 bg-green-600 rounded-xl font-semibold text-lg hover:bg-green-500 transition flex items-center justify-center">
+                    <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+                    Chat on WhatsApp
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="py-12 px-4 bg-slate-900 border-t border-slate-800">
+        <div class="max-w-7xl mx-auto">
+            <div class="flex flex-col md:flex-row justify-between items-center text-gray-400 text-sm">
+                <div class="flex items-center space-x-2 mb-4 md:mb-0">
+                    <span class="text-2xl">🦂</span>
+                    <span class="text-xl font-bold text-white">OMETEOLT</span>
+                </div>
+                <p>© 2024 Ometeolt. Powered by SCORPION AI Systems.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="js/main.js"></script>
+    <script>
+        // FAQ Accordion
+        document.querySelectorAll('.faq-toggle').forEach(button => {
+            button.addEventListener('click', () => {
+                const content = button.nextElementSibling;
+                const icon = button.querySelector('svg');
+
+                content.classList.toggle('hidden');
+                icon.classList.toggle('rotate-180');
+            });
+        });
+    </script>
+</body>
+</html>

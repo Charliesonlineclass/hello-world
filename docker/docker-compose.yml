@@ -1,0 +1,72 @@
+# SCORPION AI - Pandora's Castle Docker Compose
+version: '3.8'
+
+services:
+  # Main Castle Application
+  castle:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile
+    container_name: pandoras-castle
+    ports:
+      - "8080:8080"   # Website
+      - "9999:9999"   # API
+    volumes:
+      - castle-data:/app/data
+      - ../website:/app/website:ro
+      - ../dashboard:/app/dashboard:ro
+      - ../portal:/app/portal:ro
+    environment:
+      - API_PORT=9999
+      - WEBSITE_PORT=8080
+      - OLLAMA_HOST=http://ollama:11434
+      - JWT_SECRET=${JWT_SECRET:-scorpion-castle-secret}
+    depends_on:
+      - ollama
+    networks:
+      - castle-net
+    restart: unless-stopped
+
+  # Ollama AI Server
+  ollama:
+    image: ollama/ollama:latest
+    container_name: ollama-ai
+    ports:
+      - "11434:11434"
+    volumes:
+      - ollama-data:/root/.ollama
+    networks:
+      - castle-net
+    restart: unless-stopped
+    # Uncomment for GPU support
+    # deploy:
+    #   resources:
+    #     reservations:
+    #       devices:
+    #         - capabilities: [gpu]
+
+  # Optional: Nginx reverse proxy
+  # nginx:
+  #   image: nginx:alpine
+  #   container_name: castle-proxy
+  #   ports:
+  #     - "80:80"
+  #     - "443:443"
+  #   volumes:
+  #     - ./nginx.conf:/etc/nginx/nginx.conf:ro
+  #     - ./ssl:/etc/nginx/ssl:ro
+  #   depends_on:
+  #     - castle
+  #   networks:
+  #     - castle-net
+  #   restart: unless-stopped
+
+networks:
+  castle-net:
+    driver: bridge
+
+volumes:
+  castle-data:
+    driver: local
+  ollama-data:
+    driver: local
