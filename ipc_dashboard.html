@@ -1,0 +1,874 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IPC Solutions Performance System - Powered by SCORPION AI</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        :root {
+            --scorpion-orange: #ff6b35;
+            --scorpion-gold: #ffc857;
+            --dark-bg: #0a0a0f;
+            --card-bg: #14141f;
+            --card-border: #2a2a3f;
+            --text-primary: #ffffff;
+            --text-secondary: #a0a0b0;
+            --success: #00d97e;
+            --warning: #f6c343;
+            --danger: #e63757;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: var(--dark-bg);
+            color: var(--text-primary);
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        /* Header */
+        header {
+            background: linear-gradient(135deg, #1a1a2e 0%, #0a0a0f 100%);
+            border-bottom: 3px solid var(--scorpion-orange);
+            padding: 25px 0;
+            margin-bottom: 30px;
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .logo {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--scorpion-orange);
+        }
+
+        .logo span { color: var(--text-primary); }
+
+        .powered-by {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .scorpion-icon {
+            font-size: 1.5rem;
+        }
+
+        .live-badge {
+            background: var(--success);
+            color: #000;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
+        }
+
+        /* Cards */
+        .card {
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 12px;
+            padding: 25px;
+            margin-bottom: 25px;
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid var(--card-border);
+        }
+
+        .card-title {
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: var(--scorpion-orange);
+        }
+
+        /* Grid Layout */
+        .grid-2 {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 25px;
+        }
+
+        .grid-3 {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 25px;
+        }
+
+        /* Leaderboard Table */
+        .leaderboard-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .leaderboard-table th {
+            text-align: left;
+            padding: 15px;
+            background: #1a1a2e;
+            color: var(--scorpion-gold);
+            font-weight: 600;
+            border-bottom: 2px solid var(--scorpion-orange);
+        }
+
+        .leaderboard-table td {
+            padding: 15px;
+            border-bottom: 1px solid var(--card-border);
+        }
+
+        .leaderboard-table tr:hover {
+            background: rgba(255, 107, 53, 0.1);
+        }
+
+        .top-performer {
+            background: linear-gradient(90deg, rgba(255, 107, 53, 0.2) 0%, transparent 100%) !important;
+            border-left: 4px solid var(--scorpion-orange);
+        }
+
+        .top-performer td:first-child::before {
+            content: "🏆 ";
+        }
+
+        .rate-green { color: var(--success); font-weight: 700; }
+        .rate-yellow { color: var(--warning); font-weight: 600; }
+        .rate-red { color: var(--danger); font-weight: 600; }
+
+        .agent-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: var(--scorpion-orange);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 10px;
+            font-weight: 700;
+        }
+
+        /* Lead Score Meter */
+        .score-meter {
+            position: relative;
+            height: 30px;
+            background: #1a1a2e;
+            border-radius: 15px;
+            overflow: hidden;
+            margin: 20px 0;
+        }
+
+        .score-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--danger), var(--warning), var(--success));
+            border-radius: 15px;
+            transition: width 0.5s ease;
+        }
+
+        .score-value {
+            position: absolute;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-weight: 700;
+            font-size: 1.1rem;
+        }
+
+        .lead-indicators {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+            margin-top: 15px;
+        }
+
+        .indicator {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 15px;
+            background: #1a1a2e;
+            border-radius: 8px;
+            font-size: 0.9rem;
+        }
+
+        .indicator.hot { border-left: 3px solid var(--success); }
+        .indicator.warm { border-left: 3px solid var(--warning); }
+        .indicator.cold { border-left: 3px solid var(--danger); }
+
+        /* AI Chat Interface */
+        .chat-container {
+            background: #0d0d15;
+            border-radius: 10px;
+            overflow: hidden;
+            height: 350px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .chat-header {
+            background: linear-gradient(135deg, var(--scorpion-orange), #ff8c5a);
+            padding: 15px;
+            font-weight: 600;
+        }
+
+        .chat-messages {
+            flex: 1;
+            padding: 15px;
+            overflow-y: auto;
+        }
+
+        .message {
+            margin-bottom: 15px;
+            display: flex;
+            gap: 10px;
+        }
+
+        .message.agent { flex-direction: row-reverse; }
+
+        .message-content {
+            max-width: 80%;
+            padding: 12px 16px;
+            border-radius: 12px;
+            font-size: 0.9rem;
+        }
+
+        .message.ai .message-content {
+            background: #1a1a2e;
+            border: 1px solid var(--scorpion-orange);
+        }
+
+        .message.agent .message-content {
+            background: var(--scorpion-orange);
+            color: #000;
+        }
+
+        .chat-input {
+            display: flex;
+            padding: 15px;
+            gap: 10px;
+            background: #1a1a2e;
+        }
+
+        .chat-input input {
+            flex: 1;
+            padding: 12px;
+            border: 1px solid var(--card-border);
+            border-radius: 8px;
+            background: var(--dark-bg);
+            color: var(--text-primary);
+        }
+
+        .chat-input button {
+            padding: 12px 25px;
+            background: var(--scorpion-orange);
+            border: none;
+            border-radius: 8px;
+            color: #000;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        /* Charts */
+        .chart-container {
+            position: relative;
+            height: 300px;
+        }
+
+        /* ROI Calculator */
+        .calc-row {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .calc-row label {
+            flex: 1;
+            color: var(--text-secondary);
+        }
+
+        .calc-row input {
+            width: 100px;
+            padding: 12px;
+            border: 1px solid var(--card-border);
+            border-radius: 8px;
+            background: #1a1a2e;
+            color: var(--text-primary);
+            font-size: 1.1rem;
+            text-align: center;
+        }
+
+        .roi-result {
+            background: linear-gradient(135deg, rgba(0, 217, 126, 0.2), rgba(0, 217, 126, 0.05));
+            border: 2px solid var(--success);
+            border-radius: 12px;
+            padding: 25px;
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .roi-number {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--success);
+        }
+
+        .roi-label {
+            color: var(--text-secondary);
+            margin-top: 5px;
+        }
+
+        /* Pricing */
+        .pricing-card {
+            background: linear-gradient(135deg, #1a1a2e 0%, #14141f 100%);
+            border: 2px solid var(--scorpion-orange);
+            border-radius: 16px;
+            padding: 35px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .pricing-card::before {
+            content: "BEST VALUE";
+            position: absolute;
+            top: 20px;
+            right: -35px;
+            background: var(--success);
+            color: #000;
+            padding: 5px 40px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            transform: rotate(45deg);
+        }
+
+        .price {
+            font-size: 4rem;
+            font-weight: 700;
+            color: var(--scorpion-orange);
+        }
+
+        .price span {
+            font-size: 1.2rem;
+            color: var(--text-secondary);
+        }
+
+        .price-subtitle {
+            color: var(--text-secondary);
+            margin-bottom: 25px;
+        }
+
+        .features-list {
+            text-align: left;
+            margin: 25px 0;
+        }
+
+        .features-list li {
+            padding: 10px 0;
+            border-bottom: 1px solid var(--card-border);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .features-list li::before {
+            content: "✓";
+            color: var(--success);
+            font-weight: 700;
+        }
+
+        .cta-button {
+            display: block;
+            width: 100%;
+            padding: 18px;
+            background: linear-gradient(135deg, var(--scorpion-orange), #ff8c5a);
+            border: none;
+            border-radius: 10px;
+            color: #000;
+            font-size: 1.1rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+        .cta-button:hover {
+            transform: scale(1.02);
+        }
+
+        .payback-note {
+            margin-top: 20px;
+            padding: 15px;
+            background: rgba(0, 217, 126, 0.1);
+            border-radius: 8px;
+            color: var(--success);
+            font-weight: 600;
+        }
+
+        /* Footer */
+        footer {
+            text-align: center;
+            padding: 40px 20px;
+            margin-top: 40px;
+            border-top: 1px solid var(--card-border);
+        }
+
+        .tagline {
+            font-size: 1.4rem;
+            color: var(--scorpion-gold);
+            font-weight: 600;
+            margin-bottom: 15px;
+        }
+
+        .footer-brand {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .grid-2, .grid-3 { grid-template-columns: 1fr; }
+            .header-content { justify-content: center; text-align: center; }
+            .price { font-size: 3rem; }
+            .card { padding: 15px; }
+        }
+
+        /* AI Insight Box */
+        .ai-insight {
+            background: linear-gradient(135deg, rgba(255, 107, 53, 0.15), transparent);
+            border-left: 4px solid var(--scorpion-orange);
+            padding: 15px 20px;
+            margin: 15px 0;
+            border-radius: 0 8px 8px 0;
+        }
+
+        .ai-insight-title {
+            color: var(--scorpion-orange);
+            font-weight: 600;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .stat-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+
+        .stat-card {
+            background: #1a1a2e;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--scorpion-orange);
+        }
+
+        .stat-label {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            margin-top: 5px;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <div class="header-content">
+                <div class="logo">
+                    <span class="scorpion-icon">🦂</span>
+                    IPC Solutions <span>Performance System</span>
+                </div>
+                <div class="powered-by">
+                    Powered by <strong style="color: var(--scorpion-orange);">SCORPION AI</strong>
+                </div>
+                <div class="live-badge">● LIVE DEMO</div>
+            </div>
+        </div>
+    </header>
+
+    <main class="container">
+        <!-- Quick Stats -->
+        <div class="stat-cards">
+            <div class="stat-card">
+                <div class="stat-number">147</div>
+                <div class="stat-label">Calls Today</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number">23</div>
+                <div class="stat-label">Appointments Set</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number">15.6%</div>
+                <div class="stat-label">Team Conversion</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number">$34,500</div>
+                <div class="stat-label">Pipeline Value</div>
+            </div>
+        </div>
+
+        <!-- Section 1: Agent Leaderboard -->
+        <div class="card">
+            <div class="card-header">
+                <h2 class="card-title">🏆 Agent Leaderboard - Today</h2>
+                <span style="color: var(--text-secondary);">Updated: Just now</span>
+            </div>
+            <table class="leaderboard-table">
+                <thead>
+                    <tr>
+                        <th>Agent</th>
+                        <th>Calls Today</th>
+                        <th>Appointments</th>
+                        <th>Conversion Rate</th>
+                        <th>AI Score</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr class="top-performer">
+                        <td><span class="agent-avatar">C</span> Carlos Martinez</td>
+                        <td>38</td>
+                        <td>9</td>
+                        <td class="rate-green">23.6%</td>
+                        <td>⭐ 98</td>
+                    </tr>
+                    <tr>
+                        <td><span class="agent-avatar">S</span> Sarah Johnson</td>
+                        <td>32</td>
+                        <td>6</td>
+                        <td class="rate-green">18.7%</td>
+                        <td>⭐ 92</td>
+                    </tr>
+                    <tr>
+                        <td><span class="agent-avatar">M</span> Mike Thompson</td>
+                        <td>28</td>
+                        <td>4</td>
+                        <td class="rate-yellow">14.3%</td>
+                        <td>⭐ 85</td>
+                    </tr>
+                    <tr>
+                        <td><span class="agent-avatar">J</span> Jessica Lee</td>
+                        <td>25</td>
+                        <td>3</td>
+                        <td class="rate-yellow">12.0%</td>
+                        <td>⭐ 78</td>
+                    </tr>
+                    <tr>
+                        <td><span class="agent-avatar">D</span> David Wilson</td>
+                        <td>24</td>
+                        <td>1</td>
+                        <td class="rate-red">4.2%</td>
+                        <td>⭐ 62</td>
+                    </tr>
+                </tbody>
+            </table>
+            <div class="ai-insight">
+                <div class="ai-insight-title">🤖 AI Insight</div>
+                Carlos is using the recommended callback timing and objection scripts.
+                His conversion rate is <strong>51% higher</strong> than team average.
+            </div>
+        </div>
+
+        <!-- Section 2 & 3: Lead Scoring + AI Assistant -->
+        <div class="grid-2">
+            <!-- Lead Scoring Panel -->
+            <div class="card">
+                <div class="card-header">
+                    <h2 class="card-title">🎯 Lead Scoring Panel</h2>
+                </div>
+                <div style="margin-bottom: 20px;">
+                    <strong>Current Lead:</strong> Robert Chen - Plumbing Service Inquiry
+                </div>
+                <div class="score-meter">
+                    <div class="score-fill" style="width: 87%;"></div>
+                    <span class="score-value">87</span>
+                </div>
+                <div class="lead-indicators">
+                    <div class="indicator hot">🔥 High Intent</div>
+                    <div class="indicator hot">📱 Mobile User</div>
+                    <div class="indicator warm">🕐 Peak Hours</div>
+                    <div class="indicator hot">💰 High Value Zip</div>
+                </div>
+                <div class="ai-insight">
+                    <div class="ai-insight-title">🤖 Smart Routing</div>
+                    <strong>Hot leads go to top performers.</strong><br>
+                    This lead scored 87/100 → Routing to Carlos (23.6% conversion).<br>
+                    <span style="color: var(--success);">+$1,500 expected value</span>
+                </div>
+            </div>
+
+            <!-- AI Assistant Preview -->
+            <div class="card">
+                <div class="card-header">
+                    <h2 class="card-title">🤖 HERMES AI Assistant</h2>
+                </div>
+                <div class="chat-container">
+                    <div class="chat-header">
+                        💬 Live Coaching Session
+                    </div>
+                    <div class="chat-messages">
+                        <div class="message agent">
+                            <div class="message-content">Customer says they need to "think about it"</div>
+                        </div>
+                        <div class="message ai">
+                            <div class="message-content">
+                                <strong>Try this:</strong> "I completely understand. Most of our best customers said the same thing. What specifically would you like to think about - is it the timing, the investment, or something else?"
+                            </div>
+                        </div>
+                        <div class="message agent">
+                            <div class="message-content">They mentioned the price seems high</div>
+                        </div>
+                        <div class="message ai">
+                            <div class="message-content">
+                                <strong>Reframe value:</strong> "I hear you. Let me ask - what would one water damage incident cost you? Our customers typically save 10x what they invest with us. Plus, I can lock in this rate before our January increase."
+                            </div>
+                        </div>
+                    </div>
+                    <div class="chat-input">
+                        <input type="text" placeholder="Ask HERMES for help...">
+                        <button>Send</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Section 4: Analytics -->
+        <div class="card">
+            <div class="card-header">
+                <h2 class="card-title">📊 Performance Analytics</h2>
+            </div>
+            <div class="grid-2">
+                <div>
+                    <h3 style="margin-bottom: 15px; color: var(--text-secondary);">Calls by Hour - Today</h3>
+                    <div class="chart-container">
+                        <canvas id="callsChart"></canvas>
+                    </div>
+                </div>
+                <div>
+                    <h3 style="margin-bottom: 15px; color: var(--text-secondary);">Best Callback Times (AI Optimized)</h3>
+                    <div class="chart-container">
+                        <canvas id="callbackChart"></canvas>
+                    </div>
+                </div>
+            </div>
+            <div class="ai-insight">
+                <div class="ai-insight-title">🤖 AI Learning</div>
+                SCORPION AI has identified that <strong>Tuesday 10-11am</strong> and <strong>Thursday 2-3pm</strong>
+                have the highest connection rates for your market. Leads contacted during these windows convert
+                <strong>34% better</strong>.
+            </div>
+        </div>
+
+        <!-- Section 5: ROI Calculator -->
+        <div class="card">
+            <div class="card-header">
+                <h2 class="card-title">💰 ROI Calculator</h2>
+            </div>
+            <div class="grid-2">
+                <div>
+                    <div class="calc-row">
+                        <label>Current appointments per week:</label>
+                        <input type="number" id="currentAppts" value="15" min="0">
+                    </div>
+                    <div class="calc-row">
+                        <label>Number of agents:</label>
+                        <input type="number" id="agentCount" value="5" min="1">
+                    </div>
+                    <div class="calc-row">
+                        <label>Average job value ($):</label>
+                        <input type="number" id="jobValue" value="1500" min="0">
+                    </div>
+                    <button class="cta-button" onclick="calculateROI()" style="margin-top: 20px;">
+                        Calculate My ROI →
+                    </button>
+                </div>
+                <div>
+                    <div class="roi-result">
+                        <div style="margin-bottom: 20px;">
+                            <div style="color: var(--text-secondary); font-size: 0.9rem;">With SCORPION AI</div>
+                            <div class="roi-number" id="extraAppts">+4</div>
+                            <div class="roi-label">Extra Appointments/Week</div>
+                        </div>
+                        <div style="border-top: 1px solid var(--card-border); padding-top: 20px;">
+                            <div style="color: var(--text-secondary); font-size: 0.9rem;">Monthly Revenue Increase</div>
+                            <div class="roi-number" id="revenueIncrease">+$24,000</div>
+                        </div>
+                        <div style="margin-top: 20px; color: var(--text-secondary);">
+                            Cost: $200/mo → <span style="color: var(--success); font-weight: 700;">120x ROI</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Section 6: Pricing -->
+        <div class="grid-3">
+            <div></div>
+            <div class="pricing-card">
+                <div class="price">$200<span>/month</span></div>
+                <div class="price-subtitle">For your entire team • Unlimited agents</div>
+
+                <ul class="features-list">
+                    <li>AI-Powered Lead Scoring</li>
+                    <li>Smart Lead Routing</li>
+                    <li>Real-time Performance Dashboard</li>
+                    <li>HERMES AI Assistant</li>
+                    <li>Objection Handling Scripts</li>
+                    <li>Optimal Callback Timing</li>
+                    <li>Weekly Performance Reports</li>
+                    <li>Unlimited Team Members</li>
+                </ul>
+
+                <button class="cta-button">Start Free Trial →</button>
+
+                <div class="payback-note">
+                    💡 If it books just 2 extra appointments per week, it pays for itself 30x over
+                </div>
+            </div>
+            <div></div>
+        </div>
+    </main>
+
+    <footer>
+        <div class="tagline">
+            🦂 SCORPION AI — Because your best performer shouldn't be your only performer
+        </div>
+        <div class="footer-brand">
+            IPC Solutions Performance System • Powered by SCORPION AI • © 2025
+        </div>
+    </footer>
+
+    <script>
+        // Calls by Hour Chart
+        const callsCtx = document.getElementById('callsChart').getContext('2d');
+        new Chart(callsCtx, {
+            type: 'bar',
+            data: {
+                labels: ['8am', '9am', '10am', '11am', '12pm', '1pm', '2pm', '3pm', '4pm', '5pm'],
+                datasets: [{
+                    label: 'Calls',
+                    data: [8, 15, 22, 18, 12, 14, 21, 19, 11, 7],
+                    backgroundColor: 'rgba(255, 107, 53, 0.7)',
+                    borderColor: '#ff6b35',
+                    borderWidth: 2,
+                    borderRadius: 6
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { display: false }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        grid: { color: 'rgba(255,255,255,0.1)' },
+                        ticks: { color: '#a0a0b0' }
+                    },
+                    x: {
+                        grid: { display: false },
+                        ticks: { color: '#a0a0b0' }
+                    }
+                }
+            }
+        });
+
+        // Callback Success Rate Chart
+        const callbackCtx = document.getElementById('callbackChart').getContext('2d');
+        new Chart(callbackCtx, {
+            type: 'line',
+            data: {
+                labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri'],
+                datasets: [{
+                    label: 'Morning (9-11am)',
+                    data: [42, 58, 45, 52, 38],
+                    borderColor: '#00d97e',
+                    backgroundColor: 'rgba(0, 217, 126, 0.1)',
+                    fill: true,
+                    tension: 0.4
+                }, {
+                    label: 'Afternoon (2-4pm)',
+                    data: [35, 42, 48, 55, 32],
+                    borderColor: '#ffc857',
+                    backgroundColor: 'rgba(255, 200, 87, 0.1)',
+                    fill: true,
+                    tension: 0.4
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        labels: { color: '#a0a0b0' }
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        max: 70,
+                        grid: { color: 'rgba(255,255,255,0.1)' },
+                        ticks: {
+                            color: '#a0a0b0',
+                            callback: function(value) { return value + '%'; }
+                        }
+                    },
+                    x: {
+                        grid: { display: false },
+                        ticks: { color: '#a0a0b0' }
+                    }
+                }
+            }
+        });
+
+        // ROI Calculator
+        function calculateROI() {
+            const currentAppts = parseInt(document.getElementById('currentAppts').value) || 15;
+            const agentCount = parseInt(document.getElementById('agentCount').value) || 5;
+            const jobValue = parseInt(document.getElementById('jobValue').value) || 1500;
+
+            // AI boost: typically 15-25% improvement
+            const aiBoostPercent = 0.20;
+            const extraApptsWeek = Math.round(currentAppts * aiBoostPercent);
+            const monthlyIncrease = extraApptsWeek * 4 * jobValue;
+
+            document.getElementById('extraAppts').textContent = '+' + extraApptsWeek;
+            document.getElementById('revenueIncrease').textContent = '+$' + monthlyIncrease.toLocaleString();
+        }
+
+        // Initial calculation
+        calculateROI();
+    </script>
+</body>
+</html>
