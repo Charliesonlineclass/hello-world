@@ -1,0 +1,151 @@
+<!-- ═══════════════════════════════════════════════════════════════════
+     12 BABIES SIDEBAR COMPONENT
+     Collapsible sidebar showing all 12 SCORPION AI babies
+     ═══════════════════════════════════════════════════════════════════ -->
+
+<aside class="babies-sidebar" id="babiesSidebar">
+    <div class="sidebar-header">
+        <span>🦂 12 BABIES</span>
+        <button class="toggle-sidebar" onclick="toggleSidebar()" title="Toggle Sidebar">◀</button>
+    </div>
+
+    <div class="babies-list">
+        <!-- HERMES - Sales & Communication -->
+        <div class="baby-item online" onclick="openBabyChat('HERMES')" title="Sales AI Assistant">
+            <span class="baby-icon">💬</span>
+            <span class="baby-name">HERMES</span>
+            <span class="status-dot"></span>
+        </div>
+
+        <!-- MARCUS - Analytics & Strategy -->
+        <div class="baby-item online" onclick="openBabyChat('MARCUS')" title="Analytics & Strategy AI">
+            <span class="baby-icon">🧠</span>
+            <span class="baby-name">MARCUS</span>
+            <span class="status-dot"></span>
+        </div>
+
+        <!-- VULCAN - Construction & Building -->
+        <div class="baby-item online" onclick="openBabyChat('VULCAN')" title="Construction AI">
+            <span class="baby-icon">🔨</span>
+            <span class="baby-name">VULCAN</span>
+            <span class="status-dot"></span>
+        </div>
+
+        <!-- APOLLO - Creative & Design -->
+        <div class="baby-item online" onclick="openBabyChat('APOLLO')" title="Creative AI">
+            <span class="baby-icon">🎨</span>
+            <span class="baby-name">APOLLO</span>
+            <span class="status-dot"></span>
+        </div>
+
+        <!-- ATHENA - Security & Defense -->
+        <div class="baby-item online" onclick="openBabyChat('ATHENA')" title="Security AI">
+            <span class="baby-icon">🛡️</span>
+            <span class="baby-name">ATHENA</span>
+            <span class="status-dot"></span>
+        </div>
+
+        <!-- MERCURY - Communication & Speed -->
+        <div class="baby-item online" onclick="openBabyChat('MERCURY')" title="Quick Communication AI">
+            <span class="baby-icon">📞</span>
+            <span class="baby-name">MERCURY</span>
+            <span class="status-dot"></span>
+        </div>
+
+        <!-- DIANA - Research & Discovery -->
+        <div class="baby-item offline" onclick="openBabyChat('DIANA')" title="Research AI (Offline)">
+            <span class="baby-icon">🔍</span>
+            <span class="baby-name">DIANA</span>
+            <span class="status-dot"></span>
+        </div>
+
+        <!-- NEPTUNE - Finance & Wealth -->
+        <div class="baby-item online" onclick="openBabyChat('NEPTUNE')" title="Finance AI">
+            <span class="baby-icon">💰</span>
+            <span class="baby-name">NEPTUNE</span>
+            <span class="status-dot"></span>
+        </div>
+
+        <!-- VESTA - Scheduling & Home -->
+        <div class="baby-item online" onclick="openBabyChat('VESTA')" title="Scheduling AI">
+            <span class="baby-icon">📅</span>
+            <span class="baby-name">VESTA</span>
+            <span class="status-dot"></span>
+        </div>
+
+        <!-- JUNO - HR & Relationships -->
+        <div class="baby-item offline" onclick="openBabyChat('JUNO')" title="HR AI (Offline)">
+            <span class="baby-icon">👥</span>
+            <span class="baby-name">JUNO</span>
+            <span class="status-dot"></span>
+        </div>
+
+        <!-- CERES - Support & Nurturing -->
+        <div class="baby-item online" onclick="openBabyChat('CERES')" title="Support AI">
+            <span class="baby-icon">🎧</span>
+            <span class="baby-name">CERES</span>
+            <span class="status-dot"></span>
+        </div>
+
+        <!-- TALUS - Protection & Guardian -->
+        <div class="baby-item online" onclick="openBabyChat('TALUS')" title="Guardian AI">
+            <span class="baby-icon">🛡️</span>
+            <span class="baby-name">TALUS</span>
+            <span class="status-dot"></span>
+        </div>
+    </div>
+
+    <div class="sidebar-footer">
+        <div class="babies-status-summary">
+            <span class="online-count">🟢 10 Online</span>
+            <span class="offline-count">🔴 2 Offline</span>
+        </div>
+        <button class="chat-all-btn" onclick="openBabyChat('ALL')">
+            💬 Chat with AI
+        </button>
+    </div>
+</aside>
+
+<!--
+BABY DESCRIPTIONS:
+═══════════════════════════════════════════════════════════════════
+
+1. HERMES   💬  Sales & Communication - Handles objection scripts, sales coaching
+2. MARCUS   🧠  Analytics & Strategy - Data analysis, business intelligence
+3. VULCAN   🔨  Construction - Project management, building estimates
+4. APOLLO   🎨  Creative - Design, branding, marketing materials
+5. ATHENA   🛡️  Security - System protection, compliance, audits
+6. MERCURY  📞  Communication - Quick responses, notifications
+7. DIANA    🔍  Research - Market research, competitor analysis
+8. NEPTUNE  💰  Finance - Accounting, invoicing, financial planning
+9. VESTA    📅  Scheduling - Calendar management, appointments
+10. JUNO    👥  HR - Hiring, team management, performance reviews
+11. CERES   🎧  Support - Customer service, help desk
+12. TALUS   🛡️  Guardian - Backup, monitoring, system health
+
+═══════════════════════════════════════════════════════════════════
+-->
+
+<style>
+/* Additional styles specific to babies panel standalone component */
+.sidebar-footer {
+    padding: 15px;
+    border-top: 1px solid var(--border-color, #2a2a3f);
+}
+
+.babies-status-summary {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.75rem;
+    margin-bottom: 10px;
+    color: var(--text-secondary, #8a8a9a);
+}
+
+.online-count {
+    color: var(--green, #00d97e);
+}
+
+.offline-count {
+    color: var(--red, #e74c3c);
+}
+</style>

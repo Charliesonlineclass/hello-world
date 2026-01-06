@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SCORPION Command Center</title>
+    <link rel="stylesheet" href="css/command.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <!-- HEADER -->
+    <header class="main-header">
+        <div class="header-left">
+            <span class="logo">🦂 SCORPION COMMAND CENTER</span>
+        </div>
+        <nav class="breadcrumb" id="breadcrumb">
+            <span class="crumb active" data-view="eyes" onclick="navigateTo('eyes')">Home</span>
+        </nav>
+        <div class="header-right">
+            <span class="user-name">Carlos Escamilla</span>
+            <button class="icon-btn" title="Settings">⚙️</button>
+            <button class="icon-btn notification" title="Notifications">🔔<span class="badge">3</span></button>
+        </div>
+    </header>
+
+    <!-- BABIES SIDEBAR -->
+    <aside class="babies-sidebar" id="babiesSidebar">
+        <div class="sidebar-header">
+            <span>🦂 12 BABIES</span>
+            <button class="toggle-sidebar" onclick="toggleSidebar()">◀</button>
+        </div>
+        <div class="babies-list">
+            <div class="baby-item online" onclick="openBabyChat('HERMES')">
+                <span class="baby-icon">💬</span>
+                <span class="baby-name">HERMES</span>
+                <span class="status-dot"></span>
+            </div>
+            <div class="baby-item online" onclick="openBabyChat('MARCUS')">
+                <span class="baby-icon">🧠</span>
+                <span class="baby-name">MARCUS</span>
+                <span class="status-dot"></span>
+            </div>
+            <div class="baby-item online" onclick="openBabyChat('VULCAN')">
+                <span class="baby-icon">🔨</span>
+                <span class="baby-name">VULCAN</span>
+                <span class="status-dot"></span>
+            </div>
+            <div class="baby-item online" onclick="openBabyChat('APOLLO')">
+                <span class="baby-icon">🎨</span>
+                <span class="baby-name">APOLLO</span>
+                <span class="status-dot"></span>
+            </div>
+            <div class="baby-item online" onclick="openBabyChat('ATHENA')">
+                <span class="baby-icon">🛡️</span>
+                <span class="baby-name">ATHENA</span>
+                <span class="status-dot"></span>
+            </div>
+            <div class="baby-item online" onclick="openBabyChat('MERCURY')">
+                <span class="baby-icon">📞</span>
+                <span class="baby-name">MERCURY</span>
+                <span class="status-dot"></span>
+            </div>
+            <div class="baby-item offline" onclick="openBabyChat('DIANA')">
+                <span class="baby-icon">🔍</span>
+                <span class="baby-name">DIANA</span>
+                <span class="status-dot"></span>
+            </div>
+            <div class="baby-item online" onclick="openBabyChat('NEPTUNE')">
+                <span class="baby-icon">💰</span>
+                <span class="baby-name">NEPTUNE</span>
+                <span class="status-dot"></span>
+            </div>
+            <div class="baby-item online" onclick="openBabyChat('VESTA')">
+                <span class="baby-icon">📅</span>
+                <span class="baby-name">VESTA</span>
+                <span class="status-dot"></span>
+            </div>
+            <div class="baby-item offline" onclick="openBabyChat('JUNO')">
+                <span class="baby-icon">👥</span>
+                <span class="baby-name">JUNO</span>
+                <span class="status-dot"></span>
+            </div>
+            <div class="baby-item online" onclick="openBabyChat('CERES')">
+                <span class="baby-icon">🎧</span>
+                <span class="baby-name">CERES</span>
+                <span class="status-dot"></span>
+            </div>
+            <div class="baby-item online" onclick="openBabyChat('TALUS')">
+                <span class="baby-icon">🛡️</span>
+                <span class="baby-name">TALUS</span>
+                <span class="status-dot"></span>
+            </div>
+        </div>
+        <button class="chat-all-btn" onclick="openBabyChat('ALL')">💬 Chat with AI</button>
+    </aside>
+
+    <!-- MAIN CONTENT AREA -->
+    <main class="main-content" id="mainContent">
+
+        <!-- VIEW 1: 8 EYES -->
+        <section class="view view-eyes active" id="viewEyes">
+            <h2 class="view-title">👁️ 8 EYES - Empire Overview</h2>
+            <div class="clients-grid" id="clientsGrid">
+                <!-- Rendered by JS -->
+            </div>
+            <div class="bottom-stats" id="bottomStats">
+                <div class="stat-item">
+                    <span class="stat-label">Total MRR</span>
+                    <span class="stat-value" id="totalMRR">$1,200</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-label">Total Leads</span>
+                    <span class="stat-value" id="totalLeads">676</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-label">Avg Conv</span>
+                    <span class="stat-value" id="avgConv">18.3%</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-label">12 Babies</span>
+                    <span class="stat-value babies-status">
+                        <span class="dot online"></span> 10 Online
+                    </span>
+                </div>
+            </div>
+        </section>
+
+        <!-- VIEW 2: CLIENT ZOOM -->
+        <section class="view view-client" id="viewClient">
+            <div class="client-header" id="clientHeader">
+                <!-- Rendered by JS -->
+            </div>
+            <h3 class="section-title">📁 Accounts & Projects</h3>
+            <div class="accounts-grid" id="accountsGrid">
+                <!-- Rendered by JS -->
+            </div>
+        </section>
+
+        <!-- VIEW 3: FULL METRICS -->
+        <section class="view view-account" id="viewAccount">
+            <div class="account-header" id="accountHeader">
+                <!-- Rendered by JS -->
+            </div>
+
+            <!-- SECTION A: SCORECARD -->
+            <div class="metrics-card scorecard">
+                <h3 class="card-title">📊 COORDINATOR SCORECARD</h3>
+                <div class="scorecard-table" id="scorecardTable">
+                    <!-- Rendered by JS -->
+                </div>
+            </div>
+
+            <div class="metrics-row">
+                <!-- SECTION B: LEAD TRACKER -->
+                <div class="metrics-card lead-tracker">
+                    <h3 class="card-title">🎯 LEAD STATUS</h3>
+                    <div class="lead-bars" id="leadBars">
+                        <!-- Rendered by JS -->
+                    </div>
+                    <div class="lead-actions">
+                        <button class="action-btn" onclick="openModal('leads')">View All Leads</button>
+                        <button class="action-btn" onclick="openModal('import')">Import Excel</button>
+                    </div>
+                </div>
+
+                <!-- SECTION C: WEEKLY CHART -->
+                <div class="metrics-card weekly-chart">
+                    <h3 class="card-title">📈 THIS WEEK</h3>
+                    <div class="chart-container">
+                        <canvas id="weeklyChart"></canvas>
+                    </div>
+                    <div class="chart-legend">
+                        <span class="legend-item"><span class="legend-color calls"></span> Calls</span>
+                        <span class="legend-item"><span class="legend-color appts"></span> Appointments</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- SECTION D: QUICK ACTIONS -->
+            <div class="metrics-card quick-actions">
+                <h3 class="card-title">⚡ QUICK ACTIONS</h3>
+                <div class="actions-row">
+                    <button class="quick-btn" onclick="openModal('import')">
+                        <span class="btn-icon">📥</span>
+                        <span class="btn-text">Import Leads</span>
+                    </button>
+                    <button class="quick-btn" onclick="exportReport()">
+                        <span class="btn-icon">📊</span>
+                        <span class="btn-text">Export Report</span>
+                    </button>
+                    <button class="quick-btn" onclick="openBabyChat('HERMES')">
+                        <span class="btn-icon">💬</span>
+                        <span class="btn-text">Ask HERMES</span>
+                    </button>
+                    <button class="quick-btn" onclick="openModal('calllog')">
+                        <span class="btn-icon">📞</span>
+                        <span class="btn-text">Call Log</span>
+                    </button>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- MODALS -->
+    <div class="modal-overlay" id="modalOverlay" onclick="closeModal()"></div>
+
+    <!-- Baby Chat Modal -->
+    <div class="modal" id="babyChatModal">
+        <div class="modal-header">
+            <h3 id="babyChatTitle">💬 Chat with HERMES</h3>
+            <button class="close-btn" onclick="closeModal()">×</button>
+        </div>
+        <div class="chat-messages" id="chatMessages">
+            <div class="message ai">
+                <div class="message-content">Hello! I'm HERMES, your sales AI assistant. How can I help you today?</div>
+            </div>
+        </div>
+        <div class="chat-input-row">
+            <input type="text" id="chatInput" placeholder="Ask me anything..." onkeypress="handleChatKeypress(event)">
+            <button onclick="sendChatMessage()">Send</button>
+        </div>
+    </div>
+
+    <!-- Lead Detail Modal -->
+    <div class="modal modal-lg" id="leadDetailModal">
+        <div class="modal-header">
+            <h3>📋 Lead Details</h3>
+            <button class="close-btn" onclick="closeModal()">×</button>
+        </div>
+        <div class="modal-body" id="leadDetailBody">
+            <!-- Rendered by JS -->
+        </div>
+    </div>
+
+    <!-- Import Modal -->
+    <div class="modal" id="importModal">
+        <div class="modal-header">
+            <h3>📥 Import Leads from Excel</h3>
+            <button class="close-btn" onclick="closeModal()">×</button>
+        </div>
+        <div class="modal-body">
+            <div class="upload-zone" id="uploadZone">
+                <input type="file" id="fileInput" accept=".xlsx,.xls,.csv" onchange="handleFileUpload(event)">
+                <div class="upload-content">
+                    <span class="upload-icon">📁</span>
+                    <p>Drag & drop Excel file here</p>
+                    <p class="upload-hint">or click to browse</p>
+                </div>
+            </div>
+            <div class="column-mapping" id="columnMapping" style="display: none;">
+                <h4>Map Columns</h4>
+                <div class="mapping-grid" id="mappingGrid">
+                    <!-- Rendered by JS -->
+                </div>
+            </div>
+            <div class="import-preview" id="importPreview" style="display: none;">
+                <h4>Preview</h4>
+                <table class="preview-table" id="previewTable"></table>
+            </div>
+            <div class="modal-actions">
+                <button class="btn-secondary" onclick="closeModal()">Cancel</button>
+                <button class="btn-primary" onclick="confirmImport()">Import Leads</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add Client Modal -->
+    <div class="modal" id="addClientModal">
+        <div class="modal-header">
+            <h3>➕ Add New Client</h3>
+            <button class="close-btn" onclick="closeModal()">×</button>
+        </div>
+        <div class="modal-body">
+            <form id="addClientForm">
+                <div class="form-group">
+                    <label>Client Name</label>
+                    <input type="text" name="name" placeholder="e.g., ACME Corp" required>
+                </div>
+                <div class="form-group">
+                    <label>Industry</label>
+                    <select name="industry">
+                        <option value="Healthcare">Healthcare</option>
+                        <option value="Construction">Construction</option>
+                        <option value="Real Estate">Real Estate</option>
+                        <option value="Finance">Finance</option>
+                        <option value="Roofing">Roofing</option>
+                        <option value="Other">Other</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Monthly Rate ($)</label>
+                    <input type="number" name="mrr" placeholder="200" value="200">
+                </div>
+                <div class="form-group">
+                    <label>Assign Baby AI</label>
+                    <select name="baby">
+                        <option value="HERMES">HERMES - Sales</option>
+                        <option value="MARCUS">MARCUS - Analytics</option>
+                        <option value="VULCAN">VULCAN - Construction</option>
+                        <option value="APOLLO">APOLLO - Creative</option>
+                    </select>
+                </div>
+                <div class="modal-actions">
+                    <button type="button" class="btn-secondary" onclick="closeModal()">Cancel</button>
+                    <button type="submit" class="btn-primary">Add Client</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Call Log Modal -->
+    <div class="modal modal-lg" id="callLogModal">
+        <div class="modal-header">
+            <h3>📞 Call Log</h3>
+            <button class="close-btn" onclick="closeModal()">×</button>
+        </div>
+        <div class="modal-body">
+            <table class="data-table" id="callLogTable">
+                <thead>
+                    <tr>
+                        <th>Time</th>
+                        <th>Coordinator</th>
+                        <th>Lead</th>
+                        <th>Duration</th>
+                        <th>Result</th>
+                    </tr>
+                </thead>
+                <tbody id="callLogBody">
+                    <!-- Rendered by JS -->
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- All Leads Modal -->
+    <div class="modal modal-xl" id="leadsModal">
+        <div class="modal-header">
+            <h3>🎯 All Leads</h3>
+            <div class="modal-header-actions">
+                <select id="leadStatusFilter" onchange="filterLeads()">
+                    <option value="all">All Status</option>
+                    <option value="red">🔴 Red (No/Rejected)</option>
+                    <option value="orange">🟠 Orange (VM/Maybe)</option>
+                    <option value="yellow">🟡 Yellow (Working)</option>
+                    <option value="green">🟢 Green (Appointed)</option>
+                    <option value="blue">🔵 Blue (Follow-up)</option>
+                </select>
+            </div>
+            <button class="close-btn" onclick="closeModal()">×</button>
+        </div>
+        <div class="modal-body">
+            <table class="data-table" id="leadsTable">
+                <thead>
+                    <tr>
+                        <th>Status</th>
+                        <th>Name</th>
+                        <th>Phone</th>
+                        <th>Coordinator</th>
+                        <th>Last Contact</th>
+                        <th>Notes</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="leadsTableBody">
+                    <!-- Rendered by JS -->
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <script src="js/demo_data.js"></script>
+    <script src="js/command.js"></script>
+</body>
+</html>

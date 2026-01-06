@@ -1,0 +1,579 @@
+<!-- ═══════════════════════════════════════════════════════════════════
+     SCORPION COMMAND CENTER - MODAL COMPONENTS
+     Reusable modal templates for various actions
+     ═══════════════════════════════════════════════════════════════════ -->
+
+<!-- Modal Overlay (backdrop) -->
+<div class="modal-overlay" id="modalOverlay" onclick="closeModal()"></div>
+
+<!-- ═══════════════════════════════════════════════════════════════════
+     MODAL 1: BABY CHAT
+     Chat interface with selected AI baby
+     ═══════════════════════════════════════════════════════════════════ -->
+<div class="modal" id="babyChatModal">
+    <div class="modal-header">
+        <h3 id="babyChatTitle">💬 Chat with HERMES</h3>
+        <button class="close-btn" onclick="closeModal()">×</button>
+    </div>
+    <div class="chat-messages" id="chatMessages">
+        <div class="message ai">
+            <div class="message-content">
+                Hello! I'm HERMES, your sales AI assistant. How can I help you today?
+            </div>
+        </div>
+    </div>
+    <div class="chat-input-row">
+        <input type="text" id="chatInput" placeholder="Ask me anything..."
+               onkeypress="handleChatKeypress(event)">
+        <button onclick="sendChatMessage()">Send</button>
+    </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════════════
+     MODAL 2: LEAD DETAIL
+     Full lead information with edit capabilities
+     ═══════════════════════════════════════════════════════════════════ -->
+<div class="modal modal-lg" id="leadDetailModal">
+    <div class="modal-header">
+        <h3>📋 Lead Details</h3>
+        <button class="close-btn" onclick="closeModal()">×</button>
+    </div>
+    <div class="modal-body" id="leadDetailBody">
+        <!-- Rendered dynamically by JS -->
+        <div class="lead-detail-grid">
+            <div class="detail-section">
+                <h4>Contact Information</h4>
+                <div class="form-group">
+                    <label>Name</label>
+                    <input type="text" id="leadName" value="">
+                </div>
+                <div class="form-group">
+                    <label>Phone</label>
+                    <input type="tel" id="leadPhone" value="">
+                </div>
+                <div class="form-group">
+                    <label>Email</label>
+                    <input type="email" id="leadEmail" value="">
+                </div>
+            </div>
+            <div class="detail-section">
+                <h4>Status & Assignment</h4>
+                <div class="form-group">
+                    <label>Lead Status</label>
+                    <select id="leadStatus">
+                        <option value="red">🔴 Red (No/Rejected)</option>
+                        <option value="orange">🟠 Orange (VM/Maybe)</option>
+                        <option value="yellow">🟡 Yellow (Working)</option>
+                        <option value="green">🟢 Green (Appointed)</option>
+                        <option value="blue">🔵 Blue (Follow-up)</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Assigned Coordinator</label>
+                    <select id="leadCoordinator">
+                        <option value="carlos">Carlos Barahona</option>
+                        <option value="denisse">Denisse Diaz</option>
+                        <option value="ana">Ana Mejia</option>
+                        <option value="edvaldo">Edvaldo Espinoza</option>
+                        <option value="jesel">Jesel Calderon</option>
+                        <option value="teresa">Teresa Tovar</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+        <div class="detail-section full-width">
+            <h4>Notes & History</h4>
+            <div class="form-group">
+                <label>Notes</label>
+                <textarea id="leadNotes" rows="4" placeholder="Add notes about this lead..."></textarea>
+            </div>
+            <div class="call-history">
+                <h5>Call History</h5>
+                <div class="history-item">
+                    <span class="history-date">Jan 5, 2025 2:30 PM</span>
+                    <span class="history-result success">Appointment Set</span>
+                    <span class="history-coordinator">by Carlos Barahona</span>
+                </div>
+                <div class="history-item">
+                    <span class="history-date">Jan 4, 2025 10:15 AM</span>
+                    <span class="history-result pending">Voicemail Left</span>
+                    <span class="history-coordinator">by Carlos Barahona</span>
+                </div>
+            </div>
+        </div>
+        <div class="modal-actions">
+            <button class="btn-danger" onclick="deleteLead()">Delete Lead</button>
+            <button class="btn-secondary" onclick="closeModal()">Cancel</button>
+            <button class="btn-primary" onclick="saveLead()">Save Changes</button>
+        </div>
+    </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════════════
+     MODAL 3: IMPORT EXCEL
+     File upload with column mapping and preview
+     ═══════════════════════════════════════════════════════════════════ -->
+<div class="modal modal-lg" id="importModal">
+    <div class="modal-header">
+        <h3>📥 Import Leads from Excel</h3>
+        <button class="close-btn" onclick="closeModal()">×</button>
+    </div>
+    <div class="modal-body">
+        <!-- Step 1: Upload -->
+        <div class="import-step" id="importStep1">
+            <div class="upload-zone" id="uploadZone">
+                <input type="file" id="fileInput" accept=".xlsx,.xls,.csv"
+                       onchange="handleFileUpload(event)">
+                <div class="upload-content">
+                    <span class="upload-icon">📁</span>
+                    <p>Drag & drop Excel file here</p>
+                    <p class="upload-hint">or click to browse</p>
+                    <p class="upload-formats">Supports: .xlsx, .xls, .csv</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Step 2: Column Mapping -->
+        <div class="import-step" id="importStep2" style="display: none;">
+            <h4>📋 Map Your Columns</h4>
+            <p class="step-description">Match your spreadsheet columns to our fields:</p>
+            <div class="mapping-grid" id="mappingGrid">
+                <div class="mapping-row">
+                    <span class="field-name">Name *</span>
+                    <select class="column-select">
+                        <option>-- Select Column --</option>
+                        <option>Column A (Name)</option>
+                        <option>Column B (Phone)</option>
+                        <option>Column C (Email)</option>
+                    </select>
+                </div>
+                <div class="mapping-row">
+                    <span class="field-name">Phone *</span>
+                    <select class="column-select">
+                        <option>-- Select Column --</option>
+                        <option>Column A (Name)</option>
+                        <option selected>Column B (Phone)</option>
+                        <option>Column C (Email)</option>
+                    </select>
+                </div>
+                <div class="mapping-row">
+                    <span class="field-name">Email</span>
+                    <select class="column-select">
+                        <option>-- Select Column --</option>
+                        <option>Column A (Name)</option>
+                        <option>Column B (Phone)</option>
+                        <option selected>Column C (Email)</option>
+                    </select>
+                </div>
+                <div class="mapping-row">
+                    <span class="field-name">Notes</span>
+                    <select class="column-select">
+                        <option>-- Select Column --</option>
+                        <option>Column D (Notes)</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <!-- Step 3: Preview -->
+        <div class="import-step" id="importStep3" style="display: none;">
+            <h4>👀 Preview Import</h4>
+            <p class="step-description">Review the data before importing:</p>
+            <div class="preview-stats">
+                <span class="preview-stat">📊 <strong>156</strong> leads found</span>
+                <span class="preview-stat">✅ <strong>152</strong> valid</span>
+                <span class="preview-stat">⚠️ <strong>4</strong> missing phone</span>
+            </div>
+            <table class="preview-table" id="previewTable">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Phone</th>
+                        <th>Email</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>John Doe</td>
+                        <td>(555) 111-2222</td>
+                        <td>john@email.com</td>
+                        <td><span class="status-badge green"></span> Valid</td>
+                    </tr>
+                    <tr>
+                        <td>Jane Smith</td>
+                        <td>(555) 333-4444</td>
+                        <td>jane@email.com</td>
+                        <td><span class="status-badge green"></span> Valid</td>
+                    </tr>
+                    <tr class="row-warning">
+                        <td>Bob Johnson</td>
+                        <td>-</td>
+                        <td>bob@email.com</td>
+                        <td><span class="status-badge orange"></span> No Phone</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="modal-actions">
+            <button class="btn-secondary" onclick="closeModal()">Cancel</button>
+            <button class="btn-secondary" id="prevStepBtn" onclick="prevImportStep()" style="display: none;">← Back</button>
+            <button class="btn-primary" id="nextStepBtn" onclick="nextImportStep()">Next →</button>
+            <button class="btn-primary" id="confirmImportBtn" onclick="confirmImport()" style="display: none;">Import 152 Leads</button>
+        </div>
+    </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════════════
+     MODAL 4: ADD CLIENT
+     Form to add new client to empty slot
+     ═══════════════════════════════════════════════════════════════════ -->
+<div class="modal" id="addClientModal">
+    <div class="modal-header">
+        <h3>➕ Add New Client</h3>
+        <button class="close-btn" onclick="closeModal()">×</button>
+    </div>
+    <div class="modal-body">
+        <form id="addClientForm" onsubmit="handleAddClient(event)">
+            <div class="form-group">
+                <label>Client Name *</label>
+                <input type="text" name="name" placeholder="e.g., ACME Corp" required>
+            </div>
+            <div class="form-group">
+                <label>Industry *</label>
+                <select name="industry" required>
+                    <option value="">-- Select Industry --</option>
+                    <option value="Healthcare">Healthcare</option>
+                    <option value="Construction">Construction</option>
+                    <option value="Real Estate">Real Estate</option>
+                    <option value="Finance">Finance</option>
+                    <option value="Roofing">Roofing</option>
+                    <option value="Insurance">Insurance</option>
+                    <option value="Legal">Legal</option>
+                    <option value="Other">Other</option>
+                </select>
+            </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Monthly Rate ($) *</label>
+                    <input type="number" name="mrr" placeholder="200" value="200" required>
+                </div>
+                <div class="form-group">
+                    <label>Number of Accounts</label>
+                    <input type="number" name="accounts" placeholder="1" value="1">
+                </div>
+            </div>
+            <div class="form-group">
+                <label>Assign Baby AI *</label>
+                <select name="baby" required>
+                    <option value="HERMES">💬 HERMES - Sales & Communication</option>
+                    <option value="MARCUS">🧠 MARCUS - Analytics & Strategy</option>
+                    <option value="VULCAN">🔨 VULCAN - Construction</option>
+                    <option value="APOLLO">🎨 APOLLO - Creative</option>
+                    <option value="NEPTUNE">💰 NEPTUNE - Finance</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>Contact Person</label>
+                <input type="text" name="contact" placeholder="Primary contact name">
+            </div>
+            <div class="form-group">
+                <label>Notes</label>
+                <textarea name="notes" rows="3" placeholder="Any additional notes..."></textarea>
+            </div>
+            <div class="modal-actions">
+                <button type="button" class="btn-secondary" onclick="closeModal()">Cancel</button>
+                <button type="submit" class="btn-primary">Add Client</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════════════
+     MODAL 5: CALL LOG
+     Recent call history table
+     ═══════════════════════════════════════════════════════════════════ -->
+<div class="modal modal-lg" id="callLogModal">
+    <div class="modal-header">
+        <h3>📞 Call Log</h3>
+        <div class="modal-header-actions">
+            <select id="callLogFilter" onchange="filterCallLog()">
+                <option value="all">All Results</option>
+                <option value="appointment">Appointments Only</option>
+                <option value="callback">Callbacks</option>
+                <option value="voicemail">Voicemails</option>
+                <option value="rejected">Rejected</option>
+            </select>
+            <input type="date" id="callLogDate" onchange="filterCallLog()">
+        </div>
+        <button class="close-btn" onclick="closeModal()">×</button>
+    </div>
+    <div class="modal-body">
+        <table class="data-table" id="callLogTable">
+            <thead>
+                <tr>
+                    <th>Time</th>
+                    <th>Coordinator</th>
+                    <th>Lead Name</th>
+                    <th>Phone</th>
+                    <th>Duration</th>
+                    <th>Result</th>
+                </tr>
+            </thead>
+            <tbody id="callLogBody">
+                <!-- Rendered by JS -->
+            </tbody>
+        </table>
+        <div class="call-log-summary">
+            <div class="summary-item">
+                <span class="summary-label">Total Calls:</span>
+                <span class="summary-value">47</span>
+            </div>
+            <div class="summary-item">
+                <span class="summary-label">Appointments:</span>
+                <span class="summary-value success">12</span>
+            </div>
+            <div class="summary-item">
+                <span class="summary-label">Callbacks:</span>
+                <span class="summary-value pending">18</span>
+            </div>
+            <div class="summary-item">
+                <span class="summary-label">Avg Duration:</span>
+                <span class="summary-value">6:42</span>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════════════
+     MODAL 6: ALL LEADS
+     Full leads table with filtering
+     ═══════════════════════════════════════════════════════════════════ -->
+<div class="modal modal-xl" id="leadsModal">
+    <div class="modal-header">
+        <h3>🎯 All Leads</h3>
+        <div class="modal-header-actions">
+            <select id="leadStatusFilter" onchange="filterLeads()">
+                <option value="all">All Status</option>
+                <option value="red">🔴 Red (No/Rejected)</option>
+                <option value="orange">🟠 Orange (VM/Maybe)</option>
+                <option value="yellow">🟡 Yellow (Working)</option>
+                <option value="green">🟢 Green (Appointed)</option>
+                <option value="blue">🔵 Blue (Follow-up)</option>
+            </select>
+            <select id="leadCoordinatorFilter" onchange="filterLeads()">
+                <option value="all">All Coordinators</option>
+                <option value="carlos">Carlos Barahona</option>
+                <option value="denisse">Denisse Diaz</option>
+                <option value="ana">Ana Mejia</option>
+            </select>
+            <input type="text" id="leadSearch" placeholder="Search leads..."
+                   oninput="filterLeads()">
+        </div>
+        <button class="close-btn" onclick="closeModal()">×</button>
+    </div>
+    <div class="modal-body">
+        <table class="data-table" id="leadsTable">
+            <thead>
+                <tr>
+                    <th>Status</th>
+                    <th>Name</th>
+                    <th>Phone</th>
+                    <th>Coordinator</th>
+                    <th>Last Contact</th>
+                    <th>Notes</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody id="leadsTableBody">
+                <!-- Rendered by JS -->
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<!-- Additional Modal Styles -->
+<style>
+.lead-detail-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+}
+
+.detail-section {
+    margin-bottom: 20px;
+}
+
+.detail-section.full-width {
+    grid-column: 1 / -1;
+}
+
+.detail-section h4 {
+    color: var(--cyan, #00d4ff);
+    margin-bottom: 15px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid var(--border-color, #2a2a3f);
+}
+
+.call-history {
+    margin-top: 15px;
+}
+
+.call-history h5 {
+    color: var(--text-secondary, #8a8a9a);
+    margin-bottom: 10px;
+    font-size: 0.9rem;
+}
+
+.history-item {
+    display: flex;
+    gap: 15px;
+    padding: 10px;
+    background: var(--bg-dark, #0a0a0f);
+    border-radius: 6px;
+    margin-bottom: 8px;
+    font-size: 0.85rem;
+}
+
+.history-result {
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-weight: 500;
+}
+
+.history-result.success {
+    background: rgba(0, 217, 126, 0.2);
+    color: var(--green, #00d97e);
+}
+
+.history-result.pending {
+    background: rgba(243, 156, 18, 0.2);
+    color: var(--orange, #f39c12);
+}
+
+.btn-danger {
+    padding: 12px 25px;
+    background: var(--red, #e74c3c);
+    border: none;
+    border-radius: 8px;
+    color: white;
+    cursor: pointer;
+    margin-right: auto;
+}
+
+.form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 15px;
+}
+
+textarea {
+    width: 100%;
+    padding: 12px;
+    background: var(--bg-dark, #0a0a0f);
+    border: 1px solid var(--border-color, #2a2a3f);
+    border-radius: 8px;
+    color: var(--text-primary, #fff);
+    font-family: inherit;
+    resize: vertical;
+}
+
+.upload-formats {
+    font-size: 0.75rem;
+    color: var(--text-muted, #5a5a6a);
+    margin-top: 10px;
+}
+
+.mapping-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px;
+    background: var(--bg-dark, #0a0a0f);
+    border-radius: 6px;
+    margin-bottom: 8px;
+}
+
+.field-name {
+    font-weight: 500;
+}
+
+.column-select {
+    padding: 8px 12px;
+    background: var(--bg-card, #12121a);
+    border: 1px solid var(--border-color, #2a2a3f);
+    border-radius: 6px;
+    color: var(--text-primary, #fff);
+    min-width: 200px;
+}
+
+.preview-stats {
+    display: flex;
+    gap: 25px;
+    padding: 15px;
+    background: var(--bg-dark, #0a0a0f);
+    border-radius: 8px;
+    margin-bottom: 15px;
+}
+
+.preview-stat {
+    font-size: 0.9rem;
+}
+
+.row-warning {
+    background: rgba(243, 156, 18, 0.1);
+}
+
+.step-description {
+    color: var(--text-secondary, #8a8a9a);
+    margin-bottom: 20px;
+}
+
+.call-log-summary {
+    display: flex;
+    gap: 30px;
+    padding: 20px;
+    background: var(--bg-dark, #0a0a0f);
+    border-radius: 8px;
+    margin-top: 20px;
+}
+
+.summary-item {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.summary-label {
+    font-size: 0.8rem;
+    color: var(--text-secondary, #8a8a9a);
+}
+
+.summary-value {
+    font-size: 1.2rem;
+    font-weight: 600;
+}
+
+.summary-value.success {
+    color: var(--green, #00d97e);
+}
+
+.summary-value.pending {
+    color: var(--orange, #f39c12);
+}
+
+@media (max-width: 768px) {
+    .lead-detail-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .form-row {
+        grid-template-columns: 1fr;
+    }
+
+    .modal-header-actions {
+        flex-wrap: wrap;
+    }
+}
+</style>
