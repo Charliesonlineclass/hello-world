@@ -1,0 +1,634 @@
+<!--
+═══════════════════════════════════════════════════════════════════════
+J3 STRUCTURAL SOLUTIONS - Website Chat & Lead Widget
+Powered by SCORPION AI (VULCAN)
+
+EMBED ON J3 WEBSITE:
+<script src="https://your-server.com/api/leads/widget/j3"></script>
+═══════════════════════════════════════════════════════════════════════
+-->
+
+<style>
+#j3-scorpion-widget * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, sans-serif;
+}
+
+#j3-widget-container {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    z-index: 999999;
+}
+
+#j3-toggle-btn {
+    background: linear-gradient(135deg, #2c3e50, #34495e);
+    color: #ffd700;
+    border: none;
+    padding: 15px 25px;
+    border-radius: 30px;
+    cursor: pointer;
+    font-size: 16px;
+    font-weight: 600;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    transition: all 0.3s ease;
+}
+
+#j3-toggle-btn:hover {
+    transform: scale(1.05);
+    box-shadow: 0 6px 25px rgba(0,0,0,0.4);
+}
+
+#j3-panel {
+    display: none;
+    width: 380px;
+    background: #1a1a2e;
+    border-radius: 16px;
+    box-shadow: 0 10px 50px rgba(0,0,0,0.5);
+    overflow: hidden;
+    margin-bottom: 15px;
+    animation: slideUp 0.3s ease;
+}
+
+@keyframes slideUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+#j3-header {
+    background: linear-gradient(135deg, #2c3e50, #34495e);
+    padding: 20px;
+    color: white;
+}
+
+#j3-header-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+#j3-header h3 {
+    font-size: 18px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+#j3-close-btn {
+    background: none;
+    border: none;
+    color: white;
+    font-size: 28px;
+    cursor: pointer;
+    line-height: 1;
+    opacity: 0.7;
+    transition: opacity 0.2s;
+}
+
+#j3-close-btn:hover {
+    opacity: 1;
+}
+
+#j3-subtitle {
+    font-size: 13px;
+    opacity: 0.8;
+    margin-top: 5px;
+}
+
+#j3-tabs {
+    display: flex;
+    background: #16213e;
+}
+
+.j3-tab {
+    flex: 1;
+    padding: 12px;
+    border: none;
+    background: transparent;
+    color: #888;
+    cursor: pointer;
+    font-size: 14px;
+    transition: all 0.2s;
+}
+
+.j3-tab.active {
+    background: #1a1a2e;
+    color: #ffd700;
+}
+
+.j3-tab:hover:not(.active) {
+    background: rgba(255,255,255,0.05);
+}
+
+.j3-tab-content {
+    display: none;
+}
+
+.j3-tab-content.active {
+    display: flex;
+    flex-direction: column;
+}
+
+/* Chat Tab */
+#j3-chat-tab {
+    height: 350px;
+}
+
+#j3-messages {
+    flex: 1;
+    overflow-y: auto;
+    padding: 15px;
+    background: #0d0d15;
+}
+
+.j3-msg {
+    padding: 12px 16px;
+    border-radius: 12px;
+    margin-bottom: 12px;
+    max-width: 85%;
+    font-size: 14px;
+    line-height: 1.4;
+}
+
+.j3-msg.bot {
+    background: #2d2d44;
+    color: #fff;
+    border-bottom-left-radius: 4px;
+}
+
+.j3-msg.user {
+    background: #ffd700;
+    color: #000;
+    margin-left: auto;
+    border-bottom-right-radius: 4px;
+}
+
+#j3-chat-input-row {
+    padding: 12px;
+    border-top: 1px solid #2a2a3f;
+    display: flex;
+    gap: 10px;
+    background: #1a1a2e;
+}
+
+#j3-chat-input {
+    flex: 1;
+    padding: 12px 15px;
+    border: 1px solid #333;
+    border-radius: 10px;
+    background: #0d0d12;
+    color: #fff;
+    font-size: 14px;
+    outline: none;
+}
+
+#j3-chat-input:focus {
+    border-color: #ffd700;
+}
+
+#j3-send-btn {
+    padding: 12px 20px;
+    background: #ffd700;
+    color: #000;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: transform 0.2s;
+}
+
+#j3-send-btn:hover {
+    transform: scale(1.05);
+}
+
+/* Form Tab */
+#j3-form-tab {
+    padding: 20px;
+    max-height: 400px;
+    overflow-y: auto;
+}
+
+#j3-form input,
+#j3-form select,
+#j3-form textarea {
+    width: 100%;
+    padding: 12px 15px;
+    margin-bottom: 12px;
+    border: 1px solid #333;
+    border-radius: 10px;
+    background: #0d0d12;
+    color: #fff;
+    font-size: 14px;
+    outline: none;
+}
+
+#j3-form input:focus,
+#j3-form select:focus,
+#j3-form textarea:focus {
+    border-color: #ffd700;
+}
+
+#j3-form textarea {
+    resize: none;
+    min-height: 80px;
+}
+
+#j3-submit-btn {
+    width: 100%;
+    padding: 15px;
+    background: linear-gradient(135deg, #ffd700, #ffaa00);
+    color: #000;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    font-weight: 700;
+    font-size: 16px;
+    transition: transform 0.2s;
+}
+
+#j3-submit-btn:hover {
+    transform: scale(1.02);
+}
+
+/* Call Tab */
+#j3-call-tab {
+    padding: 30px;
+    text-align: center;
+}
+
+#j3-call-tab .call-icon {
+    font-size: 60px;
+    margin-bottom: 15px;
+}
+
+#j3-call-tab h4 {
+    color: #fff;
+    font-size: 20px;
+    margin-bottom: 20px;
+}
+
+#j3-call-btn {
+    display: block;
+    width: 100%;
+    padding: 15px;
+    background: #00d97e;
+    color: #fff;
+    text-decoration: none;
+    border-radius: 10px;
+    font-weight: 700;
+    font-size: 18px;
+    transition: transform 0.2s;
+}
+
+#j3-call-btn:hover {
+    transform: scale(1.02);
+}
+
+#j3-callback-section {
+    margin-top: 25px;
+    padding-top: 20px;
+    border-top: 1px solid #333;
+}
+
+#j3-callback-section p {
+    color: #888;
+    font-size: 14px;
+    margin-bottom: 12px;
+}
+
+#j3-callback-input {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #333;
+    border-radius: 8px;
+    background: #0d0d12;
+    color: #fff;
+    font-size: 14px;
+    margin-bottom: 10px;
+}
+
+#j3-callback-btn {
+    width: 100%;
+    padding: 12px;
+    background: #3498db;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 600;
+}
+
+/* Success state */
+.j3-success {
+    text-align: center;
+    padding: 50px 30px;
+}
+
+.j3-success .check {
+    font-size: 60px;
+    color: #00d97e;
+    margin-bottom: 15px;
+}
+
+.j3-success h4 {
+    color: #fff;
+    font-size: 22px;
+    margin-bottom: 10px;
+}
+
+.j3-success p {
+    color: #888;
+    font-size: 14px;
+}
+
+/* Typing indicator */
+.j3-typing {
+    display: flex;
+    gap: 4px;
+    padding: 12px 16px;
+}
+
+.j3-typing span {
+    width: 8px;
+    height: 8px;
+    background: #666;
+    border-radius: 50%;
+    animation: typing 1s infinite;
+}
+
+.j3-typing span:nth-child(2) { animation-delay: 0.2s; }
+.j3-typing span:nth-child(3) { animation-delay: 0.4s; }
+
+@keyframes typing {
+    0%, 100% { opacity: 0.3; }
+    50% { opacity: 1; }
+}
+
+/* Responsive */
+@media (max-width: 420px) {
+    #j3-panel {
+        width: calc(100vw - 40px);
+        right: 20px;
+    }
+}
+</style>
+
+<div id="j3-scorpion-widget">
+    <div id="j3-widget-container">
+        <!-- Chat Panel -->
+        <div id="j3-panel">
+            <!-- Header -->
+            <div id="j3-header">
+                <div id="j3-header-top">
+                    <h3>🔨 J3 Structural Solutions</h3>
+                    <button id="j3-close-btn" onclick="j3Toggle()">×</button>
+                </div>
+                <div id="j3-subtitle">Interior Design & Construction Experts</div>
+            </div>
+
+            <!-- Tabs -->
+            <div id="j3-tabs">
+                <button class="j3-tab active" onclick="j3ShowTab('chat')">💬 Chat</button>
+                <button class="j3-tab" onclick="j3ShowTab('form')">📝 Get Quote</button>
+                <button class="j3-tab" onclick="j3ShowTab('call')">📞 Call Us</button>
+            </div>
+
+            <!-- Chat Tab -->
+            <div id="j3-chat-tab" class="j3-tab-content active">
+                <div id="j3-messages">
+                    <div class="j3-msg bot">
+                        Hi! I'm VULCAN, J3's AI assistant. 🔨 Looking to transform your space? Tell me about your project!
+                    </div>
+                </div>
+                <div id="j3-chat-input-row">
+                    <input type="text" id="j3-chat-input" placeholder="Describe your project..." onkeypress="if(event.key==='Enter')j3SendChat()">
+                    <button id="j3-send-btn" onclick="j3SendChat()">Send</button>
+                </div>
+            </div>
+
+            <!-- Form Tab -->
+            <div id="j3-form-tab" class="j3-tab-content">
+                <form id="j3-form" onsubmit="j3SubmitForm(event)">
+                    <input type="text" name="name" placeholder="Your Name *" required>
+                    <input type="email" name="email" placeholder="Email Address *" required>
+                    <input type="tel" name="phone" placeholder="Phone Number">
+                    <select name="service" required>
+                        <option value="">Select Service *</option>
+                        <option value="interior_design">Interior Design</option>
+                        <option value="kitchen_remodel">Kitchen Remodel</option>
+                        <option value="bathroom_remodel">Bathroom Remodel</option>
+                        <option value="commercial">Commercial Build-out</option>
+                        <option value="residential">Residential Construction</option>
+                        <option value="addition">Home Addition</option>
+                        <option value="renovation">Full Renovation</option>
+                    </select>
+                    <select name="budget">
+                        <option value="">Estimated Budget</option>
+                        <option value="under_25k">Under $25,000</option>
+                        <option value="25k_50k">$25,000 - $50,000</option>
+                        <option value="50k_100k">$50,000 - $100,000</option>
+                        <option value="100k_plus">$100,000+</option>
+                    </select>
+                    <select name="timeline">
+                        <option value="">Project Timeline</option>
+                        <option value="asap">ASAP</option>
+                        <option value="1_month">Within 1 Month</option>
+                        <option value="3_months">1-3 Months</option>
+                        <option value="6_months">3-6 Months</option>
+                        <option value="planning">Just Planning</option>
+                    </select>
+                    <textarea name="message" placeholder="Tell us about your project..."></textarea>
+                    <button type="submit" id="j3-submit-btn">Get Free Quote →</button>
+                </form>
+            </div>
+
+            <!-- Call Tab -->
+            <div id="j3-call-tab" class="j3-tab-content">
+                <div class="call-icon">📞</div>
+                <h4>Speak with Giovanny</h4>
+                <a href="tel:+1XXXXXXXXXX" id="j3-call-btn">Call Now</a>
+                <div id="j3-callback-section">
+                    <p>Or request a callback:</p>
+                    <input type="tel" id="j3-callback-input" placeholder="Your phone number">
+                    <button id="j3-callback-btn" onclick="j3RequestCallback()">Request Callback</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Toggle Button -->
+        <button id="j3-toggle-btn" onclick="j3Toggle()">
+            🔨 Get Free Quote
+        </button>
+    </div>
+</div>
+
+<script>
+// ═══════════════════════════════════════════════════════════════════════
+// J3 WIDGET - SCORPION Lead Engine Integration
+// ═══════════════════════════════════════════════════════════════════════
+
+// CONFIGURATION - Change for production
+const J3_CONFIG = {
+    apiBase: window.location.hostname === 'localhost'
+        ? 'http://localhost:8800/api/leads'
+        : 'https://your-server.com/api/leads',
+    clientSlug: 'j3'
+};
+
+let j3LeadId = null;
+
+// Toggle widget open/close
+function j3Toggle() {
+    const panel = document.getElementById('j3-panel');
+    const btn = document.getElementById('j3-toggle-btn');
+
+    if (panel.style.display === 'none' || panel.style.display === '') {
+        panel.style.display = 'block';
+        btn.style.display = 'none';
+    } else {
+        panel.style.display = 'none';
+        btn.style.display = 'flex';
+    }
+}
+
+// Switch tabs
+function j3ShowTab(tabName) {
+    // Hide all tabs
+    document.querySelectorAll('.j3-tab-content').forEach(tab => {
+        tab.classList.remove('active');
+    });
+    document.querySelectorAll('.j3-tab').forEach(btn => {
+        btn.classList.remove('active');
+    });
+
+    // Show selected tab
+    document.getElementById(`j3-${tabName}-tab`).classList.add('active');
+    event.target.classList.add('active');
+}
+
+// Send chat message
+async function j3SendChat() {
+    const input = document.getElementById('j3-chat-input');
+    const message = input.value.trim();
+    if (!message) return;
+
+    const messagesDiv = document.getElementById('j3-messages');
+
+    // Add user message
+    messagesDiv.innerHTML += `<div class="j3-msg user">${escapeHtml(message)}</div>`;
+    input.value = '';
+    messagesDiv.scrollTop = messagesDiv.scrollHeight;
+
+    // Show typing indicator
+    messagesDiv.innerHTML += `<div class="j3-msg bot j3-typing" id="j3-typing"><span></span><span></span><span></span></div>`;
+    messagesDiv.scrollTop = messagesDiv.scrollHeight;
+
+    try {
+        const response = await fetch(`${J3_CONFIG.apiBase}/chat/${J3_CONFIG.clientSlug}`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ message, lead_id: j3LeadId })
+        });
+
+        const data = await response.json();
+
+        // Remove typing indicator
+        const typing = document.getElementById('j3-typing');
+        if (typing) typing.remove();
+
+        // Add bot response
+        messagesDiv.innerHTML += `<div class="j3-msg bot">${escapeHtml(data.response)}</div>`;
+
+    } catch (error) {
+        // Remove typing indicator
+        const typing = document.getElementById('j3-typing');
+        if (typing) typing.remove();
+
+        // Fallback response
+        messagesDiv.innerHTML += `<div class="j3-msg bot">Thanks for your message! Giovanny will reach out soon to discuss your project and provide a free quote. 🔨</div>`;
+    }
+
+    messagesDiv.scrollTop = messagesDiv.scrollHeight;
+}
+
+// Submit quote form
+async function j3SubmitForm(event) {
+    event.preventDefault();
+    const form = event.target;
+    const formData = new FormData(form);
+    const data = Object.fromEntries(formData);
+
+    try {
+        const response = await fetch(`${J3_CONFIG.apiBase}/webhook/${J3_CONFIG.clientSlug}`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(data)
+        });
+
+        const result = await response.json();
+        j3LeadId = result.lead_id;
+
+        // Show success
+        document.getElementById('j3-form-tab').innerHTML = `
+            <div class="j3-success">
+                <div class="check">✓</div>
+                <h4>Thank You!</h4>
+                <p>Giovanny will personally call you within 24 hours with your free quote.</p>
+            </div>
+        `;
+
+    } catch (error) {
+        alert('There was an error submitting your request. Please try again or call us directly.');
+    }
+}
+
+// Request callback
+async function j3RequestCallback() {
+    const phone = document.getElementById('j3-callback-input').value.trim();
+    if (!phone) {
+        alert('Please enter your phone number');
+        return;
+    }
+
+    try {
+        await fetch(`${J3_CONFIG.apiBase}/webhook/${J3_CONFIG.clientSlug}`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                name: 'Callback Request',
+                phone: phone,
+                service: 'callback'
+            })
+        });
+
+        document.getElementById('j3-call-tab').innerHTML = `
+            <div class="j3-success">
+                <div class="check">✓</div>
+                <h4>Got It!</h4>
+                <p>Giovanny will call you shortly.</p>
+            </div>
+        `;
+
+    } catch (error) {
+        alert('Error submitting. Please try calling us directly.');
+    }
+}
+
+// Escape HTML to prevent XSS
+function escapeHtml(text) {
+    const div = document.createElement('div');
+    div.textContent = text;
+    return div.innerHTML;
+}
+
+// Track page view
+(function() {
+    console.log('🦂 J3 Widget loaded - Powered by SCORPION AI');
+})();
+</script>

@@ -1,0 +1,508 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🦂 SCORPION Lead Center</title>
+    <style>
+        :root {
+            --bg-dark: #0a0a0f;
+            --bg-panel: #12121a;
+            --bg-card: #1a1a25;
+            --border: #2a2a3f;
+            --gold: #ffd700;
+            --cyan: #00d4ff;
+            --green: #00d97e;
+            --red: #e74c3c;
+            --orange: #f39c12;
+            --text: #ffffff;
+            --text-dim: #888899;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Segoe UI', -apple-system, sans-serif;
+            background: var(--bg-dark);
+            color: var(--text);
+            min-height: 100vh;
+        }
+
+        header {
+            background: var(--bg-panel);
+            border-bottom: 2px solid var(--gold);
+            padding: 20px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--gold);
+        }
+
+        .header-stats {
+            display: flex;
+            gap: 30px;
+        }
+
+        .header-stat {
+            text-align: center;
+        }
+
+        .header-stat-value {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--cyan);
+        }
+
+        .header-stat-label {
+            font-size: 0.75rem;
+            color: var(--text-dim);
+        }
+
+        .tabs {
+            display: flex;
+            gap: 5px;
+            padding: 20px 30px 0;
+            background: var(--bg-panel);
+        }
+
+        .tab {
+            padding: 12px 25px;
+            background: transparent;
+            border: none;
+            color: var(--text-dim);
+            cursor: pointer;
+            font-size: 0.95rem;
+            border-radius: 8px 8px 0 0;
+            transition: all 0.2s;
+        }
+
+        .tab:hover { background: var(--bg-card); }
+        .tab.active {
+            background: var(--bg-dark);
+            color: var(--gold);
+            font-weight: 600;
+        }
+
+        .tab .badge {
+            background: var(--red);
+            color: white;
+            padding: 2px 8px;
+            border-radius: 10px;
+            font-size: 0.75rem;
+            margin-left: 8px;
+        }
+
+        .tab.j3 .badge { background: var(--orange); }
+
+        main {
+            padding: 25px 30px;
+        }
+
+        .leads-table {
+            width: 100%;
+            border-collapse: collapse;
+            background: var(--bg-panel);
+            border-radius: 12px;
+            overflow: hidden;
+        }
+
+        .leads-table th {
+            text-align: left;
+            padding: 15px 20px;
+            background: var(--bg-card);
+            color: var(--gold);
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .leads-table td {
+            padding: 15px 20px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .leads-table tr:hover {
+            background: rgba(255, 215, 0, 0.03);
+        }
+
+        .leads-table tr.hot {
+            background: linear-gradient(90deg, rgba(255, 107, 53, 0.1) 0%, transparent 100%);
+            border-left: 3px solid var(--orange);
+        }
+
+        .status-badge {
+            padding: 5px 12px;
+            border-radius: 15px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .status-badge.new { background: rgba(0, 212, 255, 0.2); color: var(--cyan); }
+        .status-badge.engaged { background: rgba(255, 215, 0, 0.2); color: var(--gold); }
+        .status-badge.qualified { background: rgba(0, 217, 126, 0.2); color: var(--green); }
+        .status-badge.handoff { background: rgba(155, 89, 182, 0.2); color: #9b59b6; }
+        .status-badge.won { background: rgba(0, 217, 126, 0.3); color: var(--green); }
+        .status-badge.lost { background: rgba(231, 76, 60, 0.2); color: var(--red); }
+
+        .client-badge {
+            padding: 4px 10px;
+            border-radius: 5px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        .client-badge.j3 { background: #2c3e50; color: #ffd700; }
+        .client-badge.antonio { background: #1a5f2a; color: #00d97e; }
+        .client-badge.will { background: #2980b9; color: white; }
+
+        .score-bar {
+            width: 60px;
+            height: 8px;
+            background: var(--bg-dark);
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .score-fill {
+            height: 100%;
+            border-radius: 4px;
+        }
+
+        .score-fill.hot { background: var(--orange); }
+        .score-fill.warm { background: var(--gold); }
+        .score-fill.cool { background: var(--cyan); }
+
+        .time-ago {
+            color: var(--text-dim);
+            font-size: 0.85rem;
+        }
+
+        .time-ago.urgent {
+            color: var(--orange);
+            font-weight: 600;
+        }
+
+        .action-btn {
+            padding: 6px 15px;
+            border: 1px solid var(--border);
+            background: transparent;
+            color: var(--text-dim);
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 0.8rem;
+            transition: all 0.2s;
+        }
+
+        .action-btn:hover {
+            border-color: var(--cyan);
+            color: var(--cyan);
+        }
+
+        .action-btn.primary {
+            background: var(--gold);
+            color: #000;
+            border-color: var(--gold);
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background: var(--bg-panel);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 20px;
+        }
+
+        .stat-card h4 {
+            color: var(--text-dim);
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            margin-bottom: 10px;
+        }
+
+        .stat-card .value {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--gold);
+        }
+
+        .stat-card .sub {
+            font-size: 0.85rem;
+            color: var(--text-dim);
+            margin-top: 5px;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 60px;
+            color: var(--text-dim);
+        }
+
+        .refresh-btn {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            padding: 15px 25px;
+            background: var(--gold);
+            color: #000;
+            border: none;
+            border-radius: 30px;
+            cursor: pointer;
+            font-weight: 600;
+            box-shadow: 0 4px 20px rgba(255, 215, 0, 0.3);
+        }
+
+        footer {
+            text-align: center;
+            padding: 30px;
+            color: var(--text-dim);
+            font-size: 0.8rem;
+            border-top: 1px solid var(--border);
+            margin-top: 50px;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="logo">🦂 SCORPION Lead Center</div>
+        <div class="header-stats">
+            <div class="header-stat">
+                <div class="header-stat-value" id="totalLeads">--</div>
+                <div class="header-stat-label">Total Leads</div>
+            </div>
+            <div class="header-stat">
+                <div class="header-stat-value" id="hotLeads">--</div>
+                <div class="header-stat-label">Hot Leads</div>
+            </div>
+            <div class="header-stat">
+                <div class="header-stat-value" id="todayLeads">--</div>
+                <div class="header-stat-label">Today</div>
+            </div>
+        </div>
+    </header>
+
+    <div class="tabs">
+        <button class="tab active" onclick="filterLeads('all')">
+            ALL <span class="badge" id="badge-all">0</span>
+        </button>
+        <button class="tab j3" onclick="filterLeads('j3')">
+            🔨 J3 <span class="badge" id="badge-j3">0</span>
+        </button>
+        <button class="tab" onclick="filterLeads('antonio')">
+            💰 ANTONIO <span class="badge" id="badge-antonio">0</span>
+        </button>
+        <button class="tab" onclick="filterLeads('will')">
+            🏠 WILL <span class="badge" id="badge-will">0</span>
+        </button>
+    </div>
+
+    <main>
+        <!-- Stats Cards -->
+        <div class="stats-grid" id="statsGrid">
+            <div class="stat-card">
+                <h4>🔥 Hot Leads</h4>
+                <div class="value" id="stat-hot">0</div>
+                <div class="sub">Need immediate action</div>
+            </div>
+            <div class="stat-card">
+                <h4>🤖 Baby Engaged</h4>
+                <div class="value" id="stat-engaged">0</div>
+                <div class="sub">AI is talking to them</div>
+            </div>
+            <div class="stat-card">
+                <h4>✅ Qualified</h4>
+                <div class="value" id="stat-qualified">0</div>
+                <div class="sub">Ready for handoff</div>
+            </div>
+            <div class="stat-card">
+                <h4>🏆 Won</h4>
+                <div class="value" id="stat-won">0</div>
+                <div class="sub">Closed deals</div>
+            </div>
+        </div>
+
+        <!-- Leads Table -->
+        <table class="leads-table">
+            <thead>
+                <tr>
+                    <th>Status</th>
+                    <th>Name</th>
+                    <th>Client</th>
+                    <th>Service</th>
+                    <th>Budget</th>
+                    <th>Score</th>
+                    <th>Time</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody id="leadsTableBody">
+                <tr>
+                    <td colspan="8" class="empty-state">Loading leads...</td>
+                </tr>
+            </tbody>
+        </table>
+    </main>
+
+    <button class="refresh-btn" onclick="loadLeads()">🔄 Refresh</button>
+
+    <footer>
+        SCORPION Lead Center v1.0 | Auto-refresh every 30 seconds | 🦂 SCORPION AI
+    </footer>
+
+    <script>
+        const API_BASE = window.location.hostname === 'localhost'
+            ? 'http://localhost:8800/api/leads'
+            : '/api/leads';
+
+        let allLeads = [];
+        let currentFilter = 'all';
+
+        // Load leads on page load
+        document.addEventListener('DOMContentLoaded', loadLeads);
+
+        // Auto-refresh every 30 seconds
+        setInterval(loadLeads, 30000);
+
+        async function loadLeads() {
+            try {
+                const response = await fetch(`${API_BASE}/hot?limit=50`);
+                const data = await response.json();
+                allLeads = data.leads || [];
+                renderLeads();
+                updateStats();
+            } catch (error) {
+                console.error('Error loading leads:', error);
+                // Show demo data if API fails
+                allLeads = getDemoLeads();
+                renderLeads();
+                updateStats();
+            }
+        }
+
+        function filterLeads(filter) {
+            currentFilter = filter;
+
+            // Update tab styles
+            document.querySelectorAll('.tab').forEach(tab => tab.classList.remove('active'));
+            event.target.classList.add('active');
+
+            renderLeads();
+        }
+
+        function renderLeads() {
+            const tbody = document.getElementById('leadsTableBody');
+
+            let filtered = allLeads;
+            if (currentFilter !== 'all') {
+                filtered = allLeads.filter(l => l.client_slug === currentFilter);
+            }
+
+            if (filtered.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="8" class="empty-state">No leads found</td></tr>';
+                return;
+            }
+
+            tbody.innerHTML = filtered.map(lead => {
+                const isHot = lead.score >= 80 || lead.priority === 'hot';
+                const scoreClass = lead.score >= 80 ? 'hot' : lead.score >= 60 ? 'warm' : 'cool';
+                const timeAgo = getTimeAgo(lead.created_at);
+                const isUrgent = timeAgo.includes('min') && parseInt(timeAgo) < 10;
+
+                return `
+                    <tr class="${isHot ? 'hot' : ''}">
+                        <td><span class="status-badge ${lead.status}">${lead.status}</span></td>
+                        <td><strong>${lead.name}</strong><br><small style="color:var(--text-dim)">${lead.email || lead.phone || ''}</small></td>
+                        <td><span class="client-badge ${lead.client_slug}">${lead.client_slug.toUpperCase()}</span></td>
+                        <td>${lead.service_needed || '-'}</td>
+                        <td>${lead.budget_range || '-'}</td>
+                        <td>
+                            <div class="score-bar">
+                                <div class="score-fill ${scoreClass}" style="width: ${lead.score}%"></div>
+                            </div>
+                            <small style="color:var(--text-dim)">${lead.score}</small>
+                        </td>
+                        <td><span class="time-ago ${isUrgent ? 'urgent' : ''}">${timeAgo}</span></td>
+                        <td>
+                            <button class="action-btn" onclick="viewLead('${lead.id}')">View</button>
+                            <button class="action-btn primary" onclick="handoffLead('${lead.id}')">Handoff</button>
+                        </td>
+                    </tr>
+                `;
+            }).join('');
+        }
+
+        function updateStats() {
+            // Header stats
+            document.getElementById('totalLeads').textContent = allLeads.length;
+            document.getElementById('hotLeads').textContent = allLeads.filter(l => l.score >= 80).length;
+            document.getElementById('todayLeads').textContent = allLeads.filter(l => isToday(l.created_at)).length;
+
+            // Tab badges
+            document.getElementById('badge-all').textContent = allLeads.length;
+            document.getElementById('badge-j3').textContent = allLeads.filter(l => l.client_slug === 'j3').length;
+            document.getElementById('badge-antonio').textContent = allLeads.filter(l => l.client_slug === 'antonio').length;
+            document.getElementById('badge-will').textContent = allLeads.filter(l => l.client_slug === 'will').length;
+
+            // Stat cards
+            document.getElementById('stat-hot').textContent = allLeads.filter(l => l.priority === 'hot' || l.score >= 80).length;
+            document.getElementById('stat-engaged').textContent = allLeads.filter(l => l.status === 'engaged').length;
+            document.getElementById('stat-qualified').textContent = allLeads.filter(l => l.status === 'qualified').length;
+            document.getElementById('stat-won').textContent = allLeads.filter(l => l.status === 'won').length;
+        }
+
+        function viewLead(leadId) {
+            alert(`View lead: ${leadId}\n\nFull modal coming soon!`);
+        }
+
+        function handoffLead(leadId) {
+            const lead = allLeads.find(l => l.id === leadId);
+            const human = lead.client_slug === 'j3' ? 'Giovanny' : 'Carlos';
+            if (confirm(`Hand off to ${human}?`)) {
+                fetch(`${API_BASE}/lead/${leadId}/handoff`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ human: human.toLowerCase() })
+                }).then(() => loadLeads());
+            }
+        }
+
+        function getTimeAgo(dateStr) {
+            const date = new Date(dateStr);
+            const now = new Date();
+            const diff = Math.floor((now - date) / 1000);
+
+            if (diff < 60) return `${diff}s ago`;
+            if (diff < 3600) return `${Math.floor(diff / 60)}m ago`;
+            if (diff < 86400) return `${Math.floor(diff / 3600)}h ago`;
+            return `${Math.floor(diff / 86400)}d ago`;
+        }
+
+        function isToday(dateStr) {
+            const date = new Date(dateStr);
+            const today = new Date();
+            return date.toDateString() === today.toDateString();
+        }
+
+        function getDemoLeads() {
+            return [
+                { id: '1', client_slug: 'j3', name: 'Maria Garcia', email: 'maria@email.com', service_needed: 'kitchen_remodel', budget_range: '$50k-100k', score: 92, priority: 'hot', status: 'new', created_at: new Date(Date.now() - 120000).toISOString() },
+                { id: '2', client_slug: 'j3', name: 'Robert Chen', phone: '555-0123', service_needed: 'bathroom_remodel', budget_range: '$25k-50k', score: 78, priority: 'warm', status: 'engaged', created_at: new Date(Date.now() - 900000).toISOString() },
+                { id: '3', client_slug: 'antonio', name: 'James Wilson', email: 'james@email.com', service_needed: 'personal_loan', budget_range: null, score: 65, priority: 'warm', status: 'new', created_at: new Date(Date.now() - 3600000).toISOString() },
+                { id: '4', client_slug: 'will', name: 'Sarah Johnson', email: 'sarah@email.com', service_needed: 'buying', budget_range: null, score: 55, priority: 'cool', status: 'engaged', created_at: new Date(Date.now() - 7200000).toISOString() },
+                { id: '5', client_slug: 'j3', name: 'Michael Brown', email: 'mbrown@email.com', service_needed: 'commercial', budget_range: '$100k+', score: 88, priority: 'hot', status: 'qualified', created_at: new Date(Date.now() - 86400000).toISOString() },
+            ];
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,330 @@
+<!--
+═══════════════════════════════════════════════════════════════════════
+SCORPION GENERIC WIDGET - Template for Any Client
+Copy and customize colors/services for new clients
+
+CONFIGURATION: Set CLIENT_CONFIG below
+═══════════════════════════════════════════════════════════════════════
+-->
+
+<style>
+#scorpion-widget * {
+    margin: 0; padding: 0; box-sizing: border-box;
+    font-family: 'Segoe UI', -apple-system, sans-serif;
+}
+
+#sw-container {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    z-index: 999999;
+}
+
+#sw-toggle {
+    background: var(--sw-primary, #2c3e50);
+    color: var(--sw-accent, #ffd700);
+    border: none;
+    padding: 15px 25px;
+    border-radius: 30px;
+    cursor: pointer;
+    font-size: 16px;
+    font-weight: 600;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+#sw-panel {
+    display: none;
+    width: 360px;
+    background: #1a1a2e;
+    border-radius: 16px;
+    box-shadow: 0 10px 50px rgba(0,0,0,0.5);
+    overflow: hidden;
+    margin-bottom: 15px;
+}
+
+#sw-header {
+    background: var(--sw-primary, #2c3e50);
+    padding: 20px;
+    color: white;
+}
+
+#sw-header h3 {
+    font-size: 18px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+#sw-close {
+    background: none;
+    border: none;
+    color: white;
+    font-size: 28px;
+    cursor: pointer;
+}
+
+#sw-messages {
+    height: 280px;
+    overflow-y: auto;
+    padding: 15px;
+    background: #0d0d15;
+}
+
+.sw-msg {
+    padding: 12px 16px;
+    border-radius: 12px;
+    margin-bottom: 12px;
+    max-width: 85%;
+    font-size: 14px;
+}
+
+.sw-msg.bot {
+    background: #2d2d44;
+    color: #fff;
+}
+
+.sw-msg.user {
+    background: var(--sw-accent, #ffd700);
+    color: #000;
+    margin-left: auto;
+}
+
+#sw-input-row {
+    padding: 12px;
+    border-top: 1px solid #2a2a3f;
+    display: flex;
+    gap: 10px;
+}
+
+#sw-input {
+    flex: 1;
+    padding: 12px;
+    border: 1px solid #333;
+    border-radius: 10px;
+    background: #0d0d12;
+    color: #fff;
+    outline: none;
+}
+
+#sw-send {
+    padding: 12px 20px;
+    background: var(--sw-accent, #ffd700);
+    color: #000;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    font-weight: 600;
+}
+
+#sw-form {
+    padding: 20px;
+    display: none;
+}
+
+#sw-form input, #sw-form select, #sw-form textarea {
+    width: 100%;
+    padding: 12px;
+    margin-bottom: 10px;
+    border: 1px solid #333;
+    border-radius: 8px;
+    background: #0d0d12;
+    color: #fff;
+}
+
+#sw-form button {
+    width: 100%;
+    padding: 15px;
+    background: var(--sw-accent, #ffd700);
+    color: #000;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    font-weight: 700;
+}
+
+#sw-tabs {
+    display: flex;
+    background: #16213e;
+}
+
+.sw-tab {
+    flex: 1;
+    padding: 12px;
+    border: none;
+    background: transparent;
+    color: #888;
+    cursor: pointer;
+}
+
+.sw-tab.active {
+    background: #1a1a2e;
+    color: var(--sw-accent, #ffd700);
+}
+</style>
+
+<div id="scorpion-widget">
+    <div id="sw-container">
+        <div id="sw-panel">
+            <div id="sw-header">
+                <h3>
+                    <span id="sw-title">💬 Chat with Us</span>
+                    <button id="sw-close" onclick="swToggle()">×</button>
+                </h3>
+            </div>
+
+            <div id="sw-tabs">
+                <button class="sw-tab active" onclick="swShowTab('chat')">💬 Chat</button>
+                <button class="sw-tab" onclick="swShowTab('form')">📝 Contact</button>
+            </div>
+
+            <div id="sw-chat-tab">
+                <div id="sw-messages">
+                    <div class="sw-msg bot" id="sw-greeting">Hi! How can we help you today?</div>
+                </div>
+                <div id="sw-input-row">
+                    <input type="text" id="sw-input" placeholder="Type your message..." onkeypress="if(event.key==='Enter')swSend()">
+                    <button id="sw-send" onclick="swSend()">Send</button>
+                </div>
+            </div>
+
+            <div id="sw-form">
+                <form onsubmit="swSubmit(event)">
+                    <input type="text" name="name" placeholder="Your Name *" required>
+                    <input type="email" name="email" placeholder="Email *" required>
+                    <input type="tel" name="phone" placeholder="Phone">
+                    <select name="service" id="sw-services"></select>
+                    <textarea name="message" placeholder="How can we help?" rows="3"></textarea>
+                    <button type="submit">Send Message →</button>
+                </form>
+            </div>
+        </div>
+
+        <button id="sw-toggle" onclick="swToggle()">
+            <span id="sw-btn-text">💬 Chat with Us</span>
+        </button>
+    </div>
+</div>
+
+<script>
+// ═══════════════════════════════════════════════════════════════════════
+// CLIENT CONFIGURATION - Customize for each client
+// ═══════════════════════════════════════════════════════════════════════
+
+const CLIENT_CONFIG = {
+    // Change these for each client:
+    slug: 'generic',                    // Client slug (j3, antonio, will, etc.)
+    name: 'Our Company',                // Display name
+    icon: '💬',                         // Icon emoji
+    buttonText: 'Chat with Us',         // Toggle button text
+    greeting: 'Hi! How can we help you today?',
+    primaryColor: '#2c3e50',            // Header background
+    accentColor: '#ffd700',             // Buttons, highlights
+
+    // Services dropdown options
+    services: [
+        { value: '', label: 'Select Service...' },
+        { value: 'general', label: 'General Inquiry' },
+        { value: 'support', label: 'Support' },
+        { value: 'sales', label: 'Sales' }
+    ],
+
+    // API endpoint (change for production)
+    apiBase: window.location.hostname === 'localhost'
+        ? 'http://localhost:8800/api/leads'
+        : 'https://your-server.com/api/leads'
+};
+
+// ═══════════════════════════════════════════════════════════════════════
+// INITIALIZATION
+// ═══════════════════════════════════════════════════════════════════════
+
+(function initWidget() {
+    // Apply colors
+    document.documentElement.style.setProperty('--sw-primary', CLIENT_CONFIG.primaryColor);
+    document.documentElement.style.setProperty('--sw-accent', CLIENT_CONFIG.accentColor);
+
+    // Set texts
+    document.getElementById('sw-title').innerHTML = `${CLIENT_CONFIG.icon} ${CLIENT_CONFIG.name}`;
+    document.getElementById('sw-btn-text').innerHTML = `${CLIENT_CONFIG.icon} ${CLIENT_CONFIG.buttonText}`;
+    document.getElementById('sw-greeting').textContent = CLIENT_CONFIG.greeting;
+
+    // Populate services dropdown
+    const servicesSelect = document.getElementById('sw-services');
+    CLIENT_CONFIG.services.forEach(s => {
+        const opt = document.createElement('option');
+        opt.value = s.value;
+        opt.textContent = s.label;
+        servicesSelect.appendChild(opt);
+    });
+
+    console.log(`🦂 SCORPION Widget loaded for ${CLIENT_CONFIG.name}`);
+})();
+
+// ═══════════════════════════════════════════════════════════════════════
+// WIDGET FUNCTIONS
+// ═══════════════════════════════════════════════════════════════════════
+
+function swToggle() {
+    const panel = document.getElementById('sw-panel');
+    const btn = document.getElementById('sw-toggle');
+    panel.style.display = panel.style.display === 'none' || !panel.style.display ? 'block' : 'none';
+    btn.style.display = panel.style.display === 'block' ? 'none' : 'flex';
+}
+
+function swShowTab(tab) {
+    document.getElementById('sw-chat-tab').style.display = tab === 'chat' ? 'block' : 'none';
+    document.getElementById('sw-form').style.display = tab === 'form' ? 'block' : 'none';
+    document.querySelectorAll('.sw-tab').forEach((t, i) => {
+        t.classList.toggle('active', (tab === 'chat' && i === 0) || (tab === 'form' && i === 1));
+    });
+}
+
+async function swSend() {
+    const input = document.getElementById('sw-input');
+    const msg = input.value.trim();
+    if (!msg) return;
+
+    const messages = document.getElementById('sw-messages');
+    messages.innerHTML += `<div class="sw-msg user">${escapeHtml(msg)}</div>`;
+    input.value = '';
+
+    try {
+        const res = await fetch(`${CLIENT_CONFIG.apiBase}/chat/${CLIENT_CONFIG.slug}`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ message: msg })
+        });
+        const data = await res.json();
+        messages.innerHTML += `<div class="sw-msg bot">${escapeHtml(data.response)}</div>`;
+    } catch {
+        messages.innerHTML += `<div class="sw-msg bot">Thanks! Someone will be in touch soon.</div>`;
+    }
+    messages.scrollTop = messages.scrollHeight;
+}
+
+async function swSubmit(e) {
+    e.preventDefault();
+    const form = e.target;
+    const data = Object.fromEntries(new FormData(form));
+
+    try {
+        await fetch(`${CLIENT_CONFIG.apiBase}/webhook/${CLIENT_CONFIG.slug}`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(data)
+        });
+        form.innerHTML = '<div style="text-align:center;color:#00d97e;padding:40px;"><div style="font-size:48px;">✓</div><p>Thank you! We\'ll be in touch soon.</p></div>';
+    } catch {
+        alert('Error submitting. Please try again.');
+    }
+}
+
+function escapeHtml(text) {
+    const div = document.createElement('div');
+    div.textContent = text;
+    return div.innerHTML;
+}
+</script>
