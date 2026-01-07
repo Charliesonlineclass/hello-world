@@ -1,0 +1,161 @@
+version: '3.8'
+
+# ═══════════════════════════════════════════════════════════════════════
+# SCORPION EMPIRE - Docker Compose Stack
+# One-click deployment for the entire AI infrastructure
+# ═══════════════════════════════════════════════════════════════════════
+
+services:
+  # ─────────────────────────────────────────────────────────────────────
+  # OLLAMA - Local LLM Server
+  # ─────────────────────────────────────────────────────────────────────
+  ollama:
+    image: ollama/ollama:latest
+    container_name: scorpion-ollama
+    ports:
+      - "11434:11434"
+    volumes:
+      - ollama_data:/root/.ollama
+    restart: unless-stopped
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: all
+              capabilities: [gpu]
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:11434/api/tags"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # ─────────────────────────────────────────────────────────────────────
+  # CHROMADB - Vector Database
+  # ─────────────────────────────────────────────────────────────────────
+  chromadb:
+    image: chromadb/chroma:latest
+    container_name: scorpion-chromadb
+    ports:
+      - "8000:8000"
+    volumes:
+      - chroma_data:/chroma/chroma
+    environment:
+      - IS_PERSISTENT=TRUE
+      - ANONYMIZED_TELEMETRY=FALSE
+      - ALLOW_RESET=TRUE
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/api/v1/heartbeat"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # ─────────────────────────────────────────────────────────────────────
+  # EMPIRE API - FastAPI Backend
+  # ─────────────────────────────────────────────────────────────────────
+  empire:
+    build:
+      context: .
+      dockerfile: Dockerfile.empire
+    container_name: scorpion-empire
+    ports:
+      - "8800:8800"
+    depends_on:
+      ollama:
+        condition: service_healthy
+      chromadb:
+        condition: service_healthy
+    environment:
+      - OLLAMA_HOST=ollama:11434
+      - CHROMADB_HOST=chromadb:8000
+      - PYTHONUNBUFFERED=1
+    volumes:
+      - ./empire:/app/empire
+      - ./data:/app/data
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8800/health-check"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # ─────────────────────────────────────────────────────────────────────
+  # N8N - Workflow Automation
+  # ─────────────────────────────────────────────────────────────────────
+  n8n:
+    image: n8nio/n8n:latest
+    container_name: scorpion-n8n
+    ports:
+      - "5678:5678"
+    volumes:
+      - n8n_data:/home/node/.n8n
+      - ./n8n/workflows:/home/node/.n8n/workflows
+    environment:
+      - N8N_BASIC_AUTH_ACTIVE=true
+      - N8N_BASIC_AUTH_USER=${N8N_USER:-admin}
+      - N8N_BASIC_AUTH_PASSWORD=${N8N_PASSWORD:-scorpion123}
+      - N8N_HOST=0.0.0.0
+      - N8N_PORT=5678
+      - N8N_PROTOCOL=http
+      - WEBHOOK_URL=http://localhost:5678/
+      - GENERIC_TIMEZONE=America/Chicago
+    restart: unless-stopped
+
+  # ─────────────────────────────────────────────────────────────────────
+  # GRAFANA - Monitoring Dashboard
+  # ─────────────────────────────────────────────────────────────────────
+  grafana:
+    image: grafana/grafana:latest
+    container_name: scorpion-grafana
+    ports:
+      - "3001:3000"
+    volumes:
+      - grafana_data:/var/lib/grafana
+      - ./grafana/provisioning:/etc/grafana/provisioning
+    environment:
+      - GF_SECURITY_ADMIN_USER=admin
+      - GF_SECURITY_ADMIN_PASSWORD=scorpion123
+      - GF_USERS_ALLOW_SIGN_UP=false
+    restart: unless-stopped
+
+  # ─────────────────────────────────────────────────────────────────────
+  # REDIS - Caching & Message Queue (Optional)
+  # ─────────────────────────────────────────────────────────────────────
+  redis:
+    image: redis:alpine
+    container_name: scorpion-redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    command: redis-server --appendonly yes
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+# ═══════════════════════════════════════════════════════════════════════
+# VOLUMES - Persistent Data Storage
+# ═══════════════════════════════════════════════════════════════════════
+volumes:
+  ollama_data:
+    name: scorpion-ollama-data
+  chroma_data:
+    name: scorpion-chroma-data
+  n8n_data:
+    name: scorpion-n8n-data
+  grafana_data:
+    name: scorpion-grafana-data
+  redis_data:
+    name: scorpion-redis-data
+
+# ═══════════════════════════════════════════════════════════════════════
+# NETWORK
+# ═══════════════════════════════════════════════════════════════════════
+networks:
+  default:
+    name: scorpion-network
+    driver: bridge
