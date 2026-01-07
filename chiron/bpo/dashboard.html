@@ -1,0 +1,724 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>⚔️ CHIRON BPO COMMAND</title>
+    <style>
+        :root {
+            --bg-dark: #0a0a0f;
+            --bg-panel: #0d0d12;
+            --bg-card: #111118;
+            --border: #1a1a24;
+            --green: #00ff41;
+            --green-dim: #00aa2a;
+            --cyan: #00d4ff;
+            --yellow: #ffcc00;
+            --red: #ff3333;
+            --orange: #ff9500;
+            --purple: #9b59b6;
+            --text: #ffffff;
+            --text-dim: #666680;
+            --text-muted: #444455;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+            background: var(--bg-dark);
+            color: var(--text);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* ═══════════════════════════════════════════════════════════════
+           HEADER
+           ═══════════════════════════════════════════════════════════════ */
+        header {
+            background: linear-gradient(180deg, #111118 0%, #0a0a0f 100%);
+            border-bottom: 1px solid var(--green);
+            padding: 15px 25px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .logo h1 {
+            font-size: 1.3rem;
+            color: var(--green);
+            letter-spacing: 2px;
+            text-shadow: 0 0 10px rgba(0, 255, 65, 0.5);
+        }
+
+        .campaign-badge {
+            background: var(--bg-card);
+            border: 1px solid var(--cyan);
+            padding: 5px 15px;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            color: var(--cyan);
+        }
+
+        .live-indicator {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--green);
+            font-size: 0.85rem;
+        }
+
+        .live-dot {
+            width: 8px;
+            height: 8px;
+            background: var(--green);
+            border-radius: 50%;
+            animation: pulse 1.5s infinite;
+            box-shadow: 0 0 10px var(--green);
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.4; }
+        }
+
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .user-info {
+            color: var(--text-dim);
+            font-size: 0.85rem;
+        }
+
+        /* ═══════════════════════════════════════════════════════════════
+           REALTIME STATS BAR
+           ═══════════════════════════════════════════════════════════════ */
+        .stats-bar {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 2px;
+            background: var(--border);
+            padding: 2px;
+            margin: 20px;
+            border: 1px solid var(--border);
+        }
+
+        .stat-box {
+            background: var(--bg-panel);
+            padding: 20px;
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 2rem;
+            font-weight: bold;
+            color: var(--green);
+            text-shadow: 0 0 15px rgba(0, 255, 65, 0.3);
+        }
+
+        .stat-value.warning { color: var(--yellow); }
+        .stat-value.danger { color: var(--red); }
+
+        .stat-label {
+            font-size: 0.75rem;
+            color: var(--text-dim);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-top: 5px;
+        }
+
+        .stat-sub {
+            font-size: 0.7rem;
+            color: var(--text-muted);
+            margin-top: 3px;
+        }
+
+        /* ═══════════════════════════════════════════════════════════════
+           MAIN LAYOUT
+           ═══════════════════════════════════════════════════════════════ */
+        .main-content {
+            display: grid;
+            grid-template-columns: 1fr 280px;
+            gap: 20px;
+            padding: 0 20px 20px;
+        }
+
+        .panel {
+            background: var(--bg-panel);
+            border: 1px solid var(--border);
+        }
+
+        .panel-header {
+            padding: 15px 20px;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .panel-title {
+            font-size: 0.9rem;
+            color: var(--green);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* ═══════════════════════════════════════════════════════════════
+           AGENT GRID
+           ═══════════════════════════════════════════════════════════════ */
+        .agent-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .agent-table th {
+            text-align: left;
+            padding: 12px 15px;
+            font-size: 0.7rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            border-bottom: 1px solid var(--border);
+            background: var(--bg-card);
+        }
+
+        .agent-table td {
+            padding: 15px;
+            border-bottom: 1px solid var(--border);
+            font-size: 0.9rem;
+        }
+
+        .agent-table tr:hover {
+            background: rgba(0, 255, 65, 0.03);
+        }
+
+        .agent-table tr.top-performer {
+            background: linear-gradient(90deg, rgba(0, 255, 65, 0.1) 0%, transparent 100%);
+        }
+
+        .agent-name {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .status-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+        }
+
+        .status-dot.on-call { background: var(--green); box-shadow: 0 0 8px var(--green); }
+        .status-dot.wrap { background: var(--cyan); }
+        .status-dot.available { background: var(--green-dim); }
+        .status-dot.break { background: var(--yellow); }
+        .status-dot.offline { background: var(--red); opacity: 0.5; }
+
+        .status-text {
+            font-size: 0.75rem;
+            padding: 3px 8px;
+            border-radius: 3px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .status-text.on-call { background: rgba(0, 255, 65, 0.2); color: var(--green); }
+        .status-text.wrap { background: rgba(0, 212, 255, 0.2); color: var(--cyan); }
+        .status-text.available { background: rgba(0, 170, 42, 0.2); color: var(--green-dim); }
+        .status-text.break { background: rgba(255, 204, 0, 0.2); color: var(--yellow); }
+        .status-text.offline { background: rgba(255, 51, 51, 0.1); color: var(--text-muted); }
+
+        .metric { text-align: center; }
+        .metric.highlight { color: var(--green); font-weight: bold; }
+        .metric.warning { color: var(--yellow); }
+        .metric.danger { color: var(--red); }
+
+        .quality-bar {
+            width: 60px;
+            height: 6px;
+            background: var(--bg-dark);
+            border-radius: 3px;
+            overflow: hidden;
+        }
+
+        .quality-fill {
+            height: 100%;
+            background: var(--green);
+            transition: width 0.3s;
+        }
+
+        .quality-fill.warning { background: var(--yellow); }
+        .quality-fill.danger { background: var(--red); }
+
+        /* ═══════════════════════════════════════════════════════════════
+           QUEUE PANEL
+           ═══════════════════════════════════════════════════════════════ */
+        .queue-list {
+            padding: 15px;
+        }
+
+        .queue-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            margin-bottom: 8px;
+            border-radius: 4px;
+        }
+
+        .queue-item:first-child {
+            border-color: var(--yellow);
+            background: rgba(255, 204, 0, 0.05);
+        }
+
+        .queue-position {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            margin-right: 10px;
+        }
+
+        .queue-name {
+            flex: 1;
+            font-size: 0.85rem;
+        }
+
+        .queue-wait {
+            font-family: monospace;
+            color: var(--yellow);
+            font-size: 0.9rem;
+        }
+
+        .queue-wait.danger {
+            color: var(--red);
+            animation: blink 1s infinite;
+        }
+
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        .queue-stats {
+            padding: 15px;
+            border-top: 1px solid var(--border);
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+
+        .queue-stat {
+            text-align: center;
+        }
+
+        .queue-stat-value {
+            font-size: 1.2rem;
+            color: var(--cyan);
+        }
+
+        .queue-stat-label {
+            font-size: 0.65rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+        }
+
+        /* ═══════════════════════════════════════════════════════════════
+           HOURLY CHART
+           ═══════════════════════════════════════════════════════════════ */
+        .chart-container {
+            padding: 20px;
+        }
+
+        .chart-row {
+            display: flex;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+
+        .chart-label {
+            width: 50px;
+            font-size: 0.75rem;
+            color: var(--text-muted);
+        }
+
+        .chart-bars {
+            flex: 1;
+            display: flex;
+            gap: 4px;
+            align-items: flex-end;
+            height: 30px;
+        }
+
+        .chart-bar {
+            flex: 1;
+            background: var(--green);
+            opacity: 0.7;
+            border-radius: 2px 2px 0 0;
+            transition: all 0.3s;
+        }
+
+        .chart-bar:hover {
+            opacity: 1;
+            box-shadow: 0 0 10px var(--green);
+        }
+
+        .chart-bar.appts {
+            background: var(--cyan);
+        }
+
+        .chart-legend {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-top: 15px;
+            font-size: 0.75rem;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            color: var(--text-dim);
+        }
+
+        .legend-color {
+            width: 12px;
+            height: 12px;
+            border-radius: 2px;
+        }
+
+        .legend-color.calls { background: var(--green); opacity: 0.7; }
+        .legend-color.appts { background: var(--cyan); }
+
+        /* ═══════════════════════════════════════════════════════════════
+           FOOTER
+           ═══════════════════════════════════════════════════════════════ */
+        footer {
+            text-align: center;
+            padding: 20px;
+            color: var(--text-muted);
+            font-size: 0.7rem;
+            border-top: 1px solid var(--border);
+            margin: 20px;
+        }
+
+        /* ═══════════════════════════════════════════════════════════════
+           RESPONSIVE
+           ═══════════════════════════════════════════════════════════════ */
+        @media (max-width: 1024px) {
+            .main-content { grid-template-columns: 1fr; }
+            .stats-bar { grid-template-columns: repeat(3, 1fr); }
+        }
+
+        @media (max-width: 768px) {
+            .stats-bar { grid-template-columns: repeat(2, 1fr); }
+            header { flex-direction: column; gap: 15px; }
+            .agent-table { font-size: 0.8rem; }
+        }
+    </style>
+</head>
+<body>
+    <!-- HEADER -->
+    <header>
+        <div class="logo">
+            <h1>⚔️ CHIRON BPO COMMAND</h1>
+            <span class="campaign-badge">NSIPA</span>
+        </div>
+        <div class="live-indicator">
+            <span class="live-dot"></span>
+            LIVE
+        </div>
+        <div class="header-right">
+            <span class="user-info">Carlos Escamilla</span>
+        </div>
+    </header>
+
+    <!-- REALTIME STATS BAR -->
+    <div class="stats-bar">
+        <div class="stat-box">
+            <div class="stat-value" id="agentsOnline">5</div>
+            <div class="stat-label">AGENTS</div>
+            <div class="stat-sub">● <span id="agentsLive">4</span> live</div>
+        </div>
+        <div class="stat-box">
+            <div class="stat-value" id="callsToday">147</div>
+            <div class="stat-label">CALLS</div>
+            <div class="stat-sub">today</div>
+        </div>
+        <div class="stat-box">
+            <div class="stat-value" id="queueDepth">3</div>
+            <div class="stat-label">QUEUE</div>
+            <div class="stat-sub">waiting</div>
+        </div>
+        <div class="stat-box">
+            <div class="stat-value" id="slaPercent">94%</div>
+            <div class="stat-label">SLA</div>
+            <div class="stat-sub">target: 95%</div>
+        </div>
+        <div class="stat-box">
+            <div class="stat-value" id="convRate">22%</div>
+            <div class="stat-label">CONV</div>
+            <div class="stat-sub">rate</div>
+        </div>
+    </div>
+
+    <!-- MAIN CONTENT -->
+    <div class="main-content">
+        <!-- AGENT GRID -->
+        <div class="panel">
+            <div class="panel-header">
+                <span class="panel-title">📊 Agent Grid</span>
+                <span style="color: var(--text-muted); font-size: 0.75rem;">
+                    Last update: <span id="lastUpdate">--:--:--</span>
+                </span>
+            </div>
+            <table class="agent-table">
+                <thead>
+                    <tr>
+                        <th>Agent</th>
+                        <th>Status</th>
+                        <th>Calls</th>
+                        <th>Appts</th>
+                        <th>Conv%</th>
+                        <th>AHT</th>
+                        <th>Quality</th>
+                    </tr>
+                </thead>
+                <tbody id="agentTableBody">
+                    <!-- Rendered by JS -->
+                </tbody>
+            </table>
+        </div>
+
+        <!-- RIGHT SIDEBAR -->
+        <div class="sidebar">
+            <!-- QUEUE PANEL -->
+            <div class="panel" style="margin-bottom: 20px;">
+                <div class="panel-header">
+                    <span class="panel-title">📞 Queue</span>
+                </div>
+                <div class="queue-list" id="queueList">
+                    <!-- Rendered by JS -->
+                </div>
+                <div class="queue-stats">
+                    <div class="queue-stat">
+                        <div class="queue-stat-value" id="avgWait">0:31</div>
+                        <div class="queue-stat-label">Avg Wait</div>
+                    </div>
+                    <div class="queue-stat">
+                        <div class="queue-stat-value" id="longestWait">0:45</div>
+                        <div class="queue-stat-label">Longest</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- HOURLY CHART -->
+            <div class="panel">
+                <div class="panel-header">
+                    <span class="panel-title">📈 Hourly</span>
+                </div>
+                <div class="chart-container" id="hourlyChart">
+                    <!-- Rendered by JS -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        CHIRON BPO COMMAND v1.0 | Military-Grade Performance System | 🦂 SCORPION AI
+    </footer>
+
+    <!-- AUDIO ALERT -->
+    <audio id="queueAlert" preload="auto">
+        <source src="data:audio/wav;base64,UklGRnoGAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQoGAACBhYqFbF1fdJivrJBhNjVgodDbq2EcBj+a2teleQ==" type="audio/wav">
+    </audio>
+
+    <script>
+        // ═══════════════════════════════════════════════════════════════
+        // DEMO DATA
+        // ═══════════════════════════════════════════════════════════════
+
+        const demoAgents = [
+            { id: "carlos_b", name: "Carlos B", status: "on_call", calls: 38, appts: 9, aht: "4:32", quality: 98 },
+            { id: "denisse_d", name: "Denisse D", status: "wrap", calls: 32, appts: 4, aht: "5:15", quality: 92 },
+            { id: "gerson_c", name: "Gerson C", status: "break", calls: 28, appts: 5, aht: "4:48", quality: 95 },
+            { id: "edvaldo_e", name: "Edvaldo E", status: "available", calls: 25, appts: 2, aht: "6:02", quality: 88 },
+            { id: "ana_m", name: "Ana M", status: "on_call", calls: 30, appts: 6, aht: "4:15", quality: 94 },
+            { id: "teresa_t", name: "Teresa T", status: "offline", calls: 0, appts: 0, aht: "0:00", quality: 0 },
+        ];
+
+        const demoQueue = [
+            { name: "Maria G", wait: 45 },
+            { name: "Robert S", wait: 32 },
+            { name: "John D", wait: 15 },
+        ];
+
+        const hourlyData = [
+            { hour: "8:00", calls: 12, appts: 2 },
+            { hour: "9:00", calls: 18, appts: 4 },
+            { hour: "10:00", calls: 22, appts: 5 },
+            { hour: "11:00", calls: 25, appts: 6 },
+            { hour: "12:00", calls: 15, appts: 3 },
+            { hour: "13:00", calls: 20, appts: 4 },
+            { hour: "14:00", calls: 23, appts: 5 },
+            { hour: "15:00", calls: 12, appts: 3 },
+        ];
+
+        // ═══════════════════════════════════════════════════════════════
+        // RENDER FUNCTIONS
+        // ═══════════════════════════════════════════════════════════════
+
+        function renderAgentTable() {
+            const tbody = document.getElementById('agentTableBody');
+            tbody.innerHTML = '';
+
+            // Sort by appointments
+            const sorted = [...demoAgents].sort((a, b) => b.appts - a.appts);
+
+            sorted.forEach((agent, index) => {
+                const conv = agent.calls > 0 ? ((agent.appts / agent.calls) * 100).toFixed(1) : 0;
+                const isTop = index === 0 && agent.appts > 0;
+                const qualityClass = agent.quality >= 90 ? '' : agent.quality >= 80 ? 'warning' : 'danger';
+
+                const row = document.createElement('tr');
+                if (isTop) row.classList.add('top-performer');
+
+                row.innerHTML = `
+                    <td>
+                        <div class="agent-name">
+                            <span class="status-dot ${agent.status.replace('_', '-')}"></span>
+                            ${isTop ? '🏆 ' : ''}${agent.name}
+                        </div>
+                    </td>
+                    <td>
+                        <span class="status-text ${agent.status.replace('_', '-')}">
+                            ${agent.status.replace('_', ' ')}
+                        </span>
+                    </td>
+                    <td class="metric">${agent.calls}</td>
+                    <td class="metric highlight">${agent.appts}</td>
+                    <td class="metric ${conv >= 20 ? 'highlight' : conv >= 10 ? '' : 'danger'}">${conv}%</td>
+                    <td class="metric">${agent.aht}</td>
+                    <td>
+                        <div class="quality-bar">
+                            <div class="quality-fill ${qualityClass}" style="width: ${agent.quality}%"></div>
+                        </div>
+                    </td>
+                `;
+
+                tbody.appendChild(row);
+            });
+        }
+
+        function renderQueue() {
+            const container = document.getElementById('queueList');
+            container.innerHTML = '';
+
+            if (demoQueue.length === 0) {
+                container.innerHTML = '<div style="text-align: center; color: var(--text-muted); padding: 20px;">Queue empty</div>';
+                return;
+            }
+
+            demoQueue.forEach((item, index) => {
+                const waitClass = item.wait > 60 ? 'danger' : '';
+                const waitStr = `${Math.floor(item.wait / 60)}:${(item.wait % 60).toString().padStart(2, '0')}`;
+
+                container.innerHTML += `
+                    <div class="queue-item">
+                        <span class="queue-position">#${index + 1}</span>
+                        <span class="queue-name">${item.name}</span>
+                        <span class="queue-wait ${waitClass}">${waitStr}</span>
+                    </div>
+                `;
+            });
+
+            // Update stats
+            const waits = demoQueue.map(q => q.wait);
+            const avg = Math.floor(waits.reduce((a, b) => a + b, 0) / waits.length);
+            const longest = Math.max(...waits);
+
+            document.getElementById('avgWait').textContent = `${Math.floor(avg / 60)}:${(avg % 60).toString().padStart(2, '0')}`;
+            document.getElementById('longestWait').textContent = `${Math.floor(longest / 60)}:${(longest % 60).toString().padStart(2, '0')}`;
+        }
+
+        function renderHourlyChart() {
+            const container = document.getElementById('hourlyChart');
+            const maxCalls = Math.max(...hourlyData.map(h => h.calls));
+
+            let html = '';
+            hourlyData.forEach(hour => {
+                const callHeight = (hour.calls / maxCalls) * 100;
+                const apptHeight = (hour.appts / maxCalls) * 100;
+
+                html += `
+                    <div class="chart-row">
+                        <span class="chart-label">${hour.hour}</span>
+                        <div class="chart-bars">
+                            <div class="chart-bar" style="height: ${callHeight}%" title="${hour.calls} calls"></div>
+                            <div class="chart-bar appts" style="height: ${apptHeight}%" title="${hour.appts} appts"></div>
+                        </div>
+                    </div>
+                `;
+            });
+
+            html += `
+                <div class="chart-legend">
+                    <div class="legend-item">
+                        <div class="legend-color calls"></div>
+                        <span>Calls</span>
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-color appts"></div>
+                        <span>Appointments</span>
+                    </div>
+                </div>
+            `;
+
+            container.innerHTML = html;
+        }
+
+        function updateTimestamp() {
+            const now = new Date();
+            document.getElementById('lastUpdate').textContent = now.toLocaleTimeString();
+        }
+
+        function checkQueueAlert() {
+            if (demoQueue.length > 5) {
+                document.getElementById('queueAlert').play().catch(() => {});
+            }
+        }
+
+        // ═══════════════════════════════════════════════════════════════
+        // INITIALIZE
+        // ═══════════════════════════════════════════════════════════════
+
+        function init() {
+            renderAgentTable();
+            renderQueue();
+            renderHourlyChart();
+            updateTimestamp();
+
+            // Auto-refresh every 30 seconds
+            setInterval(() => {
+                // In production, fetch from /api/bpo/stats/realtime
+                renderAgentTable();
+                renderQueue();
+                updateTimestamp();
+                checkQueueAlert();
+            }, 30000);
+        }
+
+        document.addEventListener('DOMContentLoaded', init);
+    </script>
+</body>
+</html>
