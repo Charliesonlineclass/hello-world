@@ -1,0 +1,810 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - SCORPION CRM</title>
+    <style>
+        :root {
+            --primary: #2563eb;
+            --primary-dark: #1d4ed8;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+            --purple: #8b5cf6;
+            --bg: #0f172a;
+            --bg-light: #1e293b;
+            --card: #1e293b;
+            --text: #f1f5f9;
+            --text-light: #94a3b8;
+            --border: #334155;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+        }
+
+        .navbar {
+            background: var(--card);
+            padding: 16px 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid var(--border);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .navbar h1 {
+            font-size: 20px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .navbar .actions {
+            display: flex;
+            gap: 12px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 24px;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+
+        .stat-card {
+            background: var(--card);
+            border-radius: 12px;
+            padding: 20px;
+            border: 1px solid var(--border);
+        }
+
+        .stat-card .label {
+            color: var(--text-light);
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 8px;
+        }
+
+        .stat-card .value {
+            font-size: 32px;
+            font-weight: 700;
+        }
+
+        .stat-card .change {
+            font-size: 13px;
+            margin-top: 4px;
+        }
+
+        .stat-card .change.positive { color: var(--success); }
+        .stat-card .change.negative { color: var(--danger); }
+
+        .grid-2 {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 24px;
+            margin-bottom: 24px;
+        }
+
+        @media (max-width: 900px) {
+            .grid-2 {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .section {
+            background: var(--card);
+            border-radius: 12px;
+            border: 1px solid var(--border);
+            overflow: hidden;
+        }
+
+        .section-header {
+            padding: 16px 20px;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .section-header h2 {
+            font-size: 16px;
+            font-weight: 600;
+        }
+
+        .section-body {
+            padding: 0;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            padding: 12px 16px;
+            text-align: left;
+            border-bottom: 1px solid var(--border);
+        }
+
+        th {
+            font-size: 12px;
+            text-transform: uppercase;
+            color: var(--text-light);
+            font-weight: 600;
+        }
+
+        tr:hover {
+            background: rgba(255,255,255,0.02);
+        }
+
+        .score-badge {
+            display: inline-block;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 600;
+        }
+
+        .score-badge.high { background: var(--success); color: white; }
+        .score-badge.medium { background: var(--warning); color: #1e293b; }
+        .score-badge.low { background: var(--danger); color: white; }
+
+        .status-badge {
+            display: inline-block;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 11px;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .status-badge.new { background: #1e40af; }
+        .status-badge.contacted { background: #92400e; }
+        .status-badge.qualified { background: #065f46; }
+        .status-badge.proposal { background: #3730a3; }
+        .status-badge.negotiation { background: #9d174d; }
+        .status-badge.won { background: var(--success); }
+        .status-badge.lost { background: var(--danger); }
+
+        .btn {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 6px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: var(--primary-dark);
+        }
+
+        .btn-secondary {
+            background: var(--bg-light);
+            color: var(--text);
+            border: 1px solid var(--border);
+        }
+
+        .btn-sm {
+            padding: 6px 12px;
+            font-size: 12px;
+        }
+
+        select {
+            padding: 6px 10px;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            background: var(--bg);
+            color: var(--text);
+            font-size: 13px;
+            cursor: pointer;
+        }
+
+        select:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+
+        .agent-list {
+            padding: 16px;
+        }
+
+        .agent-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px;
+            background: var(--bg);
+            border-radius: 8px;
+            margin-bottom: 8px;
+        }
+
+        .agent-item:last-child {
+            margin-bottom: 0;
+        }
+
+        .agent-name {
+            font-weight: 600;
+        }
+
+        .agent-stats {
+            font-size: 13px;
+            color: var(--text-light);
+        }
+
+        .pipeline-bar {
+            display: flex;
+            height: 24px;
+            border-radius: 6px;
+            overflow: hidden;
+            margin: 16px;
+        }
+
+        .pipeline-segment {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 11px;
+            font-weight: 600;
+            color: white;
+            min-width: 30px;
+        }
+
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.7);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .modal {
+            background: var(--card);
+            border-radius: 12px;
+            padding: 24px;
+            width: 90%;
+            max-width: 500px;
+            border: 1px solid var(--border);
+        }
+
+        .modal h3 {
+            margin-bottom: 20px;
+        }
+
+        .form-group {
+            margin-bottom: 16px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 6px;
+            font-size: 13px;
+            color: var(--text-light);
+        }
+
+        .form-group input, .form-group select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            background: var(--bg);
+            color: var(--text);
+            font-size: 14px;
+        }
+
+        .modal-actions {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+        }
+
+        .toast {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: var(--success);
+            color: white;
+            padding: 14px 20px;
+            border-radius: 8px;
+            transform: translateY(100px);
+            opacity: 0;
+            transition: all 0.3s;
+        }
+
+        .toast.show {
+            transform: translateY(0);
+            opacity: 1;
+        }
+
+        .toast.error { background: var(--danger); }
+
+        .empty-state {
+            text-align: center;
+            padding: 40px;
+            color: var(--text-light);
+        }
+
+        .conversion-chart {
+            padding: 20px;
+        }
+
+        .conversion-bar {
+            display: flex;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+
+        .conversion-bar .label {
+            width: 100px;
+            font-size: 13px;
+            color: var(--text-light);
+        }
+
+        .conversion-bar .bar {
+            flex: 1;
+            height: 24px;
+            background: var(--bg);
+            border-radius: 4px;
+            overflow: hidden;
+            margin: 0 12px;
+        }
+
+        .conversion-bar .fill {
+            height: 100%;
+            border-radius: 4px;
+        }
+
+        .conversion-bar .value {
+            width: 50px;
+            text-align: right;
+            font-weight: 600;
+        }
+
+        @media (max-width: 600px) {
+            .container {
+                padding: 12px;
+            }
+
+            table {
+                font-size: 13px;
+            }
+
+            th, td {
+                padding: 8px 12px;
+            }
+
+            .navbar {
+                flex-direction: column;
+                gap: 12px;
+            }
+        }
+
+        .refresh-icon {
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <h1>🦂 SCORPION CRM <span style="color: var(--text-light); font-weight: normal;">Admin</span></h1>
+        <div class="actions">
+            <button class="btn btn-secondary" onclick="loadData()" id="refreshBtn">🔄 Refresh</button>
+            <button class="btn btn-primary" onclick="showAddAgentModal()">+ Add Agent</button>
+        </div>
+    </nav>
+
+    <div class="container">
+        <!-- Stats Row -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="label">Total Leads</div>
+                <div class="value" id="statTotalLeads">0</div>
+            </div>
+            <div class="stat-card">
+                <div class="label">Conversion Rate</div>
+                <div class="value" id="statConversion">0%</div>
+            </div>
+            <div class="stat-card">
+                <div class="label">Pipeline Value</div>
+                <div class="value" id="statPipeline">$0</div>
+            </div>
+            <div class="stat-card">
+                <div class="label">Won This Month</div>
+                <div class="value" style="color: var(--success)" id="statWon">$0</div>
+            </div>
+            <div class="stat-card">
+                <div class="label">Active Agents</div>
+                <div class="value" id="statAgents">0</div>
+            </div>
+        </div>
+
+        <!-- Pipeline Visualization -->
+        <div class="section" style="margin-bottom: 24px;">
+            <div class="section-header">
+                <h2>📊 Pipeline Overview</h2>
+            </div>
+            <div class="pipeline-bar" id="pipelineBar"></div>
+            <div class="conversion-chart" id="pipelineChart"></div>
+        </div>
+
+        <!-- Main Grid -->
+        <div class="grid-2">
+            <!-- Leads Table -->
+            <div class="section">
+                <div class="section-header">
+                    <h2>📋 All Leads</h2>
+                    <select id="statusFilter" onchange="filterLeads()">
+                        <option value="">All Statuses</option>
+                        <option value="new">New</option>
+                        <option value="contacted">Contacted</option>
+                        <option value="qualified">Qualified</option>
+                        <option value="proposal">Proposal</option>
+                        <option value="negotiation">Negotiation</option>
+                        <option value="won">Won</option>
+                        <option value="lost">Lost</option>
+                    </select>
+                </div>
+                <div class="section-body" style="overflow-x: auto;">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Lead</th>
+                                <th>Score</th>
+                                <th>Status</th>
+                                <th>Agent</th>
+                                <th>Value</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="leadsTable">
+                            <tr><td colspan="6" class="empty-state">Loading...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Agents Panel -->
+            <div class="section">
+                <div class="section-header">
+                    <h2>👥 Agents</h2>
+                </div>
+                <div class="agent-list" id="agentList">
+                    <div class="empty-state">Loading...</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add Agent Modal -->
+    <div class="modal-overlay" id="addAgentModal">
+        <div class="modal">
+            <h3>Add New Agent</h3>
+            <div class="form-group">
+                <label>Agent Name *</label>
+                <input type="text" id="newAgentName" placeholder="John Smith">
+            </div>
+            <div class="form-group">
+                <label>Email</label>
+                <input type="email" id="newAgentEmail" placeholder="john@company.com">
+            </div>
+            <div class="form-group">
+                <label>Phone</label>
+                <input type="text" id="newAgentPhone" placeholder="555-123-4567">
+            </div>
+            <div class="form-group">
+                <label>Specialties</label>
+                <input type="text" id="newAgentSpecialties" placeholder="residential, commercial">
+            </div>
+            <div class="modal-actions">
+                <button class="btn btn-secondary" onclick="closeModal()">Cancel</button>
+                <button class="btn btn-primary" onclick="addAgent()">Add Agent</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast -->
+    <div class="toast" id="toast"></div>
+
+    <script>
+        const API_URL = 'http://localhost:9999';
+        let leads = [];
+        let agents = [];
+        let stats = {};
+        let pipeline = {};
+
+        // Toast
+        function showToast(message, type = 'success') {
+            const toast = document.getElementById('toast');
+            toast.textContent = message;
+            toast.className = `toast ${type} show`;
+            setTimeout(() => toast.classList.remove('show'), 3000);
+        }
+
+        // Load all data
+        async function loadData() {
+            const btn = document.getElementById('refreshBtn');
+            btn.innerHTML = '<span class="refresh-icon">🔄</span> Loading...';
+
+            try {
+                const [leadsRes, agentsRes, statsRes, pipelineRes] = await Promise.all([
+                    fetch(`${API_URL}/leads`),
+                    fetch(`${API_URL}/agents`),
+                    fetch(`${API_URL}/stats`),
+                    fetch(`${API_URL}/pipeline`)
+                ]);
+
+                leads = await leadsRes.json();
+                agents = await agentsRes.json();
+                stats = await statsRes.json();
+                pipeline = await pipelineRes.json();
+
+                renderAll();
+            } catch (error) {
+                console.error(error);
+                showToast('Failed to load data. Is the API running?', 'error');
+            }
+
+            btn.innerHTML = '🔄 Refresh';
+        }
+
+        // Render everything
+        function renderAll() {
+            renderStats();
+            renderPipeline();
+            renderLeads();
+            renderAgents();
+        }
+
+        // Render stats
+        function renderStats() {
+            document.getElementById('statTotalLeads').textContent = stats.total_leads || 0;
+            document.getElementById('statConversion').textContent = (stats.conversion_rate || 0) + '%';
+
+            const pipelineValue = Object.values(stats.by_status || {})
+                .filter((s, k) => k !== 'lost' && k !== 'won')
+                .reduce((sum, s) => sum + (s.value || 0), 0);
+            document.getElementById('statPipeline').textContent = '$' + pipelineValue.toLocaleString();
+
+            const wonValue = stats.by_status?.won?.value || 0;
+            document.getElementById('statWon').textContent = '$' + wonValue.toLocaleString();
+
+            document.getElementById('statAgents').textContent = agents.length;
+        }
+
+        // Render pipeline
+        function renderPipeline() {
+            const statuses = ['new', 'contacted', 'qualified', 'proposal', 'negotiation', 'won', 'lost'];
+            const colors = {
+                new: '#2563eb', contacted: '#f59e0b', qualified: '#10b981',
+                proposal: '#8b5cf6', negotiation: '#ec4899', won: '#059669', lost: '#dc2626'
+            };
+
+            const total = Object.values(pipeline).reduce((sum, s) => sum + s.count, 0) || 1;
+
+            // Pipeline bar
+            const barHtml = statuses.map(status => {
+                const data = pipeline[status] || { count: 0 };
+                const pct = (data.count / total * 100);
+                if (pct < 1) return '';
+                return `<div class="pipeline-segment" style="width: ${pct}%; background: ${colors[status]}">${data.count}</div>`;
+            }).join('');
+            document.getElementById('pipelineBar').innerHTML = barHtml;
+
+            // Chart bars
+            const chartHtml = statuses.map(status => {
+                const data = pipeline[status] || { count: 0, total_value: 0 };
+                const pct = (data.count / total * 100);
+                return `
+                    <div class="conversion-bar">
+                        <div class="label">${status}</div>
+                        <div class="bar">
+                            <div class="fill" style="width: ${pct}%; background: ${colors[status]}"></div>
+                        </div>
+                        <div class="value">${data.count}</div>
+                    </div>
+                `;
+            }).join('');
+            document.getElementById('pipelineChart').innerHTML = chartHtml;
+        }
+
+        // Render leads table
+        function renderLeads(filteredLeads = null) {
+            const data = filteredLeads || leads;
+            const tbody = document.getElementById('leadsTable');
+
+            if (data.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="6" class="empty-state">No leads found</td></tr>';
+                return;
+            }
+
+            tbody.innerHTML = data.map(lead => `
+                <tr>
+                    <td>
+                        <strong>${escapeHtml(lead.name)}</strong><br>
+                        <small style="color: var(--text-light)">${escapeHtml(lead.contact)}</small>
+                    </td>
+                    <td>
+                        <span class="score-badge ${getScoreClass(lead.score)}">${lead.score}</span>
+                    </td>
+                    <td>
+                        <span class="status-badge ${lead.status}">${lead.status}</span>
+                    </td>
+                    <td>
+                        <select onchange="assignAgent(${lead.id}, this.value)" style="min-width: 120px">
+                            <option value="">Unassigned</option>
+                            ${agents.map(a => `
+                                <option value="${escapeHtml(a.name)}" ${lead.assigned_agent === a.name ? 'selected' : ''}>
+                                    ${escapeHtml(a.name)}
+                                </option>
+                            `).join('')}
+                        </select>
+                    </td>
+                    <td>$${lead.budget.toLocaleString()}</td>
+                    <td>
+                        <button class="btn btn-sm btn-secondary" onclick="viewLead(${lead.id})">View</button>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        // Render agents
+        function renderAgents() {
+            const container = document.getElementById('agentList');
+
+            if (agents.length === 0) {
+                container.innerHTML = '<div class="empty-state">No agents yet</div>';
+                return;
+            }
+
+            container.innerHTML = agents.map(agent => {
+                const agentLeads = leads.filter(l => l.assigned_agent === agent.name);
+                const won = agentLeads.filter(l => l.status === 'won').length;
+                return `
+                    <div class="agent-item">
+                        <div>
+                            <div class="agent-name">${escapeHtml(agent.name)}</div>
+                            <div class="agent-stats">${agentLeads.length} leads • ${won} won</div>
+                        </div>
+                        <span style="color: var(--success); font-weight: 600">
+                            ${agentLeads.length > 0 ? Math.round(won/agentLeads.length*100) : 0}%
+                        </span>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        // Filter leads
+        function filterLeads() {
+            const status = document.getElementById('statusFilter').value;
+            if (!status) {
+                renderLeads(leads);
+            } else {
+                renderLeads(leads.filter(l => l.status === status));
+            }
+        }
+
+        // Assign agent
+        async function assignAgent(leadId, agentName) {
+            try {
+                await fetch(`${API_URL}/leads/${leadId}`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ assigned_agent: agentName || null })
+                });
+                showToast(agentName ? `Assigned to ${agentName}` : 'Unassigned');
+                loadData();
+            } catch (error) {
+                showToast('Failed to assign agent', 'error');
+            }
+        }
+
+        // View lead (could open modal with details)
+        function viewLead(id) {
+            const lead = leads.find(l => l.id === id);
+            if (lead) {
+                alert(`Lead: ${lead.name}\nContact: ${lead.contact}\nProject: ${lead.project_type}\nBudget: $${lead.budget}\nUrgency: ${lead.urgency}\nNotes: ${lead.notes || 'None'}`);
+            }
+        }
+
+        // Add agent modal
+        function showAddAgentModal() {
+            document.getElementById('addAgentModal').style.display = 'flex';
+        }
+
+        function closeModal() {
+            document.getElementById('addAgentModal').style.display = 'none';
+        }
+
+        async function addAgent() {
+            const name = document.getElementById('newAgentName').value.trim();
+            if (!name) {
+                showToast('Agent name is required', 'error');
+                return;
+            }
+
+            try {
+                await fetch(`${API_URL}/agents`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        name: name,
+                        email: document.getElementById('newAgentEmail').value.trim(),
+                        phone: document.getElementById('newAgentPhone').value.trim(),
+                        specialties: document.getElementById('newAgentSpecialties').value.trim()
+                    })
+                });
+
+                showToast(`Agent ${name} added!`);
+                closeModal();
+                document.getElementById('newAgentName').value = '';
+                document.getElementById('newAgentEmail').value = '';
+                document.getElementById('newAgentPhone').value = '';
+                document.getElementById('newAgentSpecialties').value = '';
+                loadData();
+            } catch (error) {
+                showToast('Failed to add agent', 'error');
+            }
+        }
+
+        // Helpers
+        function getScoreClass(score) {
+            if (score >= 70) return 'high';
+            if (score >= 40) return 'medium';
+            return 'low';
+        }
+
+        function escapeHtml(text) {
+            if (!text) return '';
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        // Close modal on outside click
+        document.getElementById('addAgentModal').addEventListener('click', (e) => {
+            if (e.target.classList.contains('modal-overlay')) closeModal();
+        });
+
+        // Initial load
+        loadData();
+
+        // Auto-refresh every 60 seconds
+        setInterval(loadData, 60000);
+    </script>
+</body>
+</html>
