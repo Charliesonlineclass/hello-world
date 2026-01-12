@@ -1,0 +1,645 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Scorpion King - Agent Dashboard</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+            min-height: 100vh;
+            color: #fff;
+        }
+
+        /* Login Screen */
+        .login-screen {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .login-card {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 16px;
+            padding: 40px;
+            width: 100%;
+            max-width: 400px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            text-align: center;
+        }
+
+        .login-card h1 {
+            color: #f39c12;
+            margin-bottom: 10px;
+            font-size: 1.8rem;
+        }
+
+        .login-card p {
+            color: #94a3b8;
+            margin-bottom: 30px;
+        }
+
+        .login-card select {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            background: rgba(0, 0, 0, 0.3);
+            color: #fff;
+            font-size: 1rem;
+            margin-bottom: 20px;
+        }
+
+        .login-card select option {
+            background: #1a1a2e;
+        }
+
+        .login-btn {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(135deg, #f39c12, #e67e22);
+            border: none;
+            border-radius: 8px;
+            color: #fff;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+        .login-btn:hover {
+            transform: translateY(-2px);
+        }
+
+        /* Dashboard */
+        .dashboard {
+            display: none;
+            padding: 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .dashboard.active {
+            display: block;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .header-left h1 {
+            color: #f39c12;
+            font-size: 1.5rem;
+        }
+
+        .header-left p {
+            color: #94a3b8;
+            font-size: 0.9rem;
+        }
+
+        .header-right {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .refresh-btn, .logout-btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.2s;
+        }
+
+        .refresh-btn {
+            background: rgba(59, 130, 246, 0.2);
+            color: #3b82f6;
+            border: 1px solid #3b82f6;
+        }
+
+        .logout-btn {
+            background: rgba(239, 68, 68, 0.2);
+            color: #ef4444;
+            border: 1px solid #ef4444;
+        }
+
+        .refresh-btn:hover, .logout-btn:hover {
+            transform: translateY(-2px);
+        }
+
+        /* Stats */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 12px;
+            padding: 20px;
+            text-align: center;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .stat-card .value {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #f39c12;
+        }
+
+        .stat-card .label {
+            font-size: 0.8rem;
+            color: #94a3b8;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* Leads List */
+        .leads-section h2 {
+            margin-bottom: 20px;
+            color: #e2e8f0;
+        }
+
+        .leads-list {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .lead-card {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 12px;
+            padding: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: border-color 0.3s;
+        }
+
+        .lead-card:hover {
+            border-color: rgba(243, 156, 18, 0.3);
+        }
+
+        .lead-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .lead-name {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: #fff;
+        }
+
+        .lead-score {
+            background: linear-gradient(135deg, #f39c12, #e67e22);
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-weight: 700;
+            font-size: 0.9rem;
+        }
+
+        .lead-details {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .lead-detail {
+            font-size: 0.85rem;
+        }
+
+        .lead-detail .label {
+            color: #64748b;
+            display: block;
+        }
+
+        .lead-detail .value {
+            color: #e2e8f0;
+        }
+
+        .lead-notes {
+            background: rgba(0, 0, 0, 0.2);
+            padding: 10px 15px;
+            border-radius: 8px;
+            font-size: 0.85rem;
+            color: #94a3b8;
+            margin-bottom: 15px;
+            font-style: italic;
+        }
+
+        .lead-actions {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+
+        .status-select {
+            flex: 1;
+            min-width: 150px;
+            padding: 10px 15px;
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            background: rgba(0, 0, 0, 0.3);
+            color: #fff;
+            font-size: 0.9rem;
+        }
+
+        .status-select option {
+            background: #1a1a2e;
+        }
+
+        .update-btn {
+            padding: 10px 20px;
+            background: rgba(16, 185, 129, 0.2);
+            border: 1px solid #10b981;
+            border-radius: 8px;
+            color: #10b981;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.2s;
+        }
+
+        .update-btn:hover {
+            background: rgba(16, 185, 129, 0.3);
+        }
+
+        .update-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        /* Empty State */
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: #64748b;
+        }
+
+        .empty-state .icon {
+            font-size: 3rem;
+            margin-bottom: 15px;
+        }
+
+        /* Status Badge Colors */
+        .status-badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .status-new { background: rgba(59, 130, 246, 0.2); color: #3b82f6; }
+        .status-contacted { background: rgba(139, 92, 246, 0.2); color: #8b5cf6; }
+        .status-qualified { background: rgba(236, 72, 153, 0.2); color: #ec4899; }
+        .status-proposal { background: rgba(245, 158, 11, 0.2); color: #f59e0b; }
+        .status-negotiation { background: rgba(249, 115, 22, 0.2); color: #f97316; }
+        .status-won { background: rgba(16, 185, 129, 0.2); color: #10b981; }
+        .status-lost { background: rgba(239, 68, 68, 0.2); color: #ef4444; }
+
+        /* Loading */
+        .loading {
+            text-align: center;
+            padding: 40px;
+            color: #64748b;
+        }
+
+        /* Responsive */
+        @media (max-width: 600px) {
+            .header {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .lead-header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .lead-actions {
+                flex-direction: column;
+            }
+
+            .status-select, .update-btn {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Login Screen -->
+    <div class="login-screen" id="loginScreen">
+        <div class="login-card">
+            <h1>SCORPION KING</h1>
+            <p>Agent Dashboard</p>
+            <select id="agentSelect">
+                <option value="">Select your name...</option>
+            </select>
+            <button class="login-btn" onclick="login()">Enter Dashboard</button>
+        </div>
+    </div>
+
+    <!-- Dashboard -->
+    <div class="dashboard" id="dashboard">
+        <div class="header">
+            <div class="header-left">
+                <h1>SCORPION KING</h1>
+                <p>Welcome, <span id="agentName">Agent</span></p>
+            </div>
+            <div class="header-right">
+                <button class="refresh-btn" onclick="loadMyLeads()">Refresh</button>
+                <button class="logout-btn" onclick="logout()">Logout</button>
+            </div>
+        </div>
+
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="value" id="totalLeads">0</div>
+                <div class="label">My Leads</div>
+            </div>
+            <div class="stat-card">
+                <div class="value" id="newLeads">0</div>
+                <div class="label">New</div>
+            </div>
+            <div class="stat-card">
+                <div class="value" id="wonLeads">0</div>
+                <div class="label">Won</div>
+            </div>
+            <div class="stat-card">
+                <div class="value" id="conversionRate">0%</div>
+                <div class="label">Conversion</div>
+            </div>
+        </div>
+
+        <div class="leads-section">
+            <h2>My Assigned Leads</h2>
+            <div class="leads-list" id="leadsList">
+                <div class="loading">Loading leads...</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const API_URL = 'http://localhost:9999';
+        let currentAgent = null;
+
+        // Load agents on page load
+        async function loadAgents() {
+            try {
+                const response = await fetch(`${API_URL}/agents`);
+                const agents = await response.json();
+
+                const select = document.getElementById('agentSelect');
+                select.innerHTML = '<option value="">Select your name...</option>';
+
+                agents.forEach(agent => {
+                    if (agent.name !== 'Unassigned') {
+                        const option = document.createElement('option');
+                        option.value = agent.name;
+                        option.textContent = agent.name;
+                        select.appendChild(option);
+                    }
+                });
+            } catch (error) {
+                console.error('Error loading agents:', error);
+                alert('Cannot connect to CRM API. Is it running on port 9999?');
+            }
+        }
+
+        // Login
+        function login() {
+            const agentName = document.getElementById('agentSelect').value;
+            if (!agentName) {
+                alert('Please select your name');
+                return;
+            }
+
+            currentAgent = agentName;
+            localStorage.setItem('scorpion_agent', agentName);
+
+            document.getElementById('loginScreen').style.display = 'none';
+            document.getElementById('dashboard').classList.add('active');
+            document.getElementById('agentName').textContent = agentName;
+
+            loadMyLeads();
+        }
+
+        // Logout
+        function logout() {
+            currentAgent = null;
+            localStorage.removeItem('scorpion_agent');
+            document.getElementById('dashboard').classList.remove('active');
+            document.getElementById('loginScreen').style.display = 'flex';
+        }
+
+        // Load my leads
+        async function loadMyLeads() {
+            const leadsList = document.getElementById('leadsList');
+            leadsList.innerHTML = '<div class="loading">Loading leads...</div>';
+
+            try {
+                const response = await fetch(`${API_URL}/leads?agent=${encodeURIComponent(currentAgent)}`);
+                const leads = await response.json();
+
+                // Update stats
+                const total = leads.length;
+                const newCount = leads.filter(l => l.status === 'new').length;
+                const wonCount = leads.filter(l => l.status === 'won').length;
+                const convRate = total > 0 ? Math.round((wonCount / total) * 100) : 0;
+
+                document.getElementById('totalLeads').textContent = total;
+                document.getElementById('newLeads').textContent = newCount;
+                document.getElementById('wonLeads').textContent = wonCount;
+                document.getElementById('conversionRate').textContent = convRate + '%';
+
+                // Render leads
+                if (leads.length === 0) {
+                    leadsList.innerHTML = `
+                        <div class="empty-state">
+                            <div class="icon">📋</div>
+                            <p>No leads assigned to you yet.</p>
+                        </div>
+                    `;
+                    return;
+                }
+
+                leadsList.innerHTML = leads.map(lead => `
+                    <div class="lead-card" data-id="${lead.id}">
+                        <div class="lead-header">
+                            <div>
+                                <div class="lead-name">${escapeHtml(lead.name)}</div>
+                                <span class="status-badge status-${lead.status}">${lead.status}</span>
+                            </div>
+                            <div class="lead-score">${lead.score}</div>
+                        </div>
+                        <div class="lead-details">
+                            <div class="lead-detail">
+                                <span class="label">Contact</span>
+                                <span class="value">${escapeHtml(lead.contact)}</span>
+                            </div>
+                            <div class="lead-detail">
+                                <span class="label">Project</span>
+                                <span class="value">${formatProjectType(lead.project_type)}</span>
+                            </div>
+                            <div class="lead-detail">
+                                <span class="label">Budget</span>
+                                <span class="value">$${lead.budget.toLocaleString()}</span>
+                            </div>
+                            <div class="lead-detail">
+                                <span class="label">Urgency</span>
+                                <span class="value">${'★'.repeat(lead.urgency)}${'☆'.repeat(5-lead.urgency)}</span>
+                            </div>
+                            <div class="lead-detail">
+                                <span class="label">Source</span>
+                                <span class="value">${formatSource(lead.source)}</span>
+                            </div>
+                            <div class="lead-detail">
+                                <span class="label">Added</span>
+                                <span class="value">${formatDate(lead.created_at)}</span>
+                            </div>
+                        </div>
+                        ${lead.notes ? `<div class="lead-notes">"${escapeHtml(lead.notes)}"</div>` : ''}
+                        <div class="lead-actions">
+                            <select class="status-select" id="status-${lead.id}" onchange="enableUpdate(${lead.id})">
+                                <option value="new" ${lead.status === 'new' ? 'selected' : ''}>New</option>
+                                <option value="contacted" ${lead.status === 'contacted' ? 'selected' : ''}>Contacted</option>
+                                <option value="qualified" ${lead.status === 'qualified' ? 'selected' : ''}>Qualified</option>
+                                <option value="proposal" ${lead.status === 'proposal' ? 'selected' : ''}>Proposal</option>
+                                <option value="negotiation" ${lead.status === 'negotiation' ? 'selected' : ''}>Negotiation</option>
+                                <option value="won" ${lead.status === 'won' ? 'selected' : ''}>Won</option>
+                                <option value="lost" ${lead.status === 'lost' ? 'selected' : ''}>Lost</option>
+                            </select>
+                            <button class="update-btn" id="btn-${lead.id}" onclick="updateStatus(${lead.id})" disabled>
+                                Update Status
+                            </button>
+                        </div>
+                    </div>
+                `).join('');
+
+            } catch (error) {
+                console.error('Error loading leads:', error);
+                leadsList.innerHTML = `
+                    <div class="empty-state">
+                        <div class="icon">⚠️</div>
+                        <p>Error loading leads. Is the API running?</p>
+                    </div>
+                `;
+            }
+        }
+
+        // Enable update button when status changes
+        function enableUpdate(leadId) {
+            document.getElementById(`btn-${leadId}`).disabled = false;
+        }
+
+        // Update lead status
+        async function updateStatus(leadId) {
+            const select = document.getElementById(`status-${leadId}`);
+            const btn = document.getElementById(`btn-${leadId}`);
+            const newStatus = select.value;
+
+            btn.disabled = true;
+            btn.textContent = 'Updating...';
+
+            try {
+                const response = await fetch(`${API_URL}/leads/${leadId}`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ status: newStatus })
+                });
+
+                if (!response.ok) throw new Error('Update failed');
+
+                btn.textContent = 'Updated!';
+                setTimeout(() => {
+                    loadMyLeads();
+                }, 500);
+
+            } catch (error) {
+                console.error('Error updating lead:', error);
+                btn.textContent = 'Error!';
+                btn.disabled = false;
+            }
+        }
+
+        // Helpers
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        function formatProjectType(type) {
+            const types = {
+                'full_build': 'Full Build',
+                'renovation': 'Renovation',
+                'commercial': 'Commercial',
+                'residential': 'Residential',
+                'repair': 'Repair',
+                'consultation': 'Consultation',
+                'other': 'Other'
+            };
+            return types[type] || type;
+        }
+
+        function formatSource(source) {
+            const sources = {
+                'website': 'Website',
+                'referral': 'Referral',
+                'social_media': 'Social Media',
+                'google': 'Google',
+                'cold_call': 'Cold Call',
+                'walk_in': 'Walk-in',
+                'other': 'Other'
+            };
+            return sources[source] || source;
+        }
+
+        function formatDate(dateStr) {
+            const date = new Date(dateStr);
+            return date.toLocaleDateString();
+        }
+
+        // Init
+        document.addEventListener('DOMContentLoaded', () => {
+            loadAgents();
+
+            // Check for saved session
+            const savedAgent = localStorage.getItem('scorpion_agent');
+            if (savedAgent) {
+                currentAgent = savedAgent;
+                document.getElementById('loginScreen').style.display = 'none';
+                document.getElementById('dashboard').classList.add('active');
+                document.getElementById('agentName').textContent = savedAgent;
+                loadMyLeads();
+            }
+        });
+    </script>
+</body>
+</html>
