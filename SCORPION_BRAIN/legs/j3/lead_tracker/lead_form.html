@@ -1,0 +1,472 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>J3 Structural - Lead Capture</title>
+    <style>
+        :root {
+            --primary: #2563eb;
+            --primary-dark: #1d4ed8;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+            --bg: #f8fafc;
+            --card: #ffffff;
+            --text: #1e293b;
+            --text-light: #64748b;
+            --border: #e2e8f0;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .header h1 {
+            font-size: 28px;
+            color: var(--primary);
+            margin-bottom: 8px;
+        }
+
+        .header p {
+            color: var(--text-light);
+        }
+
+        .card {
+            background: var(--card);
+            border-radius: 12px;
+            padding: 24px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 6px;
+            color: var(--text);
+        }
+
+        .required::after {
+            content: " *";
+            color: var(--danger);
+        }
+
+        input, select, textarea {
+            width: 100%;
+            padding: 12px 14px;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            font-size: 16px;
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+
+        input:focus, select:focus, textarea:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+        }
+
+        textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        .row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+        }
+
+        @media (max-width: 500px) {
+            .row {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .budget-input {
+            position: relative;
+        }
+
+        .budget-input::before {
+            content: "$";
+            position: absolute;
+            left: 14px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-light);
+        }
+
+        .budget-input input {
+            padding-left: 28px;
+        }
+
+        .urgency-options {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 8px;
+        }
+
+        .urgency-option {
+            text-align: center;
+        }
+
+        .urgency-option input {
+            display: none;
+        }
+
+        .urgency-option label {
+            display: block;
+            padding: 10px;
+            border: 2px solid var(--border);
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-weight: 500;
+        }
+
+        .urgency-option input:checked + label {
+            border-color: var(--primary);
+            background: rgba(37, 99, 235, 0.1);
+            color: var(--primary);
+        }
+
+        .urgency-option[data-urgency="critical"] input:checked + label {
+            border-color: var(--danger);
+            background: rgba(239, 68, 68, 0.1);
+            color: var(--danger);
+        }
+
+        .urgency-option[data-urgency="high"] input:checked + label {
+            border-color: var(--warning);
+            background: rgba(245, 158, 11, 0.1);
+            color: var(--warning);
+        }
+
+        .btn {
+            width: 100%;
+            padding: 14px 24px;
+            font-size: 16px;
+            font-weight: 600;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: var(--primary-dark);
+        }
+
+        .btn-primary:disabled {
+            background: var(--text-light);
+            cursor: not-allowed;
+        }
+
+        .alert {
+            padding: 14px 16px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            display: none;
+        }
+
+        .alert-success {
+            background: rgba(16, 185, 129, 0.1);
+            color: #065f46;
+            border: 1px solid rgba(16, 185, 129, 0.3);
+        }
+
+        .alert-error {
+            background: rgba(239, 68, 68, 0.1);
+            color: #991b1b;
+            border: 1px solid rgba(239, 68, 68, 0.3);
+        }
+
+        .score-preview {
+            background: var(--bg);
+            border-radius: 8px;
+            padding: 16px;
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .score-preview .score {
+            font-size: 48px;
+            font-weight: 700;
+            color: var(--primary);
+        }
+
+        .score-preview .label {
+            color: var(--text-light);
+            font-size: 14px;
+        }
+
+        .footer {
+            text-align: center;
+            padding: 20px;
+            color: var(--text-light);
+            font-size: 14px;
+        }
+
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 2px solid rgba(255,255,255,0.3);
+            border-radius: 50%;
+            border-top-color: white;
+            animation: spin 0.8s linear infinite;
+            margin-right: 8px;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🏗️ J3 Structural Solutions</h1>
+            <p>Lead Capture Form</p>
+        </div>
+
+        <div id="alert" class="alert"></div>
+
+        <form id="leadForm" class="card">
+            <div class="form-group">
+                <label for="name" class="required">Full Name</label>
+                <input type="text" id="name" name="name" required placeholder="John Smith">
+            </div>
+
+            <div class="form-group">
+                <label for="contact" class="required">Contact (Phone or Email)</label>
+                <input type="text" id="contact" name="contact" required placeholder="555-123-4567 or email@example.com">
+            </div>
+
+            <div class="row">
+                <div class="form-group">
+                    <label for="project_type" class="required">Project Type</label>
+                    <select id="project_type" name="project_type" required>
+                        <option value="">Select type...</option>
+                        <option value="residential">Residential</option>
+                        <option value="commercial">Commercial</option>
+                        <option value="industrial">Industrial</option>
+                        <option value="renovation">Renovation</option>
+                        <option value="consultation">Consultation</option>
+                        <option value="other">Other</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="budget">Estimated Budget</label>
+                    <div class="budget-input">
+                        <input type="number" id="budget" name="budget" min="0" step="1000" placeholder="25000">
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="required">Urgency Level</label>
+                <div class="urgency-options">
+                    <div class="urgency-option" data-urgency="low">
+                        <input type="radio" id="urgency_low" name="urgency" value="low">
+                        <label for="urgency_low">Low</label>
+                    </div>
+                    <div class="urgency-option" data-urgency="medium">
+                        <input type="radio" id="urgency_medium" name="urgency" value="medium" checked>
+                        <label for="urgency_medium">Medium</label>
+                    </div>
+                    <div class="urgency-option" data-urgency="high">
+                        <input type="radio" id="urgency_high" name="urgency" value="high">
+                        <label for="urgency_high">High</label>
+                    </div>
+                    <div class="urgency-option" data-urgency="critical">
+                        <input type="radio" id="urgency_critical" name="urgency" value="critical">
+                        <label for="urgency_critical">Critical</label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="source">How did you hear about us?</label>
+                <select id="source" name="source">
+                    <option value="website">Website</option>
+                    <option value="referral">Referral</option>
+                    <option value="google">Google Search</option>
+                    <option value="social">Social Media</option>
+                    <option value="advertisement">Advertisement</option>
+                    <option value="other">Other</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="notes">Project Details / Notes</label>
+                <textarea id="notes" name="notes" placeholder="Describe your project, timeline, special requirements..."></textarea>
+            </div>
+
+            <div class="score-preview">
+                <div class="label">Estimated Lead Score</div>
+                <div class="score" id="scorePreview">35</div>
+            </div>
+
+            <div class="form-group" style="margin-top: 24px;">
+                <button type="submit" class="btn btn-primary" id="submitBtn">
+                    Submit Lead
+                </button>
+            </div>
+        </form>
+
+        <div class="footer">
+            <p>🦂 Powered by SCORPION CRM</p>
+        </div>
+    </div>
+
+    <script>
+        const API_URL = 'http://localhost:9999';
+
+        // Score calculation (mirrors backend)
+        function calculateScore() {
+            const urgency = document.querySelector('input[name="urgency"]:checked')?.value || 'medium';
+            const budget = parseFloat(document.getElementById('budget').value) || 0;
+            const projectType = document.getElementById('project_type').value || 'other';
+
+            let score = 0;
+
+            // Urgency score
+            const urgencyScores = { low: 10, medium: 20, high: 35, critical: 50 };
+            score += urgencyScores[urgency] || 10;
+
+            // Budget score
+            if (budget >= 100000) score += 35;
+            else if (budget >= 25000) score += 25;
+            else if (budget >= 5000) score += 15;
+            else score += 5;
+
+            // Project type score
+            const typeScores = {
+                industrial: 15, commercial: 12, residential: 8,
+                renovation: 10, consultation: 5, other: 5
+            };
+            score += typeScores[projectType] || 5;
+
+            return Math.min(100, score);
+        }
+
+        // Update score preview
+        function updateScorePreview() {
+            const score = calculateScore();
+            const preview = document.getElementById('scorePreview');
+            preview.textContent = score;
+
+            // Color based on score
+            if (score >= 70) preview.style.color = '#10b981';
+            else if (score >= 50) preview.style.color = '#2563eb';
+            else if (score >= 30) preview.style.color = '#f59e0b';
+            else preview.style.color = '#ef4444';
+        }
+
+        // Show alert
+        function showAlert(message, type) {
+            const alert = document.getElementById('alert');
+            alert.textContent = message;
+            alert.className = `alert alert-${type}`;
+            alert.style.display = 'block';
+
+            if (type === 'success') {
+                setTimeout(() => {
+                    alert.style.display = 'none';
+                }, 5000);
+            }
+        }
+
+        // Form submission
+        document.getElementById('leadForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const submitBtn = document.getElementById('submitBtn');
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '<span class="loading"></span> Submitting...';
+
+            const formData = {
+                name: document.getElementById('name').value.trim(),
+                contact: document.getElementById('contact').value.trim(),
+                project_type: document.getElementById('project_type').value,
+                budget: parseFloat(document.getElementById('budget').value) || 0,
+                urgency: document.querySelector('input[name="urgency"]:checked').value,
+                source: document.getElementById('source').value,
+                notes: document.getElementById('notes').value.trim()
+            };
+
+            try {
+                const response = await fetch(`${API_URL}/leads`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(formData)
+                });
+
+                if (!response.ok) {
+                    const error = await response.json();
+                    throw new Error(error.detail || 'Failed to submit lead');
+                }
+
+                const lead = await response.json();
+                showAlert(`✅ Lead submitted successfully! ID: ${lead.id}, Score: ${lead.score}`, 'success');
+
+                // Reset form
+                document.getElementById('leadForm').reset();
+                document.getElementById('urgency_medium').checked = true;
+                updateScorePreview();
+
+            } catch (error) {
+                console.error('Error:', error);
+                showAlert(`❌ ${error.message}. Is the CRM API running on port 9999?`, 'error');
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = 'Submit Lead';
+            }
+        });
+
+        // Live score updates
+        document.querySelectorAll('input[name="urgency"]').forEach(radio => {
+            radio.addEventListener('change', updateScorePreview);
+        });
+        document.getElementById('budget').addEventListener('input', updateScorePreview);
+        document.getElementById('project_type').addEventListener('change', updateScorePreview);
+
+        // Initial score
+        updateScorePreview();
+    </script>
+</body>
+</html>
