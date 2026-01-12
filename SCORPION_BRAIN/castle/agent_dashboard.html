@@ -1,0 +1,615 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Agent Dashboard - SCORPION CRM</title>
+    <style>
+        :root {
+            --primary: #2563eb;
+            --primary-dark: #1d4ed8;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+            --bg: #f1f5f9;
+            --card: #ffffff;
+            --text: #1e293b;
+            --text-light: #64748b;
+            --border: #e2e8f0;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+        }
+
+        .login-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .login-box {
+            background: var(--card);
+            padding: 40px;
+            border-radius: 16px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            width: 100%;
+            max-width: 400px;
+            text-align: center;
+        }
+
+        .login-box h1 {
+            font-size: 24px;
+            margin-bottom: 8px;
+            color: var(--primary);
+        }
+
+        .login-box p {
+            color: var(--text-light);
+            margin-bottom: 24px;
+        }
+
+        .login-box input {
+            width: 100%;
+            padding: 14px;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            font-size: 16px;
+            margin-bottom: 16px;
+        }
+
+        .login-box input:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+
+        .dashboard {
+            display: none;
+        }
+
+        .navbar {
+            background: var(--card);
+            padding: 16px 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .navbar h1 {
+            font-size: 20px;
+            color: var(--primary);
+        }
+
+        .navbar .agent-info {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .navbar .agent-name {
+            font-weight: 600;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 24px;
+        }
+
+        .stats-row {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+
+        .stat-card {
+            background: var(--card);
+            padding: 20px;
+            border-radius: 12px;
+            text-align: center;
+        }
+
+        .stat-card .value {
+            font-size: 32px;
+            font-weight: 700;
+            color: var(--primary);
+        }
+
+        .stat-card .label {
+            color: var(--text-light);
+            font-size: 14px;
+            margin-top: 4px;
+        }
+
+        .section-title {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .lead-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .lead-card {
+            background: var(--card);
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .lead-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+
+        .lead-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 12px;
+        }
+
+        .lead-name {
+            font-weight: 600;
+            font-size: 18px;
+        }
+
+        .lead-score {
+            background: var(--primary);
+            color: white;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        .lead-score.high {
+            background: var(--success);
+        }
+
+        .lead-score.medium {
+            background: var(--warning);
+        }
+
+        .lead-score.low {
+            background: var(--danger);
+        }
+
+        .lead-meta {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 16px;
+            margin-bottom: 12px;
+            font-size: 14px;
+            color: var(--text-light);
+        }
+
+        .lead-meta span {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .lead-notes {
+            background: var(--bg);
+            padding: 12px;
+            border-radius: 8px;
+            font-size: 14px;
+            color: var(--text-light);
+            margin-bottom: 12px;
+        }
+
+        .lead-actions {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .status-select {
+            padding: 8px 12px;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            font-size: 14px;
+            background: white;
+            cursor: pointer;
+        }
+
+        .status-select:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: var(--primary-dark);
+        }
+
+        .btn-secondary {
+            background: var(--bg);
+            color: var(--text);
+        }
+
+        .btn-secondary:hover {
+            background: var(--border);
+        }
+
+        .btn-danger {
+            background: var(--danger);
+            color: white;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: var(--text-light);
+        }
+
+        .empty-state h3 {
+            margin-bottom: 8px;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .badge-new { background: #dbeafe; color: #1e40af; }
+        .badge-contacted { background: #fef3c7; color: #92400e; }
+        .badge-qualified { background: #d1fae5; color: #065f46; }
+        .badge-proposal { background: #e0e7ff; color: #3730a3; }
+        .badge-negotiation { background: #fce7f3; color: #9d174d; }
+        .badge-won { background: #10b981; color: white; }
+        .badge-lost { background: #ef4444; color: white; }
+
+        .refresh-btn {
+            background: none;
+            border: none;
+            color: var(--primary);
+            cursor: pointer;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .refresh-btn:hover {
+            text-decoration: underline;
+        }
+
+        @media (max-width: 600px) {
+            .navbar {
+                flex-direction: column;
+                gap: 12px;
+            }
+
+            .lead-header {
+                flex-direction: column;
+                gap: 8px;
+            }
+
+            .lead-actions {
+                flex-direction: column;
+            }
+
+            .lead-actions select, .lead-actions .btn {
+                width: 100%;
+            }
+        }
+
+        .toast {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: var(--text);
+            color: white;
+            padding: 14px 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            transform: translateY(100px);
+            opacity: 0;
+            transition: all 0.3s;
+        }
+
+        .toast.show {
+            transform: translateY(0);
+            opacity: 1;
+        }
+
+        .toast.success { background: var(--success); }
+        .toast.error { background: var(--danger); }
+    </style>
+</head>
+<body>
+    <!-- Login Screen -->
+    <div class="login-container" id="loginScreen">
+        <div class="login-box">
+            <h1>🦂 Agent Portal</h1>
+            <p>Enter your agent name to access your leads</p>
+            <input type="text" id="agentNameInput" placeholder="Agent Name" autofocus>
+            <button class="btn btn-primary" style="width:100%" onclick="login()">
+                Login
+            </button>
+        </div>
+    </div>
+
+    <!-- Dashboard -->
+    <div class="dashboard" id="dashboard">
+        <nav class="navbar">
+            <h1>🦂 SCORPION CRM</h1>
+            <div class="agent-info">
+                <span class="agent-name" id="agentNameDisplay"></span>
+                <button class="btn btn-secondary" onclick="logout()">Logout</button>
+            </div>
+        </nav>
+
+        <div class="container">
+            <!-- Stats -->
+            <div class="stats-row">
+                <div class="stat-card">
+                    <div class="value" id="totalLeads">0</div>
+                    <div class="label">Total Leads</div>
+                </div>
+                <div class="stat-card">
+                    <div class="value" id="activeLeads">0</div>
+                    <div class="label">Active</div>
+                </div>
+                <div class="stat-card">
+                    <div class="value" id="wonLeads">0</div>
+                    <div class="label">Won</div>
+                </div>
+                <div class="stat-card">
+                    <div class="value" id="totalValue">$0</div>
+                    <div class="label">Pipeline Value</div>
+                </div>
+            </div>
+
+            <!-- Lead List -->
+            <div class="section-title">
+                <span>📋 Your Leads</span>
+                <button class="refresh-btn" onclick="loadLeads()">🔄 Refresh</button>
+            </div>
+
+            <div class="lead-list" id="leadList">
+                <div class="empty-state">
+                    <h3>No leads assigned</h3>
+                    <p>New leads will appear here when assigned to you</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast -->
+    <div class="toast" id="toast"></div>
+
+    <script>
+        const API_URL = 'http://localhost:9999';
+        let currentAgent = null;
+        let leads = [];
+
+        // Toast notification
+        function showToast(message, type = 'success') {
+            const toast = document.getElementById('toast');
+            toast.textContent = message;
+            toast.className = `toast ${type} show`;
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 3000);
+        }
+
+        // Login
+        function login() {
+            const name = document.getElementById('agentNameInput').value.trim();
+            if (!name) {
+                showToast('Please enter your name', 'error');
+                return;
+            }
+
+            currentAgent = name;
+            localStorage.setItem('agentName', name);
+
+            document.getElementById('loginScreen').style.display = 'none';
+            document.getElementById('dashboard').style.display = 'block';
+            document.getElementById('agentNameDisplay').textContent = name;
+
+            loadLeads();
+        }
+
+        // Logout
+        function logout() {
+            currentAgent = null;
+            localStorage.removeItem('agentName');
+            document.getElementById('loginScreen').style.display = 'flex';
+            document.getElementById('dashboard').style.display = 'none';
+            document.getElementById('agentNameInput').value = '';
+        }
+
+        // Load leads
+        async function loadLeads() {
+            try {
+                const response = await fetch(`${API_URL}/agents/${encodeURIComponent(currentAgent)}/leads`);
+                if (!response.ok) throw new Error('Failed to load leads');
+
+                leads = await response.json();
+                renderLeads();
+                updateStats();
+
+            } catch (error) {
+                console.error(error);
+                showToast('Failed to load leads. Is the API running?', 'error');
+            }
+        }
+
+        // Render leads
+        function renderLeads() {
+            const container = document.getElementById('leadList');
+
+            if (leads.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <h3>No leads assigned</h3>
+                        <p>New leads will appear here when assigned to you</p>
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = leads.map(lead => `
+                <div class="lead-card" data-id="${lead.id}">
+                    <div class="lead-header">
+                        <div>
+                            <div class="lead-name">${escapeHtml(lead.name)}</div>
+                            <span class="badge badge-${lead.status}">${lead.status.toUpperCase()}</span>
+                        </div>
+                        <div class="lead-score ${getScoreClass(lead.score)}">${lead.score}</div>
+                    </div>
+
+                    <div class="lead-meta">
+                        <span>📞 ${escapeHtml(lead.contact)}</span>
+                        <span>🏗️ ${lead.project_type}</span>
+                        <span>💰 $${lead.budget.toLocaleString()}</span>
+                        <span>⚡ ${lead.urgency}</span>
+                    </div>
+
+                    ${lead.notes ? `<div class="lead-notes">${escapeHtml(lead.notes)}</div>` : ''}
+
+                    <div class="lead-actions">
+                        <select class="status-select" onchange="updateStatus(${lead.id}, this.value)">
+                            <option value="new" ${lead.status === 'new' ? 'selected' : ''}>New</option>
+                            <option value="contacted" ${lead.status === 'contacted' ? 'selected' : ''}>Contacted</option>
+                            <option value="qualified" ${lead.status === 'qualified' ? 'selected' : ''}>Qualified</option>
+                            <option value="proposal" ${lead.status === 'proposal' ? 'selected' : ''}>Proposal</option>
+                            <option value="negotiation" ${lead.status === 'negotiation' ? 'selected' : ''}>Negotiation</option>
+                            <option value="won" ${lead.status === 'won' ? 'selected' : ''}>Won ✓</option>
+                            <option value="lost" ${lead.status === 'lost' ? 'selected' : ''}>Lost ✗</option>
+                        </select>
+                        <button class="btn btn-secondary" onclick="callLead('${escapeHtml(lead.contact)}')">
+                            📞 Call
+                        </button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Update stats
+        function updateStats() {
+            const total = leads.length;
+            const active = leads.filter(l => !['won', 'lost'].includes(l.status)).length;
+            const won = leads.filter(l => l.status === 'won').length;
+            const value = leads.filter(l => l.status !== 'lost')
+                              .reduce((sum, l) => sum + l.budget, 0);
+
+            document.getElementById('totalLeads').textContent = total;
+            document.getElementById('activeLeads').textContent = active;
+            document.getElementById('wonLeads').textContent = won;
+            document.getElementById('totalValue').textContent = '$' + value.toLocaleString();
+        }
+
+        // Update lead status
+        async function updateStatus(leadId, newStatus) {
+            try {
+                const response = await fetch(`${API_URL}/leads/${leadId}`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ status: newStatus })
+                });
+
+                if (!response.ok) throw new Error('Failed to update');
+
+                // Update local data
+                const lead = leads.find(l => l.id === leadId);
+                if (lead) lead.status = newStatus;
+
+                updateStats();
+                showToast(`Lead updated to ${newStatus}`);
+
+            } catch (error) {
+                console.error(error);
+                showToast('Failed to update lead', 'error');
+                loadLeads(); // Reload to reset
+            }
+        }
+
+        // Call lead
+        function callLead(contact) {
+            if (contact.includes('@')) {
+                window.location.href = `mailto:${contact}`;
+            } else {
+                window.location.href = `tel:${contact.replace(/\D/g, '')}`;
+            }
+        }
+
+        // Helpers
+        function getScoreClass(score) {
+            if (score >= 70) return 'high';
+            if (score >= 40) return 'medium';
+            return 'low';
+        }
+
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        // Check for saved session
+        document.addEventListener('DOMContentLoaded', () => {
+            const savedAgent = localStorage.getItem('agentName');
+            if (savedAgent) {
+                document.getElementById('agentNameInput').value = savedAgent;
+                login();
+            }
+        });
+
+        // Enter key login
+        document.getElementById('agentNameInput').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') login();
+        });
+
+        // Auto-refresh every 30 seconds
+        setInterval(() => {
+            if (currentAgent) loadLeads();
+        }, 30000);
+    </script>
+</body>
+</html>
